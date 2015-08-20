@@ -1,0 +1,37 @@
+{
+  "name": "notFramework",
+  "main": "notFramework.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/interrupter/notFramework",
+  "authors": [
+    "interrupter"
+  ],
+  "description": "compilation of front-end libs that purposed to intergrate with node-manifest module.",
+  "keywords": [
+    "template",
+    "front-end",
+    "frontend",
+    "engine",
+    "json",
+    "form",
+    "builder",
+    "api",
+    "manifest",
+    "record",
+    "mongoose",
+    "controller",
+    "orm"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+    "dependencies":{
+        "jquery":"*",
+        "routie":"*"        
+    }
+}

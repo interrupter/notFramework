@@ -75,7 +75,7 @@ $(function () {
     $('#selectElement').append(selectElementContent);
 
     var manyElementsContent = (new notTemplate({
-        templateURL: 'templateMany.html',
+        templateURL: './templates/templateMany.html',
         data: dataSetArray
     })).exec(
         function (manyElementsContent) {

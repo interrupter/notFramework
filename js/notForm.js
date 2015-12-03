@@ -80,6 +80,7 @@ notForm.prototype.buildFormElement = function (fieldName) {
     var helpers = {
         fieldValue: (params && typeof params.data !=='undefined' && params.data!== null)?this._getFieldValue(params.data, fieldName):null,
         fieldName: fieldName,
+        fieldLabel: field.hasOwnProperty('label')?field.label:'',
         fieldId: fieldName+'Input',
         fieldPlaceHolder: field.hasOwnProperty('placeholder')?field.placeholder:'',
         option:field.hasOwnProperty('option')?field.option: {value: '_id', label: 'title'},
@@ -267,10 +268,10 @@ notForm.prototype.attachRemoveOnRestore = function(){
 };
 
 notForm.prototype._removeForm = function(e){
-    if (typeof e !== 'undefined' && e!== null) e.stopPropagation();
+    if (typeof e !== 'undefined' && e!== null) e.preventDefault();
     this._working.resultForm.remove();
     if (typeof e !== 'undefined' && e!== null){
-        (this._getParams().hasOwnProperty('afterRestore') ? this._getParams().afterRestore(data):null);
+        (this._getParams().hasOwnProperty('afterRestore') ? this._getParams().afterRestore(e):null);
     }
     return false;
 };

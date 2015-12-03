@@ -243,15 +243,22 @@ notTemplate.prototype.proccessorsLib = {
         if (input.params.length === 3){
             itemValueFieldName = input.params[2];
         }
-        if (helpers.hasOwnProperty('fieldPlaceHolder')){
+        if (helpers.hasOwnProperty('fieldPlaceHolder') && helpers.hasOwnProperty('fieldPlaceHolderDefault') && helpers.fieldPlaceHolderDefault){
             option = $('<option></option>').attr('value', '').text(helpers.fieldPlaceHolder);
             input.element.append(option);
         }
         for(i=0; i<input.attributeResult.length; i++){
             option = $('<option></option>').attr('value', input.attributeResult[i][valueFieldName]).text(input.attributeResult[i][labelFieldName]);
-            if (item[itemValueFieldName] === input.attributeResult[i][valueFieldName]){
-                option.prop('selected', true);
+            if(Object.prototype.toString.call( item[itemValueFieldName] ) === '[object Array]'){
+                if ( item[itemValueFieldName].indexOf(input.attributeResult[i][valueFieldName])>-1){
+                    option.prop('selected', true);
+                }
+            }else{
+                if (item[itemValueFieldName] === input.attributeResult[i][valueFieldName]){
+                    option.prop('selected', true);
+                }
             }
+
             input.element.append(option);
         }
     },
@@ -283,7 +290,7 @@ notTemplate.prototype.proccessorsLib = {
         input.element.on(input.params[0], function(e){
             e.stopImmediatePropagation();
             if (typeof helpers!=='undefined' && helpers!== null && helpers.hasOwnProperty(input.attributeResult)){
-                helpers[input.attributeResult](item);
+                helpers[input.attributeResult](item, e);
             }
             return false;
         });

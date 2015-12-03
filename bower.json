@@ -1,7 +1,7 @@
 {
   "name": "notFramework",
   "main": "notFramework.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/interrupter/notFramework",
   "authors": [
     "interrupter"
@@ -17,6 +17,7 @@
     "builder",
     "api",
     "manifest",
+    "pager",
     "record",
     "mongoose",
     "controller",
@@ -32,6 +33,6 @@
   ],
     "dependencies":{
         "jquery":"*",
-        "routie":"*"        
+        "routie":"*"
     }
 }

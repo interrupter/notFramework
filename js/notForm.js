@@ -210,6 +210,7 @@ notForm.prototype._collectFieldsDataToRecord = function(){
                 fieldValue = $form.find('[name="'+fieldName+'"]').prop('checked');
                 break;
             case 'submit': continue;
+            default: fieldValue = $form.find('[name="'+fieldName+'"]').val();
         }
         record.setAttr(fieldName, fieldValue);
     }

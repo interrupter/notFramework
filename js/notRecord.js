@@ -71,22 +71,32 @@ var notRecord_Interface = {
                 }
             }
         }
-        return requestData;
+        var formData = new FormData();
+        if (Object.keys(requestData).length > 0){
+            for(var i in requestData){
+                formData.append(i, requestData[i]);
+            }
+        }
+        return (actionData.method==='POST')?record.getParam('formData'):requestData;
     },
 
     request: function (record, actionName, callbackSuccess, callbackError) {
         'use strict';
         console.log('request', actionName);
         var actionData = record._notOptions.interfaceManifest.actions[actionName];
-        $.ajax(this.getURL(record, actionData, actionName), {
+        var additionalParams = {
+            cache: false,
+            contentType: false,
+            processData: false
+        };
+        var formData = this.collectRequestData(record, actionData);
+        var basicParams = {
             method: actionData.method,
-            dataType: 'json',
-            data: this.collectRequestData(record, actionData),
+            data: formData,
             complete: function (data, code) {
                 var result = [];
                 data = data.responseJSON;
                 if (code == "success") {
-
                     if (('isArray' in actionData) && actionData.isArray) {
                         $.each(data, function (index, item) {
                             result.push(new notRecord(record._notOptions.interfaceManifest, item));
@@ -108,11 +118,17 @@ var notRecord_Interface = {
                             }
                         }).show();
                     }
-
                 }
-
             }
-        });
+        };
+
+        if ( formData instanceof FormData){
+            var finalParams = jQuery.extend(basicParams, additionalParams);
+        }else{
+            var finalParams = basicParams;
+        }
+        console.log('finalParams',finalParams);
+        $.ajax(this.getURL(record, actionData, actionName), finalParams);
     }
 };
 

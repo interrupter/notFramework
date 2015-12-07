@@ -191,8 +191,9 @@ notForm.prototype._collectFieldsDataToRecord = function(){
         i = 0,
         field = null,
         fieldName = null,
-        fieldValue = null;
-
+        fieldValue = null,
+        form = $form.get(0),
+        formData = new FormData(form);
     for(i = 0; i < scenario.fields.length; i++){
         fieldName = scenario.fields[i];
         field = this._getFormField(fieldName);
@@ -210,11 +211,14 @@ notForm.prototype._collectFieldsDataToRecord = function(){
                 fieldValue = $form.find('[name="'+fieldName+'"]').prop('checked');
                 break;
             case 'submit': continue;
+            case 'file':
+                //formData.append('photo', $form.find('[name="'+fieldName+'"]').get(0).files[0]);
+                break;
             default: fieldValue = $form.find('[name="'+fieldName+'"]').val();
         }
         record.setAttr(fieldName, fieldValue);
     }
-
+    record.setParam('formData', formData);
     record['$'+params.actionName](this._onSubmitSuccess.bind(this), this._validationErrorsHandling.bind(this));
 };
 

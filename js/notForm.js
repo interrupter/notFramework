@@ -1,19 +1,38 @@
-var notForm = function (app, options) {
+if (typeof extend === 'undefined' || extend === null){
+    var extend = function ( defaults, options ) {
+        var extended = {};
+        var prop;
+        for (prop in defaults) {
+            if (Object.prototype.hasOwnProperty.call(defaults, prop)) {
+                extended[prop] = defaults[prop];
+            }
+        }
+        for (prop in options) {
+            if (Object.prototype.hasOwnProperty.call(options, prop)) {
+                extended[prop] = options[prop];
+            }
+        }
+        return extended;
+    };
+}
+
+
+var notForm = function(app /* приложение к которому цепляемся */ , options /* опции */ ) {
     this.app = app;
     this._params = {
         runActionOnSubmit: true,
         removeOnRestore: true,
-        afterSubmit: function(data){},
-        afterRestore: function(data){},
+        afterSubmit: function(data) {},
+        afterRestore: function(data) {},
     };
 
     this.options = options;
     this._working = {
         template: '',
         prefix: 'notForm_',
-        formElements:{},
+        formElements: {},
         defaulField: {
-            type:'text',
+            type: 'text',
             placeholder: 'text placeholder'
         }
     };
@@ -21,89 +40,102 @@ var notForm = function (app, options) {
     return this;
 };
 
-notForm.prototype.setOption = function(key, value){
+notForm.prototype.setOption = function(key, value) {
     this.options[key] = value;
     return this;
 };
 
-notForm.prototype.getOption = function (key){return this.options[key];};
+notForm.prototype.getOption = function(key) {
+    return this.options[key];
+};
 
-notForm.prototype.init = function (onReady) {
+notForm.prototype.init = function(onReady) {
     this._working.onReady = onReady;
     this.loadTemplate(onReady);
 }
 
-notForm.prototype.loadTemplate = function () {
-    $.ajax(this.options.templateUrl, {
-        success: this._setTemplate.bind(this)
-    });
+notForm.prototype.loadTemplate = function() {
+    var oRequest = new XMLHttpRequest();
+    oRequest.open("GET", this.options.templateUrl);
+    oRequest.addEventListener("load", this._setTemplate.bind(this));
+    oRequest.send();
 };
 
-notForm.prototype._setTemplate = function (template) {
-    this._working.template = template;
+
+notForm.prototype._setTemplate = function(response) {
+    this._working.template = response.srcElement.responseText;
     this.parseTemplate();
     this._working.onReady();
 };
 
-notForm.prototype.parseTemplate = function(){
-    var $template = $(this._working.template);
+notForm.prototype.parseTemplate = function() {
+    var containerElement = document.createElement('DIV');
+    containerElement.innerHTML = this._working.template;
+    return containerElement.children;
 }
 
-notForm.prototype._getFormElementTemplate = function (fieldType, full) {
-    var $templates = $(this._working.template),
+notForm.prototype._getFormElementTemplate = function(fieldType, full) {
+    var templatesContainer = document.createElement('DIV');
+    templatesContainer.innerHTML = this._working.template;
+    var thisTemplates = templatesContainer.children,
         i = 0,
-        elementTemplateSelector = this._working.prefix+fieldType;
-    for(i = 0; i < $templates.length; i++){
-        var $template = $($templates[i]);
-        if ($template.attr('data-notTemplate-name') == elementTemplateSelector){
-            return full?$templates[i].outerHTML:$templates[i].innerHTML;
+        elementTemplateSelector = this._working.prefix + fieldType;
+    for(i = 0; i < thisTemplates.length; i++) {
+        var thisTemplate = thisTemplates[i];
+        if(thisTemplate.nodeName !== '#text' && thisTemplate.dataset.notTemplateName == elementTemplateSelector) {
+            return full ? thisTemplate.outerHTML : thisTemplate.innerHTML;
         }
     }
     return '';
 };
 
-notForm.prototype._getFieldValue = function(object, fieldName){
-    var value = null;
-    if (object && object.hasOwnProperty(fieldName)){
-        if (typeof object[fieldName] === 'object' && object[fieldName].hasOwnProperty('_id')){
+notForm.prototype._getFieldValue = function(object, fieldName) {
+    var value = '';
+    if(object && object.hasOwnProperty(fieldName)) {
+        if(typeof object[fieldName] === 'object' && object[fieldName].hasOwnProperty('_id')) {
             value = object[fieldName]._id;
-        }else{
-            value =object[fieldName];
+        } else {
+            value = object[fieldName];
         }
     }
     return value;
 }
 
-notForm.prototype.buildFormElement = function (fieldName) {
+notForm.prototype.buildFormElement = function(fieldName) {
     var params = this._getParams();
     var field = this._getFormField(fieldName);
     var helpers = {
-        fieldValue: (params && typeof params.data !=='undefined' && params.data!== null)?this._getFieldValue(params.data, fieldName):null,
+        fieldValue: (params && typeof params.data !== 'undefined' && params.data !== null) ? this._getFieldValue(params.data, fieldName) : '',
         fieldName: fieldName,
-        fieldLabel: field.hasOwnProperty('label')?field.label:'',
-        fieldId: fieldName+'Input',
-        fieldPlaceHolder: field.hasOwnProperty('placeholder')?field.placeholder:'',
-        option:field.hasOwnProperty('option')?field.option: {value: '_id', label: 'title'},
-        optionsLib: (params.hasOwnProperty(fieldName+'Lib'))?params[fieldName+'Lib']:[]
+        fieldLabel: field.hasOwnProperty('label') ? field.label : '',
+        fieldId: fieldName + 'Input',
+        fieldPlaceHolder: field.hasOwnProperty('placeholder') ? field.placeholder : '',
+        option: field.hasOwnProperty('option') ? field.option : {
+            value: '_id',
+            label: 'title'
+        },
+        optionsLib: (params.hasOwnProperty(fieldName + 'Lib')) ? params[fieldName + 'Lib'] : []
     };
 
     var data = {
-        value:  helpers.fieldValue
+        value: helpers.fieldValue
     };
     return (new notTemplate({
-            template: this._getFormElementTemplate(field.type, true),
-            helpers: helpers,
-            data: data
-        })).exec();
+        template: this._getFormElementTemplate(field.type, true),
+        helpers: helpers,
+        data: data
+    })).exec();
 };
 
-notForm.prototype.buildFormElements = function (fields) {
+notForm.prototype.buildFormElements = function(fields) {
     var elements = [],
         i = 0;
-    for (i = 0; i < fields.length; i++) {
-
-        this._working.formElements[fields[i]] = this.buildFormElement(fields[i]);
-        this._working.formElements[fields[i]].addClass(fields[i]+'_InputGroup');
+    for(i = 0; i < fields.length; i++) {
+        this._working.formElements[fields[i]] = this.buildFormElement(fields[i])[0];
+        console.log(this._working.formElements[fields[i]] instanceof HTMLElement ? 'Element' : 'not Element');
+        if (this._working.formElements[fields[i]].hasOwnProperty('classList')){
+            this._working.formElements[fields[i]].classList.add(fields[i] + '_InputGroup');
+        }
         elements.push(
             this._working.formElements[fields[i]]
         );
@@ -111,44 +143,52 @@ notForm.prototype.buildFormElements = function (fields) {
     return elements;
 };
 
-notForm.prototype.buildFormWrapper = function(formName){
+notForm.prototype.buildFormWrapper = function(formName) {
     var params = this._getParams();
-    return $((new notTemplate({
-            template: this._getFormElementTemplate(formName,true),
-            data: this._getParams(),
-            helpers: {
-                formTitle: this._getFormTitle(),
-                formId: 'Form_'+params.modelName+'_'+params.actionName,
-                formName: 'Form_'+params.modelName+'_'+params.actionName,
-                formContainerId: 'FormContainer_'+params.modelName+'_'+params.actionName,
-            }
-        })).exec());
+    return (new notTemplate({
+        template: this._getFormElementTemplate(formName, true),
+        data: this._getParams(),
+        helpers: {
+            formTitle: this._getFormTitle(),
+            formId: 'Form_' + params.modelName + '_' + params.actionName,
+            formName: 'Form_' + params.modelName + '_' + params.actionName,
+            formContainerId: 'FormContainer_' + params.modelName + '_' + params.actionName,
+        }
+    })).exec();
 };
 
-notForm.prototype.buildForm = function () {
+notForm.prototype.buildForm = function() {
     var form = '',
         i = 0,
         scenario = this._getScenario();
-    if (typeof scenario !== 'undefined' && scenario !== null) {
+    if(typeof scenario !== 'undefined' && scenario !== null) {
         var elements = this.buildFormElements(scenario.fields);
         form = this.buildFormWrapper(this._getParams().formType);
-        console.log(form.find('form'));
-        for(i=0; i< elements.length;i++){
-            form.find('form').append(elements[i]);
+        form = (form instanceof HTMLCollection)?form[0]:form;
+        var formElement = form.querySelectorAll(':scope form')[0];
+        console.log(form.querySelectorAll(':scope form'));
+        for(i = 0; i < elements.length; i++) {
+            if (elements[i] instanceof HTMLCollection){
+                for(var j=0; j<elements[i].length;j++){
+                    formElement.appendChild(elements[i][j]);
+                }
+            }else{
+                formElement.appendChild(elements[i]);
+            }
         }
     }
     this._working.resultForm = form;
     return this._working.resultForm;
 };
 
-notForm.prototype._getScenario = function () {
+notForm.prototype._getScenario = function() {
     var action = this._getAction(),
         params = this._getParams();
-    if (action.hasOwnProperty('form')) {
-        if (params.hasOwnProperty('scenario') && action.form.hasOwnProperty('scenario')) {
-            if (action.form.scenario.hasOwnProperty(params.scenario)){
+    if(action.hasOwnProperty('form')) {
+        if(params.hasOwnProperty('scenario') && action.form.hasOwnProperty('scenario')) {
+            if(action.form.scenario.hasOwnProperty(params.scenario)) {
                 return action.form.scenario[params.scenario];
-            }else{
+            } else {
                 return action.form[params.scenario];
             }
         } else {
@@ -159,138 +199,146 @@ notForm.prototype._getScenario = function () {
     }
 };
 
-notForm.prototype._getParams = function () {
+notForm.prototype._getParams = function() {
     return this._working.params;
 };
 
-notForm.prototype._getAction = function () {
+notForm.prototype._getAction = function() {
     var model = this._getModel();
     return model.actions[this._getActionName()];
 };
 
-notForm.prototype._getActionName = function () {
+notForm.prototype._getActionName = function() {
     return this._getParams().actionName;
 };
 
-notForm.prototype._getFormTitle = function () {
+notForm.prototype._getFormTitle = function() {
     var action = this._getAction();
-    if (action.hasOwnProperty('form')){
-        if (action.form.hasOwnProperty('title')){
+    if(action.hasOwnProperty('form')) {
+        if(action.form.hasOwnProperty('title')) {
             return action.form.title;
         }
     }
     return 'Form title';
 };
 
-notForm.prototype._collectFieldsDataToRecord = function(){
+notForm.prototype._collectFieldsDataToRecord = function() {
+    console.log(this._working.resultForm);
+
     var params = this._getParams(),
         record = params.data,
         scenario = this._getScenario(),
         fieldsTypes = this._getFormFieldsTypes(),
-        $form = $(this._working.resultForm.find('form')),
+        form = this._working.resultForm.querySelectorAll(':scope form')[0],
         i = 0,
         field = null,
         fieldName = null,
         fieldValue = null,
-        form = $form.get(0),
         formData = new FormData(form);
-    for(i = 0; i < scenario.fields.length; i++){
+    for(i = 0; i < scenario.fields.length; i++) {
         fieldName = scenario.fields[i];
         field = this._getFormField(fieldName);
-        switch(field.type){
+        switch(field.type) {
             case 'text':
-                fieldValue = $form.find('[name="'+fieldName+'"]').val();
-                break;
             case 'select':
-                fieldValue = $form.find('[name="'+fieldName+'"]').val();
-                break;
             case 'textarea':
-                fieldValue = $form.find('[name="'+fieldName+'"]').val();
-                break;
             case 'checkbox':
-                fieldValue = $form.find('[name="'+fieldName+'"]').prop('checked');
+                fieldValue = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0].value;
                 break;
-            case 'submit': continue;
+            case 'submit':
             case 'file':
-                //formData.append('photo', $form.find('[name="'+fieldName+'"]').get(0).files[0]);
-                break;
-            default: fieldValue = $form.find('[name="'+fieldName+'"]').val();
+                continue;
+            default:
+                fieldValue = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0].value;
         }
         record.setAttr(fieldName, fieldValue);
     }
     record.setParam('formData', formData);
-    record['$'+params.actionName](this._onSubmitSuccess.bind(this), this._validationErrorsHandling.bind(this));
+    record['$' + params.actionName](this._onSubmitSuccess.bind(this), this._validationErrorsHandling.bind(this));
 };
 
-notForm.prototype._onSubmitSuccess = function(data){
+notForm.prototype._onSubmitSuccess = function(data) {
     var params = this._getParams();
     this._validationErrorsHandling();
     this._removeForm();
-    (params.hasOwnProperty('afterSubmit') ? params.afterSubmit(data):null);
+    (params.hasOwnProperty('afterSubmit') ? params.afterSubmit(data) : null);
 };
 
-notForm.prototype._setValidationErrorForField = function(fieldName, message){
-    this._working.formElements[fieldName].addClass('has-error');
-    this._working.formElements[fieldName].find('.help-block').text(message).fadeIn();
+notForm.prototype._setValidationErrorForField = function(fieldName, message) {
+    this._working.formElements[fieldName].classList.add('has-error');
+    var errorText = this._working.formElements[fieldName].querySelectorAll(':scope .help-block')[0];
+    if(errorText){
+        errorText.textContent = message;
+        //errorText.style.opacity = 1;
+        errorText.style.WebkitTransition = 'opacity 1s';
+        errorText.style.MozTransition = 'opacity 1s';
+    }
 };
 
 
-notForm.prototype._setValidationSuccessForField = function(fieldName){
-    this._working.formElements[fieldName].addClass('has-success');
+notForm.prototype._setValidationSuccessForField = function(fieldName) {
+    this._working.formElements[fieldName].classList.add('has-success');
 };
 
-notForm.prototype._validationErrorsHandling = function(validationReport){
+notForm.prototype._validationErrorsHandling = function(validationReport) {
     var i;
-    for(i in this._working.formElements){
-        if (typeof validationReport!=='undefined' && validationReport !== null && validationReport.hasOwnProperty(i)){
+    for(i in this._working.formElements) {
+        if(typeof validationReport !== 'undefined' && validationReport !== null && validationReport.hasOwnProperty(i)) {
             this._setValidationErrorForField(i, validationReport[i]);
-        }else{
+        } else {
             this._resetValidationErrorForField(i);
             this._setValidationSuccessForField(i);
         }
     }
 };
 
-notForm.prototype._resetValidationErrorForField = function(fieldName){
-    this._working.formElements[fieldName].removeClass('has-error');
-    this._working.formElements[fieldName].find('.help-block').fadeOut();
+notForm.prototype._resetValidationErrorForField = function(fieldName) {
+    this._working.formElements[fieldName].classList.remove('has-error');
+    var errorText = this._working.formElements[fieldName].querySelectorAll(':scope .help-block')[0];
+    if(errorText){
+        errorText.style.WebkitTransition = 'opacity 1s';
+        errorText.style.MozTransition = 'opacity 1s';
+    }
+
+    //errorText.style.opacity = 0;
 };
 
 
 
-notForm.prototype.attachOnSubmitAction = function(){
-    this._working.resultForm.find('form').on('submit', this._submitForm.bind(this));
+notForm.prototype.attachOnSubmitAction = function() {
+    this._working.resultForm.querySelectorAll(':scope form')[0].addEventListener('submit', this._submitForm.bind(this));
 };
 
-notForm.prototype._submitForm = function(e){
+notForm.prototype._submitForm = function(e) {
     e.stopPropagation();
+    e.preventDefault();
     this._collectFieldsDataToRecord();
     return false;
 };
 
-notForm.prototype.attachRemoveOnRestore = function(){
-    this._working.resultForm.find('button[type="restore"]').on('click', this._removeForm.bind(this));
+notForm.prototype.attachRemoveOnRestore = function() {
+    this._working.resultForm.querySelectorAll(':scope button[type="restore"]')[0].addEventListener('click', this._removeForm.bind(this));
 };
 
-notForm.prototype._removeForm = function(e){
-    if (typeof e !== 'undefined' && e!== null) e.preventDefault();
+notForm.prototype._removeForm = function(e) {
+    if(typeof e !== 'undefined' && e !== null) e.preventDefault();
     this._working.resultForm.remove();
-    if (typeof e !== 'undefined' && e!== null){
-        (this._getParams().hasOwnProperty('afterRestore') ? this._getParams().afterRestore(e):null);
+    if(typeof e !== 'undefined' && e !== null) {
+        (this._getParams().hasOwnProperty('afterRestore') ? this._getParams().afterRestore(e) : null);
     }
     return false;
 };
 
-notForm.prototype._getModelName = function () {
-    if (typeof this._getParams().modelName !== 'undefined' && this._getParams().modelName !== null){
+notForm.prototype._getModelName = function() {
+    if(typeof this._getParams().modelName !== 'undefined' && this._getParams().modelName !== null) {
         return this._getParams().modelName;
-    }else{
-        if (this._getParams().hasOwnProperty('data')){
+    } else {
+        if(this._getParams().hasOwnProperty('data')) {
             var data = this._getParams().data;
-            if(typeof data.modelName !== 'undefined' && data.modelName !== null){
+            if(typeof data.modelName !== 'undefined' && data.modelName !== null) {
                 return data.modelName;
             }
-            if (typeof data.getModelName !== 'undefined' && data.getModelName !== null){
+            if(typeof data.getModelName !== 'undefined' && data.getModelName !== null) {
                 return data.getModelName();
             }
         }
@@ -298,35 +346,35 @@ notForm.prototype._getModelName = function () {
     return null;
 };
 
-notForm.prototype._getModel = function () {
+notForm.prototype._getModel = function() {
     return this.app._getInterfaceManifest()[this._getModelName()];
 };
 
-notForm.prototype._getFormFieldsTypes = function () {
+notForm.prototype._getFormFieldsTypes = function() {
     var model = this._getModel();
     return model.formFieldsTypes;
 };
 
-notForm.prototype._getFormField = function(field){
+notForm.prototype._getFormField = function(field) {
     var types = this._getFormFieldsTypes();
-    if (typeof types !== 'undefined' && types!==null && types.hasOwnProperty(field)){
+    if(typeof types !== 'undefined' && types !== null && types.hasOwnProperty(field)) {
         return types[field];
     }
     return this._getDefaultField();
 };
 
-notForm.prototype._getDefaultField = function(){
+notForm.prototype._getDefaultField = function() {
     return this._working.defaulField;
 };
 
-notForm.prototype._clearWorking = function(){
+notForm.prototype._clearWorking = function() {
     this._working.resultForm = null;
     this._working.formElements = {};
 };
 
-notForm.prototype.build = function (formParams) {
+notForm.prototype.build = function(formParams) {
     this._clearWorking();
-    this._working.params = $.extend(this._params, formParams);
+    this._working.params = extend(this._params, formParams);
     console.log('build form ', this._getModelName(), this._getActionName(), this._getFormFieldsTypes(), this._getParams());
     this.buildForm();
     this.attachOnSubmitAction();

@@ -55,9 +55,9 @@ notApp.prototype.startApp = function(){
 
 notApp.prototype._bindController = function(controllerName){
     var ctrl = new notController(this, controllerName);
-    return function(param){
-        return ctrl.exec(param);
-    }
+    //return function(param){
+        return ctrl.exec.bind(ctrl);
+    //}
 };
 
 notApp.prototype._initController = function(){
@@ -72,7 +72,6 @@ notApp.prototype._initRouter = function(){
     $.each(this._notOptions.siteManifest, function(route, controllerName){
         routieInput[route] = that._bindController(controllerName);
     });
-    //console.log(routieInput);
     this._working.router = routie(routieInput);
 };
 
@@ -161,3 +160,7 @@ notApp.prototype.allResourcesReady = function(){
     }
     return true;
 };
+
+notApp.prototype.getOptions = function(){
+    return this._notOptions.options;
+}

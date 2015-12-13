@@ -142,6 +142,7 @@ var notRecord = function (interfaceManifest, item) {
     this._notOptions = {
         interfaceManifest: interfaceManifest,
         filter: {},
+        sorter: {},
         pageNumber: DEFAULT_PAGE_NUMBER,
         pageSize: DEFAULT_PAGE_SIZE,
         fields: []
@@ -195,6 +196,51 @@ notRecord.prototype.getModelName = function () {
     'use strict';
     return this._notOptions.interfaceManifest.model;
 }
+
+
+/*
+    получаем название поля данных для отображения в интерфейсе
+*/
+
+notRecord.prototype.getFieldTitle = function(fieldName){
+    var defaultResult = fieldName;
+    if((typeof this._notOptions.interfaceManifest.formFieldsTypes !== 'undefined') && (this._notOptions.interfaceManifest.formFieldsTypes.hasOwnProperty(fieldName))){
+        if(this._notOptions.interfaceManifest.formFieldsTypes[fieldName].hasOwnProperty('label')){
+            return this._notOptions.interfaceManifest.formFieldsTypes[fieldName].label;
+        }
+        if(this._notOptions.interfaceManifest.formFieldsTypes[fieldName].hasOwnProperty('placeholder')){
+            return this._notOptions.interfaceManifest.formFieldsTypes[fieldName].placeholder;
+        }
+        if(this._notOptions.interfaceManifest.formFieldsTypes[fieldName].hasOwnProperty('caption')){
+            return this._notOptions.interfaceManifest.formFieldsTypes[fieldName].caption;
+        }
+    }else{
+        return defaultResult;
+    }
+};
+
+/*
+
+    возвращаем массив объектов {названиеПоля: заголовокПоля}
+    навзваниеПоля - ключ в объекте с данными
+    заголовокПоля - человеко читаемая запись для отображения в интерфейсе
+
+*/
+notRecord.prototype.getFieldTitles = function(){
+    var defaultResult = [];
+    if((typeof this._notOptions.interfaceManifest.formFieldsTypes !== 'undefined')
+        && (this._notOptions.interfaceManifest.formFieldsTypes)
+        && Object.keys(this._notOptions.interfaceManifest.formFieldsTypes).length > 0
+        ){
+        for(var i = 0; i < this.getParam('fields').length; i++){
+            var fieldName = this.getParam('fields')[i];
+            var fieldTitle = {};
+            fieldTitle[fieldName] = this.getFieldTitle(fieldName);
+            defaultResult.push(fieldTitle);
+        }
+    }
+    return defaultResult;
+};
 
 notRecord.prototype._addMetaAttrs = function(){
     var i,
@@ -266,6 +312,17 @@ notRecord.prototype.setFilter = function (filterData) {
 notRecord.prototype.getFilter = function () {
     'use strict';
     return this.getParam('filter');
+};
+
+notRecord.prototype.setSorter = function (sorterData) {
+    'use strict';
+    this.setParam('sorter', sorterData);
+    return this;
+};
+
+notRecord.prototype.getSorter = function () {
+    'use strict';
+    return this.getParam('sorter');
 };
 
 notRecord.prototype.setPageNumber = function (pageNumber) {

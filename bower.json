@@ -1,7 +1,7 @@
 {
   "name": "notFramework",
   "main": "notFramework.js",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "homepage": "https://github.com/interrupter/notFramework",
   "authors": [
     "interrupter"
@@ -15,6 +15,8 @@
     "json",
     "form",
     "builder",
+    "view",
+    "table",
     "api",
     "manifest",
     "pager",

@@ -1,15 +1,19 @@
 //we wil use it to search for proc expressions
-jQuery.extend(jQuery.expr[':'], {
-    attrStartsWith: function (el, _, b) {
-        for (var i = 0, atts = el.attributes, n = atts.length; i < n; i++) {
-            if (atts[i].nodeName.indexOf(b[3]) === 0) {
-                return true;
+function getAttributesStartsWith(el, startsWith) {
+    var allElements = el.querySelectorAll(':scope *');
+    var list = [];
+    for(var j = 0; j < allElements.length; j++) {
+        for(var i = 0, atts = allElements[j].attributes, n = atts.length; i < n; i++) {
+            if(atts[i].nodeName.indexOf(startsWith) === 0) {
+                list.push(allElements[j]);
+                break;
             }
         }
-
-        return false;
     }
-});
+    return list;
+}
+
+
 
 /*
  * Использует DOM поддерево в качестве шаблона.
@@ -18,9 +22,9 @@ jQuery.extend(jQuery.expr[':'], {
  *
  * */
 
-var notTemplate = function (input) {
+var notTemplate = function(input) {
     this._notOptions = {
-        proccessorIndexAttributeName: 'data-notTemplate-proccindex',
+        proccessorIndexAttributeName: 'data-not-template-proccindex',
         proccessorExpressionPrefix: 'data-not-',
         proccessorExpressionSeparator: '-',
         proccessorExpressionConditionPostfix: 'if',
@@ -32,8 +36,8 @@ var notTemplate = function (input) {
         data: input.data,
         place: input.place,
         selector: input.templateName,
-        template: input.hasOwnProperty('template')?input.template:null,
-        templateElement: input.hasOwnProperty('templateName') ? $('[data-notTemplate-name="' + input.templateName + '"]').clone(true, true) : null,
+        template: input.hasOwnProperty('template') ? input.template : null,
+        templateElement: ((input.hasOwnProperty('templateElement'))?(input.templateElement):(input.hasOwnProperty('templateName') ? $('[data-not-template-name="' + input.templateName + '"]').cloneNode(true) : null)),
         templateURL: input.hasOwnProperty('templateURL') ? input.templateURL : null,
         helpers: input.helpers,
     };
@@ -42,8 +46,8 @@ var notTemplate = function (input) {
 
     this._working = {
         proccessors: [],
-        templateHTML: input.hasOwnProperty('template')?input.template:'',
-        templateLoaded: input.hasOwnProperty('templateName')||input.hasOwnProperty('template'),
+        templateHTML: input.hasOwnProperty('template') ? input.template : '',
+        templateLoaded: input.hasOwnProperty('templateName') || input.hasOwnProperty('template') || input.hasOwnProperty('templateElement'),
         result: null,
         currentEl: null,
         currentItem: null,
@@ -52,23 +56,23 @@ var notTemplate = function (input) {
     return this;
 }
 
-notTemplate.prototype._exec = function () {
-    if (this._notOptions.repeat) {
+notTemplate.prototype._exec = function() {
+    if(this._notOptions.repeat) {
         this._proccessItems();
     } else {
         this._working.currentIndex = 0;
         this._working.currentItem = this._notOptions.data;
         this._proccessItem();
-        this._working.result = this._working.currentEl.children();
+        this._working.result = this._working.currentEl.children;
     }
 }
 
-notTemplate.prototype.exec = function (afterExecCallback) {
+notTemplate.prototype.exec = function(afterExecCallback) {
     //from local html data
     var that = this;
-    if (that._working.templateLoaded) {
+    if(that._working.templateLoaded) {
         that._exec();
-        if (typeof afterExecCallback == 'undefined') {
+        if(typeof afterExecCallback == 'undefined') {
             return that._working.result;
         } else {
             afterExecCallback(that._working.result);
@@ -76,50 +80,76 @@ notTemplate.prototype.exec = function (afterExecCallback) {
     }
     //from template html file, thru ajax request
     else {
-        $.ajax({
-            url: that._notOptions.templateURL,
-            dataType: 'html',
-            success: function(html){
-                var div = $('<div></div>').attr('data-notTemplate-name', that._notOptions.templateURL).append(html);
-                that._working.templateLoaded = true;
-                that._notOptions.templateElement = div;
-                that._exec();
-                if (typeof afterExecCallback !== 'undefined') afterExecCallback(that._working.result);
-            }
+        var oRequest = new XMLHttpRequest();
+        oRequest.open("GET", that._notOptions.templateURL);
+        oRequest.addEventListener("load", function(response) {
+            var div = document.createElement('DIV');
+            div.dataset.notTemplateName = that._notOptions.templateURL;
+            div.innerHTML = response.srcElement.responseText;
+            that._working.templateLoaded = true;
+            that._notOptions.templateElement = div;
+            that._exec();
+            if(typeof afterExecCallback !== 'undefined') afterExecCallback(that._working.result);
         });
+        oRequest.send();
     }
 }
 
-notTemplate.prototype.execAndPut = function(place,afterExecCallback){
-    this.exec(function(el){
-        place.empty().append(el);
-        if (typeof afterExecCallback !== 'undefined') afterExecCallback(el);
+notTemplate.prototype.execAndPut = function(place, afterExecCallback) {
+    this.exec(function(result) {
+        if(place instanceof HTMLElement) {
+            place.innerHTML = '';
+            if(result instanceof HTMLCollection || result instanceof Array) {
+                for(var i = 0; i < result.length; i++) {
+                    if (result[i] instanceof HTMLElement) place.appendChild(result[i]);
+                }
+            } else {
+                if (result instanceof HTMLElement) place.appendChild(result);
+            }
+        }
+        if(typeof afterExecCallback !== 'undefined') afterExecCallback(result);
     });
 }
 
-notTemplate.prototype._proccessItems = function () {
+notTemplate.prototype.execAndAdd = function(place, afterExecCallback) {
+    this.exec(function(el) {
+        if(place instanceof HTMLElement) {
+            if(el instanceof HTMLCollection || el instanceof Array) {
+                for(var i = 0; i < el.length; i++) {
+                    if (el[i] instanceof HTMLElement) place.appendChild(el[i]);
+                }
+            } else {
+                if (el instanceof HTMLElement) place.appendChild(el);
+            }
+        }
+        if(typeof afterExecCallback !== 'undefined') afterExecCallback(el);
+    });
+}
+
+notTemplate.prototype._proccessItems = function() {
     //console.log('proccessItems');
     var i;
     this._working.result = [];
-    for (i = 0; i < this._notOptions.data.length; i++) {
+    for(i = 0; i < this._notOptions.data.length; i++) {
         this._working.currentIndex = i;
         this._working.currentItem = this._notOptions.data[i];
         this._proccessItem();
-        this._working.result.push(this._working.currentEl.children());
+        this._working.result.push(this._working.currentEl.children);
     }
 }
 
-notTemplate.prototype._getTemplateElement = function(){
-    if (this._notOptions.template === null){
-        return this._notOptions.templateElement.clone(true, true)
-    }
-    else{
-        return $(this._notOptions.template);
+notTemplate.prototype._getTemplateElement = function() {
+    if(this._notOptions.template === null) {
+        return this._notOptions.templateElement.cloneNode(true)
+    } else {
+        var container = document.createElement('div');
+        container.innerHTML = this._notOptions.template;
+        return container;
     }
 
 };
 
-notTemplate.prototype._proccessItem = function () {
+notTemplate.prototype._proccessItem = function() {
     //console.log('proccessItem');
     this._working.currentEl = this._getTemplateElement();
     this._findAllTemplateProccessors();
@@ -128,17 +158,17 @@ notTemplate.prototype._proccessItem = function () {
 }
 
 //search for proccessors in template, and prepare preInput objects for each
-notTemplate.prototype._findAllTemplateProccessors = function () {
+notTemplate.prototype._findAllTemplateProccessors = function() {
     'use strict';
-    var elsWithProc = this._working.currentEl.find(':attrStartsWith("' + this._notOptions.proccessorExpressionPrefix + '")'),
+    var elsWithProc = getAttributesStartsWith(this._working.currentEl, this._notOptions.proccessorExpressionPrefix),
         j = null;
     this._working.proccessors = [];
-    for (j = 0; j < elsWithProc.length; j++) {
-        for (var i = 0, atts = elsWithProc[j].attributes, n = atts.length; i < n; i++) {
-            if (atts[i].nodeName.indexOf(this._notOptions.proccessorExpressionPrefix) === 0) {
+    for(j = 0; j < elsWithProc.length; j++) {
+        for(var i = 0, atts = elsWithProc[j].attributes, n = atts.length; i < n; i++) {
+            if(atts[i].nodeName.indexOf(this._notOptions.proccessorExpressionPrefix) === 0) {
                 // console.log(atts[i]);
                 var procData = this._parseProccessorExpression(atts[i].nodeName);
-                procData.element = $(elsWithProc[j]);
+                procData.element = elsWithProc[j];
                 procData.proccessorExpression = atts[i].nodeName;
                 procData.attributeExpression = atts[i].value;
                 this._working.proccessors.push(procData);
@@ -148,14 +178,14 @@ notTemplate.prototype._findAllTemplateProccessors = function () {
     //console.log('arrange proccessors', this._working.proccessors);
 };
 
-notTemplate.prototype._parseProccessorExpression = function (proccessorExpression) {
+notTemplate.prototype._parseProccessorExpression = function(proccessorExpression) {
     var result = {
         params: [],
         proccessorName: '',
         ifCondition: false
     };
     proccessorExpression = proccessorExpression.replace(this._notOptions.proccessorExpressionPrefix, '');
-    if (proccessorExpression.indexOf(this._notOptions.proccessorExpressionConditionPostfix) === (proccessorExpression.length - this._notOptions.proccessorExpressionConditionPostfix.length)) {
+    if(proccessorExpression.indexOf(this._notOptions.proccessorExpressionConditionPostfix) === (proccessorExpression.length - this._notOptions.proccessorExpressionConditionPostfix.length)) {
         result.ifCondition = true;
         proccessorExpression = proccessorExpression.replace(this._notOptions.proccessorExpressionSeparator + this._notOptions.proccessorExpressionConditionPostfix, '');
     }
@@ -165,7 +195,7 @@ notTemplate.prototype._parseProccessorExpression = function (proccessorExpressio
     return result;
 }
 
-notTemplate.prototype._getAttributeExpressionResult = function (expression, item, index) {
+notTemplate.prototype._getAttributeExpressionResult = function(expression, item, index) {
     'use strict';
     var result = null,
         //trying to distinguish what expression is
@@ -181,27 +211,28 @@ notTemplate.prototype._getAttributeExpressionResult = function (expression, item
         .replace(this._notOptions.attributeExpressionItemPrefix, '') //--//--//--//--//- remove :
         .replace(this._notOptions.attributeExpressionFunctionPostfix, ''); //--//--//--//--//- remove ()
 
-    if ((!isHelpers && !isItem) || (runner==null || typeof runner =='undefined')) {
+    if((!isHelpers && !isItem) || (runner == null || typeof runner == 'undefined')) {
         return expression;
     }
 
-    if (isFunction) {
+    if(isFunction) {
         result = (runner.hasOwnProperty(fieldName) ? runner[fieldName](item, index) : this._notOptions.attributeExpressionDefaultResult);
     } else {
         console.log(runner[fieldName]);
-        result = ((typeof runner[fieldName]!== 'undefined') ? runner[fieldName] : this._notOptions.attributeExpressionDefaultResult);
+        result = ((typeof runner[fieldName] !== 'undefined') ? runner[fieldName] : this._notOptions.attributeExpressionDefaultResult);
     }
     return result;
 };
 
-notTemplate.prototype._execProccessorsOnCurrent = function () {
+notTemplate.prototype._execProccessorsOnCurrent = function() {
     var i;
     console.log('exec proccessors on current');
-    for (i = 0; i < this._working.proccessors.length; i++) {
+    for(i = 0; i < this._working.proccessors.length; i++) {
         this._working.proccessors[i].attributeResult = this._getAttributeExpressionResult(this._working.proccessors[i].attributeExpression, this._working.currentItem, this._working.currentIndex);
-        if (this.proccessorsLib.hasOwnProperty(this._working.proccessors[i].proccessorName)) {
-            this.proccessorsLib[this._working.proccessors[i].proccessorName](this._working.proccessors[i], this._working.currentItem,this._notOptions.helpers);
-            this._working.proccessors[i].element.removeAttr(this._working.proccessors[i].proccessorExpression);
+        if(this.proccessorsLib.hasOwnProperty(this._working.proccessors[i].proccessorName)) {
+            var procName = this._working.proccessors[i].proccessorName;
+            this.proccessorsLib[procName](this._working.proccessors[i], this._working.currentItem, this._notOptions.helpers);
+            this._working.proccessors[i].element.removeAttribute(this._working.proccessors[i].proccessorExpression);
             //console.log(this._working.proccessors[i].proccessorExpression,this._working.proccessors[i].element.html());
         }
     }
@@ -216,7 +247,7 @@ notTemplate.prototype._execProccessorsOnCurrent = function () {
  *      conditionIf: true|false,        //true if proccessor expression ends with -if
  *      item: object                    //item to proccess
  *      attributeResult: whatever       //result of attribute expression
- *      element: HTMLElement            //element to modify, for now extended with jQuery
+ *      element: HTMLElement            //element to modify, for now extended with jQuery, retiring this
  * }
  *
  * return modified input.element
@@ -224,72 +255,80 @@ notTemplate.prototype._execProccessorsOnCurrent = function () {
  */
 
 notTemplate.prototype.proccessorsLib = {
-    provider: function (input) {
+    provider: function(input) {
         'use strict';
-        if (input.params.indexOf('capitalize') > -1) input.attributeResult = input.attributeResult.toUpperCase();
-        input.element.append(input.attributeResult);
+        if(input.params.indexOf('capitalize') > -1) input.attributeResult = input.attributeResult.toUpperCase();
+        input.element.innerHTML = input.attributeResult;
     },
-    options: function (input, item, helpers) {
+    options: function(input, item, helpers) {
         'use strict';
-        var i = 0, option = null, valueFieldName = 'value', labelFieldName = 'name',itemValueFieldName = 'value';
-        if (input.params.length === 2){
+        var i = 0,
+            option = null,
+            valueFieldName = 'value',
+            labelFieldName = 'name',
+            itemValueFieldName = 'value';
+        if(input.params.length === 2) {
             labelFieldName = input.params[0];
             valueFieldName = input.params[1];
         }
-        if (helpers.hasOwnProperty('option')){
+        if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('option')) {
             labelFieldName = helpers.option.label;
             valueFieldName = helpers.option.value;
         }
-        if (input.params.length === 3){
+        if(input.params.length === 3) {
             itemValueFieldName = input.params[2];
         }
-        if (helpers.hasOwnProperty('fieldPlaceHolder') && helpers.hasOwnProperty('fieldPlaceHolderDefault') && helpers.fieldPlaceHolderDefault){
-            option = $('<option></option>').attr('value', '').text(helpers.fieldPlaceHolder);
-            input.element.append(option);
+        if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('fieldPlaceHolder') && helpers.hasOwnProperty('fieldPlaceHolderDefault') && helpers.fieldPlaceHolderDefault) {
+            option = document.createElement('option');
+            option.setAttribute('value', '');
+            option.textContent = helpers.fieldPlaceHolder;
+            input.element.appendChild(option);
         }
-        for(i=0; i<input.attributeResult.length; i++){
-            option = $('<option></option>').attr('value', input.attributeResult[i][valueFieldName]).text(input.attributeResult[i][labelFieldName]);
-            if(Object.prototype.toString.call( item[itemValueFieldName] ) === '[object Array]'){
-                if ( item[itemValueFieldName].indexOf(input.attributeResult[i][valueFieldName])>-1){
-                    option.prop('selected', true);
+        if(typeof item !== 'undefined' && item !== null){
+            for(i = 0; i < input.attributeResult.length; i++) {
+                option = document.createElement('option');
+                option.setAttribute('value', input.attributeResult[i][valueFieldName]);
+                option.textContent = input.attributeResult[i][labelFieldName];
+                if(Object.prototype.toString.call(item[itemValueFieldName]) === '[object Array]') {
+                    if(item[itemValueFieldName].indexOf(input.attributeResult[i][valueFieldName]) > -1) {
+                        option.setAttribute('selected', true);
+                    }
+                } else {
+                    if(item[itemValueFieldName] === input.attributeResult[i][valueFieldName]) {
+                        option.setAttribute('selected', true);
+                    }
                 }
-            }else{
-                if (item[itemValueFieldName] === input.attributeResult[i][valueFieldName]){
-                    option.prop('selected', true);
-                }
-            }
 
-            input.element.append(option);
+                input.element.appendChild(option);
+            }
         }
+
     },
-    attr: function(input){
+    attr: function(input) {
         'use strict';
-        input.element.attr(input.params[0],input.attributeResult);
+        input.element.setAttribute(input.params[0], input.attributeResult);
     },
-    addclass: function (input) {
-        if (input.attributeResult) {
-            input.element.addClass(input.params[0]);
+    addclass: function(input) {
+        if(input.attributeResult) {
+            input.element.classList.add(input.params[0]);
         }
     },
-    value: function (input) {
+    value: function(input) {
         console.log('value', input);
-        input.element.val(input.attributeResult);
+        input.element.setAttribute('value', input.attributeResult);
     },
-    checked: function (input) {
+    checked: function(input) {
         console.log('checked', input);
-        if (input.attributeResult) {
-            input.element.prop('checked', true);
-        }else{
-            input.element.prop('checked', false);
-        }
+        input.element.setAttribute('checked', input.attributeResult);
         console.log(input);
     },
-    bind: function (input, item, helpers) {
+    bind: function(input, item, helpers) {
         var that = this;
         console.log('bind', input);
-        input.element.on(input.params[0], function(e){
+        input.element.addEventListener(input.params[0], function(e) {
             e.stopImmediatePropagation();
-            if (typeof helpers!=='undefined' && helpers!== null && helpers.hasOwnProperty(input.attributeResult)){
+            e.preventDefault();
+            if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty(input.attributeResult)) {
                 helpers[input.attributeResult](item, e);
             }
             return false;

@@ -871,24 +871,31 @@ var DEFAULT_PAGE_SIZE = 10;
 
 
 var notRecord_Interface = {
-    extendObject: function (obj1, obj2) {
+    extendObject: function(obj1, obj2) {
         'use strict';
         var attrName = '';
-        for (attrName in obj2) {
-            if (obj2.hasOwnProperty(attrName)) {
+        for(attrName in obj2) {
+            if(obj2.hasOwnProperty(attrName)) {
                 obj1[attrName] = obj2[attrName];
             }
         }
         return obj1;
     },
 
-    parseLine: function (line, record, actionName) {
+    parseLine: function(line, record, actionName) {
         'use strict';
         var i = 0,
             recordRE = ':record[',
-            fieldName= '';
-        while(line.indexOf(recordRE)>-1){
-            fieldName = line.slice(line.indexOf(recordRE)+recordRE.length, line.indexOf(']')-line.indexOf(recordRE)+1);
+            fieldName = '';
+        while(line.indexOf(recordRE) > -1) {
+            var ind = line.indexOf(recordRE);
+            var len = recordRE.length;
+            var ind2 = line.indexOf(']');
+            var ind3 = line.indexOf(recordRE);
+            var startSlice = ind + len;
+            var endSlice = ind2;
+            fieldName = line.slice(startSlice, endSlice);
+            if(fieldName == '') break;
 
             line = line.replace(':record[' + fieldName + ']', record.getAttr(fieldName));
         }
@@ -897,34 +904,34 @@ var notRecord_Interface = {
         return line;
     },
 
-    getURL: function (record, actionData, actionName) {
+    getURL: function(record, actionData, actionName) {
         'use strict';
         var line = this.parseLine(record._notOptions.interfaceManifest.url, record, actionName) + ((actionData.hasOwnProperty('postFix')) ? this.parseLine(actionData.postFix, record, actionName) : '');
         return line;
     },
 
-    collectRequestData: function (record, actionData) {
+    collectRequestData: function(record, actionData) {
         'use strict';
         var requestData = {},
             i = 0;
-        if ((actionData.hasOwnProperty('data')) && typeof (actionData.data) !== 'undefined' && actionData.data !== null) {
-            for (i = 0; i < actionData.data.length; i++) {
+        if((actionData.hasOwnProperty('data')) && typeof(actionData.data) !== 'undefined' && actionData.data !== null) {
+            for(i = 0; i < actionData.data.length; i++) {
                 var dataProviderName = 'get' + capitalizeFirstLetter(actionData.data[i]);
-                if (dataProviderName in record) {
+                if(dataProviderName in record) {
                     requestData = this.extendObject(requestData, record[dataProviderName]());
                 }
             }
         }
         var formData = new FormData();
-        if (Object.keys(requestData).length > 0){
-            for(var i in requestData){
+        if(Object.keys(requestData).length > 0) {
+            for(var i in requestData) {
                 formData.append(i, requestData[i]);
             }
         }
-        return (actionData.method==='POST')?record.getParam('formData'):requestData;
+        return(actionData.method === 'POST') ? record.getParam('formData') : requestData;
     },
 
-    request: function (record, actionName, callbackSuccess, callbackError) {
+    request: function(record, actionName, callbackSuccess, callbackError) {
         'use strict';
         console.log('request', actionName);
         var actionData = record._notOptions.interfaceManifest.actions[actionName];
@@ -937,26 +944,26 @@ var notRecord_Interface = {
         var basicParams = {
             method: actionData.method,
             data: formData,
-            complete: function (data, code) {
+            complete: function(data, code) {
                 var result = [];
                 data = data.responseJSON;
-                if (code == "success") {
-                    if (('isArray' in actionData) && actionData.isArray) {
-                        $.each(data, function (index, item) {
+                if(code == "success") {
+                    if(('isArray' in actionData) && actionData.isArray) {
+                        $.each(data, function(index, item) {
                             result.push(new notRecord(record._notOptions.interfaceManifest, item));
                         });
                     } else {
                         result = new notRecord(record._notOptions.interfaceManifest, data);
                     }
-                    callbackSuccess(result);
-                }else{
-                    if (typeof callbackError !== 'undefined' && callbackError!==null && code==="error") callbackError(data);
+                    callbackSuccess && callbackSuccess(result);
+                } else {
+                    if(typeof callbackError !== 'undefined' && callbackError !== null && code === "error") callbackError(data);
                 }
-                if ((typeof record._notOptions.interfaceManifest.showMessages !== 'undefined') && record._notOptions.interfaceManifest.showMessages) {
+                if((typeof record._notOptions.interfaceManifest.showMessages !== 'undefined') && record._notOptions.interfaceManifest.showMessages) {
                     var msg = ((actionData.hasOwnProperty('messages') && actionData.messages.hasOwnProperty(code)) ? actionData.messages[code] : data.error);
-                    if ((typeof msg !== 'undefined') && (msg != '')) {
+                    if((typeof msg !== 'undefined') && (msg != '')) {
                         $('.top-left').notify({
-                            type: code=='success'?code:'danger',
+                            type: code == 'success' ? code : 'danger',
                             message: {
                                 text: msg
                             }
@@ -966,12 +973,12 @@ var notRecord_Interface = {
             }
         };
 
-        if ( formData instanceof FormData){
+        if(formData instanceof FormData) {
             var finalParams = jQuery.extend(basicParams, additionalParams);
-        }else{
+        } else {
             var finalParams = basicParams;
         }
-        console.log('finalParams',finalParams);
+        console.log('finalParams', finalParams);
         $.ajax(this.getURL(record, actionData, actionName), finalParams);
     }
 };
@@ -981,7 +988,7 @@ var notRecord_Interface = {
  */
 
 //создаем объект с заданым манифестом интерфейса, если есть данные, то добавляем в него
-var notRecord = function (interfaceManifest, item) {
+var notRecord = function(interfaceManifest, item) {
     'use strict';
     this._notOptions = {
         interfaceManifest: interfaceManifest,
@@ -991,17 +998,17 @@ var notRecord = function (interfaceManifest, item) {
         pageSize: DEFAULT_PAGE_SIZE,
         fields: []
     };
-    if (typeof item !== 'undefined' && item !== null) {
+    if(typeof item !== 'undefined' && item !== null) {
         notRecord_Interface.extendObject(this, item);
         this._notOptions.fields = Object.keys(item);
         this._addMetaAttrs();
     }
     var that = this;
-    $.each(this._notOptions.interfaceManifest.actions, function (index, actionManifest) {
-        if (!(this.hasOwnProperty('$' + index))) {
-            that['$' + index] = function (callbackSuccess, callbackError) {
+    $.each(this._notOptions.interfaceManifest.actions, function(index, actionManifest) {
+        if(!(this.hasOwnProperty('$' + index))) {
+            that['$' + index] = function(callbackSuccess, callbackError) {
                 console.log('$' + index);
-                (notRecord_Interface.request.bind(notRecord_Interface, this, index + '', callbackSuccess,callbackError)).call();
+                (notRecord_Interface.request.bind(notRecord_Interface, this, index + '', callbackSuccess, callbackError)).call();
             }
         } else {
             console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + index, '" that alredy exists');
@@ -1012,31 +1019,31 @@ var notRecord = function (interfaceManifest, item) {
 
 Object.defineProperties(notRecord.prototype, {
     'modelName': {
-        get: function () {
+        get: function() {
             'use strict';
             return this._notOptions.interfaceManifest.model;
         }
     },
     'interfaceManifest': {
-        get: function () {
+        get: function() {
             'use strict';
             return this._notOptions.interfaceManifest;
         }
     }
 });
 
-notRecord.prototype.setParam = function (paramName, paramValue) {
+notRecord.prototype.setParam = function(paramName, paramValue) {
     'use strict';
     this._notOptions[paramName] = paramValue;
     return this;
 }
 
-notRecord.prototype.getParam = function (paramName) {
+notRecord.prototype.getParam = function(paramName) {
     'use strict';
     return this._notOptions[paramName];
 }
 
-notRecord.prototype.getModelName = function () {
+notRecord.prototype.getModelName = function() {
     'use strict';
     return this._notOptions.interfaceManifest.model;
 }
@@ -1046,19 +1053,19 @@ notRecord.prototype.getModelName = function () {
     получаем название поля данных для отображения в интерфейсе
 */
 
-notRecord.prototype.getFieldTitle = function(fieldName){
+notRecord.prototype.getFieldTitle = function(fieldName) {
     var defaultResult = fieldName;
-    if((typeof this._notOptions.interfaceManifest.formFieldsTypes !== 'undefined') && (this._notOptions.interfaceManifest.formFieldsTypes.hasOwnProperty(fieldName))){
-        if(this._notOptions.interfaceManifest.formFieldsTypes[fieldName].hasOwnProperty('label')){
+    if((typeof this._notOptions.interfaceManifest.formFieldsTypes !== 'undefined') && (this._notOptions.interfaceManifest.formFieldsTypes.hasOwnProperty(fieldName))) {
+        if(this._notOptions.interfaceManifest.formFieldsTypes[fieldName].hasOwnProperty('label')) {
             return this._notOptions.interfaceManifest.formFieldsTypes[fieldName].label;
         }
-        if(this._notOptions.interfaceManifest.formFieldsTypes[fieldName].hasOwnProperty('placeholder')){
+        if(this._notOptions.interfaceManifest.formFieldsTypes[fieldName].hasOwnProperty('placeholder')) {
             return this._notOptions.interfaceManifest.formFieldsTypes[fieldName].placeholder;
         }
-        if(this._notOptions.interfaceManifest.formFieldsTypes[fieldName].hasOwnProperty('caption')){
+        if(this._notOptions.interfaceManifest.formFieldsTypes[fieldName].hasOwnProperty('caption')) {
             return this._notOptions.interfaceManifest.formFieldsTypes[fieldName].caption;
         }
-    }else{
+    } else {
         return defaultResult;
     }
 };
@@ -1070,13 +1077,10 @@ notRecord.prototype.getFieldTitle = function(fieldName){
     заголовокПоля - человеко читаемая запись для отображения в интерфейсе
 
 */
-notRecord.prototype.getFieldTitles = function(){
+notRecord.prototype.getFieldTitles = function() {
     var defaultResult = [];
-    if((typeof this._notOptions.interfaceManifest.formFieldsTypes !== 'undefined')
-        && (this._notOptions.interfaceManifest.formFieldsTypes)
-        && Object.keys(this._notOptions.interfaceManifest.formFieldsTypes).length > 0
-        ){
-        for(var i = 0; i < this.getParam('fields').length; i++){
+    if((typeof this._notOptions.interfaceManifest.formFieldsTypes !== 'undefined') && (this._notOptions.interfaceManifest.formFieldsTypes) && Object.keys(this._notOptions.interfaceManifest.formFieldsTypes).length > 0) {
+        for(var i = 0; i < this.getParam('fields').length; i++) {
             var fieldName = this.getParam('fields')[i];
             var fieldTitle = {};
             fieldTitle[fieldName] = this.getFieldTitle(fieldName);
@@ -1086,108 +1090,106 @@ notRecord.prototype.getFieldTitles = function(){
     return defaultResult;
 };
 
-notRecord.prototype._addMetaAttrs = function(){
+notRecord.prototype._addMetaAttrs = function() {
     var i,
-        fieldName ,
-        fieldType ,
+        fieldName,
+        fieldType,
         fields = this.getParam('fields');
-    for (i in fields){
+    for(i in fields) {
         fieldName = fields[i];
         fieldType = typeof this[fieldName];
-        if (fieldType === 'object'){
+        if(fieldType === 'object') {
             this._addMetaAttr(fieldName, this[fieldName]);
         }
     }
 };
 
-notRecord.prototype._addMetaAttr = function(name, value){
+notRecord.prototype._addMetaAttr = function(name, value) {
     var i;
-    for (i in value) {
-        k = i+"";
-        Object.defineProperty(this, name+i.capitalizeFirstLetter(),
-            {
-                get: function (fieldName) {
-                    'use strict';
-                    return this[name][fieldName];
-                }.bind(this, i)
-            }
-        );
+    for(i in value) {
+        k = i + "";
+        Object.defineProperty(this, name + i.capitalizeFirstLetter(), {
+            get: function(fieldName) {
+                'use strict';
+                return this[name][fieldName];
+            }.bind(this, i)
+        });
     }
 };
 
-notRecord.prototype.setAttr = function (attrName, attrValue) {
+notRecord.prototype.setAttr = function(attrName, attrValue) {
     'use strict';
     var fields = this.getParam('fields');
-    if (fields.indexOf(attrName)==-1) {
+    if(fields.indexOf(attrName) == -1) {
         fields.push(attrName);
         this.setParam('fields', fields);
     }
     this[attrName] = attrValue;
-    if (typeof attrValue === 'Object'){
+    if(typeof attrValue === 'Object') {
         notRecord.prototype._addMetaAttr(attrName, attrValue);
     }
     return this;
 }
 
-notRecord.prototype.setAttrs = function (hash) {
+notRecord.prototype.setAttrs = function(hash) {
     'use strict';
     var h;
-    for(h in hash){
+    for(h in hash) {
         this.setAttr(h, hash[h]);
     }
     return this;
 }
 
-notRecord.prototype.getAttr = function (attrName) {
+notRecord.prototype.getAttr = function(attrName) {
     'use strict';
-    if (this.getParam('fields').indexOf(attrName)>-1) {
+    if(this.getParam('fields').indexOf(attrName) > -1) {
         return this[attrName];
     } else {
         return undefined;
     }
 }
 
-notRecord.prototype.setFilter = function (filterData) {
+notRecord.prototype.setFilter = function(filterData) {
     'use strict';
     this.setParam('filter', filterData);
     return this;
 };
 
-notRecord.prototype.getFilter = function () {
+notRecord.prototype.getFilter = function() {
     'use strict';
     return this.getParam('filter');
 };
 
-notRecord.prototype.setSorter = function (sorterData) {
+notRecord.prototype.setSorter = function(sorterData) {
     'use strict';
     this.setParam('sorter', sorterData);
     return this;
 };
 
-notRecord.prototype.getSorter = function () {
+notRecord.prototype.getSorter = function() {
     'use strict';
     return this.getParam('sorter');
 };
 
-notRecord.prototype.setPageNumber = function (pageNumber) {
+notRecord.prototype.setPageNumber = function(pageNumber) {
     'use strict';
     this.setParam('pageNumber', pageNumber);
     return this;
 };
 
-notRecord.prototype.setPageSize = function (pageSize) {
+notRecord.prototype.setPageSize = function(pageSize) {
     'use strict';
     this.setParam('pageSize', pageSize);
     return this;
 };
 
-notRecord.prototype.setPager = function (pageSize, pageNumber) {
+notRecord.prototype.setPager = function(pageSize, pageNumber) {
     'use strict';
     this.setParam('pageSize', pageSize).setParam('pageNumber', pageNumber);
     return this;
 };
 
-notRecord.prototype.getPager = function () {
+notRecord.prototype.getPager = function() {
     'use strict';
     return {
         pageSize: this.getParam('pageSize'),
@@ -1195,20 +1197,20 @@ notRecord.prototype.getPager = function () {
     };
 };
 
-notRecord.prototype.getRecord = function () {
+notRecord.prototype.getRecord = function() {
     'use strict';
     var result = {},
         i = 0,
         fieldName,
         fields = this.getParam('fields');
-    for (i = 0; i < fields.length; i++) {
+    for(i = 0; i < fields.length; i++) {
         fieldName = fields[i];
         result[fieldName] = this.getAttr(fieldName);
     }
     return result;
 };
 
-notRecord.prototype.setFindBy = function (key, value) {
+notRecord.prototype.setFindBy = function(key, value) {
     'use strict';
     var obj = {};
     obj[key] = value;
@@ -1300,6 +1302,8 @@ notTable.prototype.build = function() {
                 that.updateData();
                 that.renderBody();
                 that.bindSearch();
+                that.bindCustomBindings();
+                that.options.afterExecCallback && that.options.afterExecCallback();
             }
         })
     };
@@ -1355,7 +1359,21 @@ notTable.prototype.renderRow = function(item, index) {
     var newRow = document.createElement('TR');
     for(var i = 0; i < this.options.headerTitles.length; i++) {
         var newTd = document.createElement('TD');
+        if (this.options.headerTitles[i].hasOwnProperty('editable')){
+            newTd.setAttribute('contentEditable', true);
+            var options = extend({}, this.options.headerTitles[i]);
+            newTd.dataset.field = this.options.headerTitles[i].field;
+            newTd.dataset.itemId = item[this.options.itemIdField];
+            newTd.dataset.value = item[newTd.dataset.field];
+        }
         newTd.innerHTML = (this.options.headerTitles[i].hasOwnProperty('proccessor')) ? this.options.headerTitles[i].proccessor(item[this.options.headerTitles[i].field], item, index) : item[this.options.headerTitles[i].field];
+
+        if (this.options.headerTitles[i].hasOwnProperty('events') && this.options.headerTitles[i].events){
+            for(var j in this.options.headerTitles[i].events){
+                console.log(j);
+                newTd.addEventListener(j, this.options.headerTitles[i].events[j], false);
+            }
+        }
         newRow.appendChild(newTd);
     }
     if(this.options.hasOwnProperty('procRow')) {
@@ -1363,6 +1381,7 @@ notTable.prototype.renderRow = function(item, index) {
     }
     return newRow;
 };
+
 
 
 notTable.prototype.attachSortingHandlers = function(headCell) {
@@ -1481,6 +1500,7 @@ notTable.prototype.proccessData = function(){
 }
 
 notTable.prototype.bindSearch = function(){
+    if(!searchEl) return;
     var searchEl = this.options.place.querySelectorAll(':scope input[name="search"]')[0];
     var that = this;
     var onEvent = function(e){
@@ -1489,6 +1509,26 @@ notTable.prototype.bindSearch = function(){
     };
     searchEl.addEventListener('keyup', onEvent);
     searchEl.addEventListener('enter', onEvent);
+}
+
+
+notTable.prototype.bindCustomBindings = function(){
+    if (!this.options.hasOwnProperty('bindings') || !this.options.bindings){
+        return;
+    }
+    var that = this;
+    setTimeout(function(){
+        for(var selector in that.options.bindings){
+            var els = that.options.place.querySelectorAll(':scope '+selector);
+            for(var elId = 0; elId < els.length; elId++){
+                var el = els[elId];
+                for(var event in that.options.bindings[selector]){
+                    el.addEventListener(event, that.options.bindings[selector][event]);
+                }
+            }
+        }
+    }, 200);
+
 }
 
 

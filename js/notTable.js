@@ -83,6 +83,8 @@ notTable.prototype.build = function() {
                 that.updateData();
                 that.renderBody();
                 that.bindSearch();
+                that.bindCustomBindings();
+                that.options.afterExecCallback && that.options.afterExecCallback();
             }
         })
     };
@@ -138,7 +140,21 @@ notTable.prototype.renderRow = function(item, index) {
     var newRow = document.createElement('TR');
     for(var i = 0; i < this.options.headerTitles.length; i++) {
         var newTd = document.createElement('TD');
+        if (this.options.headerTitles[i].hasOwnProperty('editable')){
+            newTd.setAttribute('contentEditable', true);
+            var options = extend({}, this.options.headerTitles[i]);
+            newTd.dataset.field = this.options.headerTitles[i].field;
+            newTd.dataset.itemId = item[this.options.itemIdField];
+            newTd.dataset.value = item[newTd.dataset.field];
+        }
         newTd.innerHTML = (this.options.headerTitles[i].hasOwnProperty('proccessor')) ? this.options.headerTitles[i].proccessor(item[this.options.headerTitles[i].field], item, index) : item[this.options.headerTitles[i].field];
+
+        if (this.options.headerTitles[i].hasOwnProperty('events') && this.options.headerTitles[i].events){
+            for(var j in this.options.headerTitles[i].events){
+                console.log(j);
+                newTd.addEventListener(j, this.options.headerTitles[i].events[j], false);
+            }
+        }
         newRow.appendChild(newTd);
     }
     if(this.options.hasOwnProperty('procRow')) {
@@ -146,6 +162,7 @@ notTable.prototype.renderRow = function(item, index) {
     }
     return newRow;
 };
+
 
 
 notTable.prototype.attachSortingHandlers = function(headCell) {
@@ -264,6 +281,7 @@ notTable.prototype.proccessData = function(){
 }
 
 notTable.prototype.bindSearch = function(){
+    if(!searchEl) return;
     var searchEl = this.options.place.querySelectorAll(':scope input[name="search"]')[0];
     var that = this;
     var onEvent = function(e){
@@ -272,6 +290,26 @@ notTable.prototype.bindSearch = function(){
     };
     searchEl.addEventListener('keyup', onEvent);
     searchEl.addEventListener('enter', onEvent);
+}
+
+
+notTable.prototype.bindCustomBindings = function(){
+    if (!this.options.hasOwnProperty('bindings') || !this.options.bindings){
+        return;
+    }
+    var that = this;
+    setTimeout(function(){
+        for(var selector in that.options.bindings){
+            var els = that.options.place.querySelectorAll(':scope '+selector);
+            for(var elId = 0; elId < els.length; elId++){
+                var el = els[elId];
+                for(var event in that.options.bindings[selector]){
+                    el.addEventListener(event, that.options.bindings[selector][event]);
+                }
+            }
+        }
+    }, 200);
+
 }
 
 

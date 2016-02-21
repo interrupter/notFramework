@@ -441,11 +441,21 @@ notForm.prototype.buildForm = function() {
         console.log(form.querySelectorAll(':scope form'));
         for(i = 0; i < elements.length; i++) {
             if (elements[i] instanceof HTMLCollection){
-                for(var j=0; j<elements[i].length;j++){
+                for(var j = 0; j < elements[i].length; j++){
                     formElement.appendChild(elements[i][j]);
                 }
             }else{
-                formElement.appendChild(elements[i]);
+                var el = elements[i];
+                if (el.dataset.hasOwnProperty("target")){
+                    var targetEl = formElement.querySelector(':scope [data-role="'+el.dataset.target+'"]');
+                    if (targetEl){
+                        targetEl.appendChild(elements[i]);
+                    }else{
+                        formElement.appendChild(elements[i]);
+                    }
+                }else{
+                    formElement.appendChild(elements[i]);
+                }
             }
         }
     }
@@ -578,7 +588,10 @@ notForm.prototype._resetValidationErrorForField = function(fieldName) {
 
 
 notForm.prototype.attachOnSubmitAction = function() {
-    this._working.resultForm.querySelectorAll(':scope form')[0].addEventListener('submit', this._submitForm.bind(this));
+    var el = this._working.resultForm.querySelectorAll(':scope form');
+    if(el && el.length > 0){
+        el[0].addEventListener('submit', this._submitForm.bind(this));
+    }
 };
 
 notForm.prototype._submitForm = function(e) {
@@ -589,7 +602,10 @@ notForm.prototype._submitForm = function(e) {
 };
 
 notForm.prototype.attachRemoveOnRestore = function() {
-    this._working.resultForm.querySelectorAll(':scope button[type="restore"]')[0].addEventListener('click', this._removeForm.bind(this));
+    var el = this._working.resultForm.querySelectorAll(':scope button[type="restore"]');
+    if (el && el.length > 0){
+        el[0].addEventListener('click', this._removeForm.bind(this));
+    }
 };
 
 notForm.prototype._removeForm = function(e) {

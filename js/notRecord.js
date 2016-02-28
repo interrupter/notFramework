@@ -296,12 +296,35 @@ notRecord.prototype.setAttrs = function(hash) {
     return this;
 }
 
+notRecord.prototype.getAttrByPath = function(object, attrPath){
+    var attrName = attrPath.shift();
+    if (object.hasOwnProperty(attrName)){
+        if (attrPath.length > 0){
+            return this.getAttrByPath(object[attrName], attrPath);
+        }else{
+            return object[attrName];
+        }
+    }else{
+        return undefined;
+    }
+}
+
 notRecord.prototype.getAttr = function(attrName) {
     'use strict';
-    if(this.getParam('fields').indexOf(attrName) > -1) {
-        return this[attrName];
-    } else {
-        return undefined;
+    var path = attrName.split('.');
+    switch (path.length > 1){
+        case 0:
+                return undefined;
+            break;
+        case 1:
+            if(this.getParam('fields').indexOf(attrName) > -1) {
+                return this[attrName];
+            } else {
+                return undefined;
+            }
+            break;
+        default:
+                return this.getAttrByPath(this, path);
     }
 }
 

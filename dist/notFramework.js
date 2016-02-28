@@ -362,15 +362,23 @@ notForm.prototype._getFormElementTemplate = function(fieldType, full) {
 };
 
 notForm.prototype._getFieldValue = function(object, fieldName) {
-    var value = '';
-    if(object && object.hasOwnProperty(fieldName)) {
-        if(typeof object[fieldName] === 'object' && object[fieldName].hasOwnProperty('_id')) {
-            value = object[fieldName]._id;
-        } else {
-            value = object[fieldName];
+    var value = '',
+        fieldPath = fieldName.split('.');
+    if (fieldPath.length > 1){
+        var nextSubObject = fieldPath.shift();
+        if (object && object.hasOwnProperty(nextSubObject)){
+            return this._getFieldValue(object[nextSubObject], fieldPath.join('.'));
         }
+    }else{
+        if(object && object.hasOwnProperty(fieldName)) {
+            if(typeof object[fieldName] === 'object' && object[fieldName].hasOwnProperty('_id')) {
+                value = object[fieldName]._id;
+            } else {
+                value = object[fieldName];
+            }
+        }
+        return value;
     }
-    return value;
 }
 
 notForm.prototype.buildFormElement = function(fieldName) {
@@ -399,11 +407,62 @@ notForm.prototype.buildFormElement = function(fieldName) {
     })).exec();
 };
 
+notForm.prototype.buildFormSplitElement = function(fieldName) {
+    var params = this._getParams();
+    var field = this._getFormField('split');
+    var helpers = {
+        fieldValue: (params && typeof params.data !== 'undefined' && params.data !== null) ? this._getFieldValue(params.data, fieldName) : '',
+        fieldName: fieldName,
+        fieldLabel: field.hasOwnProperty('label') ? field.label : '',
+        fieldId: fieldName + 'Input',
+        fieldPlaceHolder: field.hasOwnProperty('placeholder') ? field.placeholder : '',
+        option: field.hasOwnProperty('option') ? field.option : {
+            value: '_id',
+            label: 'title'
+        },
+        optionsLib: (params.hasOwnProperty(fieldName + 'Lib')) ? params[fieldName + 'Lib'] : []
+    };
+
+    var data = {
+        value: helpers.fieldValue
+    };
+    return (new notTemplate({
+        template: this._getFormElementTemplate(field.type, true),
+        helpers: helpers,
+        data: data
+    })).exec();
+};
+
+notForm.prototype.buildFormBlockElement = function(block) {
+    var elements = [],
+        i = 0,
+        fields = block.fields;
+    for(i = 0; i < fields.length; i++) {
+        elements[fields[i]] = this.buildFormElement(fields[i])[0];
+        console.log(elements[fields[i]] instanceof HTMLElement ? 'Element' : 'not Element');
+        if (elements[fields[i]].hasOwnProperty('classList')){
+            elements[fields[i]].classList.add(block.name + '_' + fields[i] + '_InputGroup');
+        }
+    }
+    return this.wrapFormBlockElements(block, elements);
+};
+
 notForm.prototype.buildFormElements = function(fields) {
     var elements = [],
-        i = 0;
+        i = 0,
+        block = 0;
     for(i = 0; i < fields.length; i++) {
-        this._working.formElements[fields[i]] = this.buildFormElement(fields[i])[0];
+        if (fields[i].hasOwnProperty('fields')){
+            var blockName = fields[i].hasOwnProperty('name')?fields[i].name:('block'+(++block));
+            fields[i].name = blockName;
+            this._working.formElements[blockName] = this.buildFormBlockElement(fields[i])[0];
+        }else{
+            if (fields[i].indexOf('=')===0){
+                this._working.formElements[fields[i]] = this.buildFormSplitElement(fields[i])[0];
+            }else{
+                this._working.formElements[fields[i]] = this.buildFormElement(fields[i])[0];
+            }
+        }
         console.log(this._working.formElements[fields[i]] instanceof HTMLElement ? 'Element' : 'not Element');
         if (this._working.formElements[fields[i]].hasOwnProperty('classList')){
             this._working.formElements[fields[i]].classList.add(fields[i] + '_InputGroup');
@@ -414,6 +473,20 @@ notForm.prototype.buildFormElements = function(fields) {
     }
     return elements;
 };
+
+notForm.prototype.wrapFormBlockElements = function(block, elements){
+    var params = this._getParams();
+    return (new notTemplate({
+        template: this._getFormElementTemplate(formName+'Block', true),
+        data: this._getParams(),
+        helpers: {
+            formTitle: block.title,
+            formId: 'Form_' + params.modelName  + '_' + block.name + '_' + params.actionName,
+            formName: 'Form_' + params.modelName  + '_' + block.name + '_' + params.actionName,
+            formContainerId: 'FormContainer_' + params.modelName + '_' + block.name + '_' + params.actionName,
+        }
+    })).exec();
+}
 
 notForm.prototype.buildFormWrapper = function(formName) {
     var params = this._getParams();
@@ -525,13 +598,19 @@ notForm.prototype._collectFieldsDataToRecord = function() {
             case 'select':
             case 'textarea':
             case 'checkbox':
-                fieldValue = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0].value;
+                var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];
+                if (inpEl && inpEl.hasOwnProperty('value')){
+                    fieldValue = inpEl.value;
+                }
                 break;
             case 'submit':
             case 'file':
                 continue;
             default:
-                fieldValue = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0].value;
+                var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];
+                if (inpEl && inpEl.hasOwnProperty('value')){
+                    fieldValue = inpEl.value;
+                }
         }
         record.setAttr(fieldName, fieldValue);
     }
@@ -1156,12 +1235,35 @@ notRecord.prototype.setAttrs = function(hash) {
     return this;
 }
 
+notRecord.prototype.getAttrByPath = function(object, attrPath){
+    var attrName = attrPath.shift();
+    if (object.hasOwnProperty(attrName)){
+        if (attrPath.length > 0){
+            return this.getAttrByPath(object[attrName], attrPath);
+        }else{
+            return object[attrName];
+        }
+    }else{
+        return undefined;
+    }
+}
+
 notRecord.prototype.getAttr = function(attrName) {
     'use strict';
-    if(this.getParam('fields').indexOf(attrName) > -1) {
-        return this[attrName];
-    } else {
-        return undefined;
+    var path = attrName.split('.');
+    switch (path.length > 1){
+        case 0:
+                return undefined;
+            break;
+        case 1:
+            if(this.getParam('fields').indexOf(attrName) > -1) {
+                return this[attrName];
+            } else {
+                return undefined;
+            }
+            break;
+        default:
+                return this.getAttrByPath(this, path);
     }
 }
 

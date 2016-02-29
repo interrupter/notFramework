@@ -1475,6 +1475,13 @@ notTable.prototype.refreshBody = function() {
 
 notTable.prototype.renderRow = function(item, index) {
     var newRow = document.createElement('TR');
+    var extractAttrValue = function(rItem, fieldName){
+        if(rItem.hasOwnProperty('getAttr')){
+            return rItem.getAttr(fieldName);
+        }else{
+            return rItem[fieldName];
+        }
+    }
     for(var i = 0; i < this.options.headerTitles.length; i++) {
         var newTd = document.createElement('TD');
         if (this.options.headerTitles[i].hasOwnProperty('editable')){
@@ -1484,7 +1491,7 @@ notTable.prototype.renderRow = function(item, index) {
             newTd.dataset.itemId = item[this.options.itemIdField];
             newTd.dataset.value = item[newTd.dataset.field];
         }
-        newTd.innerHTML = (this.options.headerTitles[i].hasOwnProperty('proccessor')) ? this.options.headerTitles[i].proccessor(item[this.options.headerTitles[i].field], item, index) : item[this.options.headerTitles[i].field];
+        newTd.innerHTML = (this.options.headerTitles[i].hasOwnProperty('proccessor')) ? this.options.headerTitles[i].proccessor(item[this.options.headerTitles[i].field], item, index): extractAttrValue(item, this.options.headerTitles[i].field);
 
         if (this.options.headerTitles[i].hasOwnProperty('events') && this.options.headerTitles[i].events){
             for(var j in this.options.headerTitles[i].events){

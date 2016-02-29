@@ -1476,7 +1476,7 @@ notTable.prototype.refreshBody = function() {
 notTable.prototype.renderRow = function(item, index) {
     var newRow = document.createElement('TR');
     var extractAttrValue = function(rItem, fieldName){
-        if(rItem.hasOwnProperty('getAttr')){
+        if(rItem.getAttr){
             return rItem.getAttr(fieldName);
         }else{
             return rItem[fieldName];

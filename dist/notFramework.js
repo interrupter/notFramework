@@ -397,6 +397,12 @@ notForm.prototype.buildFormElement = function(fieldName) {
         optionsLib: (params.hasOwnProperty(fieldName + 'Lib')) ? params[fieldName + 'Lib'] : []
     };
 
+    if (this._working.params.hasOwnProperty('fields')
+        && this._working.params.fields.hasOwnProperty(fieldName)
+         && this._working.params.fields[fieldName].hasOwnProperty('helpers')){
+            helpers = extend(helpers, this._working.params.fields[fieldName].helpers);
+    }
+
     var data = {
         value: helpers.fieldValue
     };
@@ -405,8 +411,10 @@ notForm.prototype.buildFormElement = function(fieldName) {
         helpers: helpers,
         data: data
     })).exec();
-    if (this._working.params.hasOwnProperty('fieldsProccessors') && this._working.params.fieldsProccessors.hasOwnProperty(fieldName)){
-        result = this._working.params.fieldsProccessors[fieldName](result, params.data, helpers.fieldValue);
+    if (this._working.params.hasOwnProperty('fields')
+        && this._working.params.fields.hasOwnProperty(fieldName)
+         && this._working.params.fields[fieldName].hasOwnProperty('postProccessor')){
+        result = this._working.params.fields[fieldName].postProccessor(result, params.data, helpers.fieldValue);
     }
     return result;
 };

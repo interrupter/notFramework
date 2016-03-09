@@ -283,7 +283,7 @@ notTable.prototype.proccessData = function(){
             if (isNaN(that.extractAttrValue(item1, thatSorter.fieldName))){
                 return that.extractAttrValue(item1,thatSorter.fieldName).localeCompare(that.extractAttrValue(item2,thatSorter.fieldName))*-thatSorter.direction;
             }else{
-                return (that.extractAttrValue(item1,thatSorter.fieldName) < that.extractAttrValue(item2,thatSorter.fieldName))?1:-1)*thatSorter.direction;
+                return ((that.extractAttrValue(item1,thatSorter.fieldName) < that.extractAttrValue(item2,thatSorter.fieldName))?1:-1)*thatSorter.direction;
             }
 
         });

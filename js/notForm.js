@@ -134,7 +134,7 @@ notForm.prototype.buildFormElement = function(fieldName) {
         data: data
     })).exec();
     if (this._working.params.hasOwnProperty('fieldsProccessors') && this._working.params.fieldsProccessors.hasOwnProperty(fieldName)){
-        result = this._working.params.fieldsProccessors[fieldName](result, params.data, fieldValue);
+        result = this._working.params.fieldsProccessors[fieldName](result, params.data, helpers.fieldValue);
     }
     return result;
 };

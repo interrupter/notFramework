@@ -128,11 +128,15 @@ notForm.prototype.buildFormElement = function(fieldName) {
     var data = {
         value: helpers.fieldValue
     };
-    return (new notTemplate({
+    var result = (new notTemplate({
         template: this._getFormElementTemplate(field.type, true),
         helpers: helpers,
         data: data
     })).exec();
+    if (this._working.params.hasOwnProperty('fieldsProccessors') && this._working.params.fieldsProccessors.hasOwnProperty(fieldName)){
+        result = this._working.params.fieldsProccessors[fieldName](result, params.data, fieldValue);
+    }
+    return result;
 };
 
 notForm.prototype.buildFormSplitElement = function(fieldName) {

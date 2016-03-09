@@ -136,15 +136,17 @@ notTable.prototype.refreshBody = function() {
     }
 };
 
+notTable.prototype.extractAttrValue = function(rItem, fieldName){
+    if(rItem.getAttr){
+        return rItem.getAttr(fieldName);
+    }else{
+        return rItem[fieldName];
+    }
+}
+
 notTable.prototype.renderRow = function(item, index) {
     var newRow = document.createElement('TR');
-    var extractAttrValue = function(rItem, fieldName){
-        if(rItem.getAttr){
-            return rItem.getAttr(fieldName);
-        }else{
-            return rItem[fieldName];
-        }
-    }
+
     for(var i = 0; i < this.options.headerTitles.length; i++) {
         var newTd = document.createElement('TD');
         if (this.options.headerTitles[i].hasOwnProperty('editable')){
@@ -154,7 +156,7 @@ notTable.prototype.renderRow = function(item, index) {
             newTd.dataset.itemId = item[this.options.itemIdField];
             newTd.dataset.value = item[newTd.dataset.field];
         }
-        newTd.innerHTML = (this.options.headerTitles[i].hasOwnProperty('proccessor')) ? this.options.headerTitles[i].proccessor(item[this.options.headerTitles[i].field], item, index): extractAttrValue(item, this.options.headerTitles[i].field);
+        newTd.innerHTML = (this.options.headerTitles[i].hasOwnProperty('proccessor')) ? this.options.headerTitles[i].proccessor(item[this.options.headerTitles[i].field], item, index): this.extractAttrValue(item, this.options.headerTitles[i].field);
 
         if (this.options.headerTitles[i].hasOwnProperty('events') && this.options.headerTitles[i].events){
             for(var j in this.options.headerTitles[i].events){
@@ -275,12 +277,13 @@ notTable.prototype.proccessData = function(){
     }
     ////sorter
     var thatSorter = that.getSorter();
+    var that = this;
     if(typeof thatSorter !== 'undefined' && thatSorter !== null){
         this._working.filteredData.sort(function(item1, item2){
-            if (isNaN(item1[thatSorter.fieldName])){
-                return item1[thatSorter.fieldName].localeCompare(item2[thatSorter.fieldName])*-thatSorter.direction;
+            if (isNaN(that.extractAttrValue(item1, thatSorter.fieldName))){
+                return that.extractAttrValue(item1,thatSorter.fieldName).localeCompare(that.extractAttrValue(item2,thatSorter.fieldName))*-thatSorter.direction;
             }else{
-                return (item1[thatSorter.fieldName] < item2[thatSorter.fieldName]?1:-1)*thatSorter.direction;
+                return (that.extractAttrValue(item1,thatSorter.fieldName) < that.extractAttrValue(item2,thatSorter.fieldName))?1:-1)*thatSorter.direction;
             }
 
         });

@@ -418,11 +418,11 @@ notForm.prototype.attachOnCustomActions = function() {
     if(els && els.length > 0){
         for(var i = 0; i < els.length; i++){
             if (els[i].getAttribute('type')){
-                var actionName = els[i].getAttribute('type')+'Action';
-                if (params.hasOwnProperty('params') && params.action.hasOwnProperty(actionName)){
-                    els[i].addEventListener('click', params.action[actionName].bind(this));
+                var actionName = els[i].getAttribute('type');
+                if (params.hasOwnProperty('params') && params.actions.hasOwnProperty(actionName)){
+                    els[i].addEventListener('click', params.actions[actionName].bind(this));
                 }
-            }            
+            }
         }
     }
 };

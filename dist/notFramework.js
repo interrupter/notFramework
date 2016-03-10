@@ -689,8 +689,8 @@ notForm.prototype.attachOnCustomActions = function() {
         params = this._getParams();
     if(els && els.length > 0){
         for(var i = 0; i < els.length; i++){
-            if (els[i].getAttribute('type')){
-                var actionName = els[i].getAttribute('type');
+            if (els[i].getAttribute('type') && els[i].getAttribute('type') === 'button'){
+                var actionName = els[i].dataset.notAction;
                 if (params.hasOwnProperty('actions') && params.actions.hasOwnProperty(actionName)){
                     els[i].addEventListener('click', params.actions[actionName].bind(this));
                 }

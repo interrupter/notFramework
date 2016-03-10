@@ -419,7 +419,7 @@ notForm.prototype.attachOnCustomActions = function() {
         for(var i = 0; i < els.length; i++){
             if (els[i].getAttribute('type')){
                 var actionName = els[i].getAttribute('type');
-                if (params.hasOwnProperty('params') && params.actions.hasOwnProperty(actionName)){
+                if (params.hasOwnProperty('actions') && params.actions.hasOwnProperty(actionName)){
                     els[i].addEventListener('click', params.actions[actionName].bind(this));
                 }
             }

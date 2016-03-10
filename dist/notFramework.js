@@ -627,7 +627,6 @@ notForm.prototype._collectFieldsDataToRecord = function() {
         record.setAttr(fieldName, fieldValue);
     }
     record.setParam('formData', formData);
-    record['$' + params.actionName](this._onSubmitSuccess.bind(this), this._validationErrorsHandling.bind(this));
 };
 
 notForm.prototype._onSubmitSuccess = function(data) {
@@ -685,10 +684,29 @@ notForm.prototype.attachOnSubmitAction = function() {
     }
 };
 
+notForm.prototype.attachOnCustomActions = function() {
+    var els = this._working.resultForm.querySelectorAll(':scope button'),
+        params = this._getParams();
+    if(els && els.length > 0){
+        for(var i = 0; i < els.length; i++){
+            var actionName = els[i].getAttribute('type')+'Action';
+            if (params.hasOwnProperty('params') && params.action.hasOwnProperty(actionName)){
+                els[i].addEventListener('click', params.action[actionName].bind(this));
+            }
+        }
+    }
+};
+
 notForm.prototype._submitForm = function(e) {
     e.stopPropagation();
     e.preventDefault();
     this._collectFieldsDataToRecord();
+
+    var params = this._getParams(),
+        record = params.data;
+
+    record['$' + params.actionName](this._onSubmitSuccess.bind(this), this._validationErrorsHandling.bind(this));
+
     return false;
 };
 
@@ -758,6 +776,7 @@ notForm.prototype.build = function(formParams) {
     this.buildForm();
     this.attachOnSubmitAction();
     this.attachRemoveOnRestore();
+    this.attachOnCustomActions();
     return this._working.resultForm;
 };
 

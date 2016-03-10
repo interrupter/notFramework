@@ -689,10 +689,12 @@ notForm.prototype.attachOnCustomActions = function() {
         params = this._getParams();
     if(els && els.length > 0){
         for(var i = 0; i < els.length; i++){
-            var actionName = els[i].getAttribute('type')+'Action';
-            if (params.hasOwnProperty('params') && params.action.hasOwnProperty(actionName)){
-                els[i].addEventListener('click', params.action[actionName].bind(this));
-            }
+            if (els[i].getAttribute('type')){
+                var actionName = els[i].getAttribute('type')+'Action';
+                if (params.hasOwnProperty('params') && params.action.hasOwnProperty(actionName)){
+                    els[i].addEventListener('click', params.action[actionName].bind(this));
+                }
+            }            
         }
     }
 };

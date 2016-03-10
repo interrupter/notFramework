@@ -427,16 +427,15 @@ notForm.prototype.attachOnCustomActions = function() {
     }
 };
 
+notForm.prototype.getRecord = function(){
+    return this._getParams().data;
+}
+
 notForm.prototype._submitForm = function(e) {
     e.stopPropagation();
     e.preventDefault();
     this._collectFieldsDataToRecord();
-
-    var params = this._getParams(),
-        record = params.data;
-
-    record['$' + params.actionName](this._onSubmitSuccess.bind(this), this._validationErrorsHandling.bind(this));
-
+    this.getRecord['$' + this._getParams().actionName](this._onSubmitSuccess.bind(this), this._validationErrorsHandling.bind(this));
     return false;
 };
 

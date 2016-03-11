@@ -352,13 +352,16 @@ notForm.prototype._collectFieldsDataToRecord = function() {
             case 'file':
                 continue;
             default:
-                var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];                
+                var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];
                 if (inpEl && inpEl.type !== 'submit'){
                     console.log(inpEl, inpEl.value);
                     fieldValue = inpEl.value;
                 }
         }
-        record.setAttr(fieldName, fieldValue);
+        if (typeof fieldValue !== 'undefined'){
+            record.setAttr(fieldName, fieldValue);
+        }
+
     }
     record.setParam('formData', formData);
 };

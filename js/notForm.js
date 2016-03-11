@@ -343,7 +343,7 @@ notForm.prototype._collectFieldsDataToRecord = function() {
             case 'checkbox':
                 var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];
                 console.log(inpEl, inpEl.value);
-                if (inpEl){
+                if (inpEl && inpEl.type !== 'submit'){
                     fieldValue = inpEl.value;
                 }
                 break;
@@ -353,7 +353,7 @@ notForm.prototype._collectFieldsDataToRecord = function() {
             default:
                 var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];
                 console.log(inpEl, inpEl.value);
-                if (inpEl){
+                if (inpEl && inpEl.type !== 'submit'){
                     fieldValue = inpEl.value;
                 }
         }

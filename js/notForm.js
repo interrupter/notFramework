@@ -435,7 +435,7 @@ notForm.prototype._submitForm = function(e) {
     e.stopPropagation();
     e.preventDefault();
     this._collectFieldsDataToRecord();
-    this.getRecord['$' + this._getParams().actionName](this._onSubmitSuccess.bind(this), this._validationErrorsHandling.bind(this));
+    this.getRecord()['$' + this._getParams().actionName](this._onSubmitSuccess.bind(this), this._validationErrorsHandling.bind(this));
     return false;
 };
 

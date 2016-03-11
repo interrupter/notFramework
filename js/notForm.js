@@ -330,6 +330,7 @@ notForm.prototype._collectFieldsDataToRecord = function() {
         fieldName = null,
         fieldValue = null,
         formData = new FormData(form);
+
     for(i = 0; i < scenario.fields.length; i++) {
         fieldName = scenario.fields[i];
         field = this._getFormField(fieldName);
@@ -337,8 +338,11 @@ notForm.prototype._collectFieldsDataToRecord = function() {
             case 'text':
             case 'select':
             case 'textarea':
+            case 'time':
+            case 'date':
             case 'checkbox':
                 var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];
+                console.log(inpEl, inpEl.value);
                 if (inpEl && inpEl.hasOwnProperty('value')){
                     fieldValue = inpEl.value;
                 }
@@ -348,6 +352,7 @@ notForm.prototype._collectFieldsDataToRecord = function() {
                 continue;
             default:
                 var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];
+                console.log(inpEl, inpEl.value);
                 if (inpEl && inpEl.hasOwnProperty('value')){
                     fieldValue = inpEl.value;
                 }

@@ -342,8 +342,9 @@ notForm.prototype._collectFieldsDataToRecord = function() {
             case 'date':
             case 'checkbox':
                 var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];
-                console.log(inpEl, inpEl.value);
+
                 if (inpEl && inpEl.type !== 'submit'){
+                    console.log(inpEl, inpEl.value);
                     fieldValue = inpEl.value;
                 }
                 break;
@@ -351,9 +352,9 @@ notForm.prototype._collectFieldsDataToRecord = function() {
             case 'file':
                 continue;
             default:
-                var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];
-                console.log(inpEl, inpEl.value);
+                var inpEl = form.querySelectorAll(':scope [name="' + fieldName + '"]')[0];                
                 if (inpEl && inpEl.type !== 'submit'){
+                    console.log(inpEl, inpEl.value);
                     fieldValue = inpEl.value;
                 }
         }

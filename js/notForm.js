@@ -334,6 +334,7 @@ notForm.prototype._collectFieldsDataToRecord = function() {
     for(i = 0; i < scenario.fields.length; i++) {
         fieldName = scenario.fields[i];
         field = this._getFormField(fieldName);
+        fieldValue = undefined;
         switch(field.type) {
             case 'text':
             case 'select':

@@ -354,9 +354,9 @@ notForm.prototype._collectFieldsDataToRecord = function() {
                 var inpEls = form.querySelectorAll(':scope [name="' + fieldName + '"] option:checked');
                 if (inpEls){
                     fieldValue = [];
-                    for(var i =0;i<inpEls.length;i++){
-                        console.log(inpEls[i], inpEls[i].value);
-                        fieldValue.push(inpEls[i].value);
+                    for(var j =0;j<inpEls.length;j++){
+                        console.log(inpEls[j], inpEls[j].value);
+                        fieldValue.push(inpEls[j].value);
                     }
                 }
             break;

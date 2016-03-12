@@ -351,7 +351,7 @@ notForm.prototype._collectFieldsDataToRecord = function() {
                 }
                 break;
             case 'multi':
-                var inpEls = form.querySelectorAll(':scope [name="' + fieldName + '"] :selected');
+                var inpEls = form.querySelectorAll(':scope [name="' + fieldName + '"] option:checked');
                 if (inpEls){
                     fieldValue = [];
                     for(var i =0;i<inpEls.length;i++){

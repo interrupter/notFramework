@@ -84,7 +84,7 @@ var notRecord_Interface = {
                 formData.append(i, requestData[i]);
             }
         }
-        return (actionData.method === 'POST' && (actionData.hasOwnProperty('formData')&& actionData.formData)) ? (formData || record.getParam('formData')) : requestData;
+        return (actionData.method === 'POST' && (actionData.hasOwnProperty('formData')&& actionData.formData)) ? (record.getParam('formData')||formData) : requestData;
     },
 
     request: function(record, actionName, callbackSuccess, callbackError) {

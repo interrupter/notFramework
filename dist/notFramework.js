@@ -622,6 +622,16 @@ notForm.prototype._collectFieldsDataToRecord = function() {
                     fieldValue = inpEl.value;
                 }
                 break;
+            case 'multi':
+                var inpEls = form.querySelectorAll(':scope [name="' + fieldName + '"] :selected');
+                if (inpEls){
+                    fieldValue = [];
+                    for(var i =0;i<inpEls.length;i++){
+                        console.log(inpEls[i], inpEls[i].value);
+                        fieldValue.push(inpEls[i].value);
+                    }
+                }
+            break;
             case 'submit':
             case 'file':
                 continue;

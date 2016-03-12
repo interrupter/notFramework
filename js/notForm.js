@@ -221,9 +221,9 @@ notForm.prototype.wrapFormBlockElements = function(block, elements){
         data: this._getParams(),
         helpers: {
             formTitle: block.title,
-            formId: 'Form_' + params.modelName  + '_' + block.name + '_' + params.actionName,
-            formName: 'Form_' + params.modelName  + '_' + block.name + '_' + params.actionName,
-            formContainerId: 'FormContainer_' + params.modelName + '_' + block.name + '_' + params.actionName,
+            formId: 'Form_' + params.data.getModelName()  + '_' + block.name + '_' + params.actionName,
+            formName: 'Form_' + params.data.getModelName()  + '_' + block.name + '_' + params.actionName,
+            formContainerId: 'FormContainer_' + params.data.getModelName() + '_' + block.name + '_' + params.actionName,
         }
     })).exec();
 }
@@ -235,9 +235,9 @@ notForm.prototype.buildFormWrapper = function(formName) {
         data: this._getParams(),
         helpers: {
             formTitle: this._getFormTitle(),
-            formId: 'Form_' + params.modelName + '_' + params.actionName,
-            formName: 'Form_' + params.modelName + '_' + params.actionName,
-            formContainerId: 'FormContainer_' + params.modelName + '_' + params.actionName,
+            formId: 'Form_' + params.data.getModelName() + '_' + params.actionName,
+            formName: 'Form_' + params.data.getModelName() + '_' + params.actionName,
+            formContainerId: 'FormContainer_' + params.data.getModelName() + '_' + params.actionName,
         }
     })).exec();
 };

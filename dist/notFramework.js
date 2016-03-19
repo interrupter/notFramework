@@ -412,12 +412,14 @@ notForm.prototype._setTemplate = function(response) {
 notForm.prototype.parseTemplate = function() {
     var containerElement = document.createElement('DIV');
     containerElement.innerHTML = this._working.template;
-    for(var i = 0; i < containerElement.children.length; i++){
+    for(var i = 0; i < containerElement.children.length; ){
         var thisTemplate = containerElement.children[i];
         if (thisTemplate.nodeName !== '#text' && thisTemplate.dataset.hasOwnProperty('notTemplateName')){
             var thisWrapper = document.createElement('div');
             thisWrapper.appendChild(thisTemplate);
             notTemplateCache.setOne(thisTemplate.dataset.notTemplateName, thisWrapper);
+        }else{
+            i++
         }
     }
 }

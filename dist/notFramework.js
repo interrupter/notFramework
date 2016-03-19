@@ -424,7 +424,7 @@ notForm.prototype._getFormElementTemplate = function(fieldType, full) {
     var key = this._working.prefix + fieldType,
         thisTemplate = notTemplateCache.get(key);
     if(thisTemplate){
-        return full?thisTemplate.outerHTML:thisTemplate.innerHTML;
+        return thisTemplate;
     }else{
         return '';
     }
@@ -476,7 +476,7 @@ notForm.prototype.buildFormElement = function(fieldName) {
         value: helpers.fieldValue
     };
     var result = (new notTemplate({
-        template: this._getFormElementTemplate(field.type, true),
+        templateElement: this._getFormElementTemplate(field.type, true),
         helpers: helpers,
         data: data
     })).exec();
@@ -508,7 +508,7 @@ notForm.prototype.buildFormSplitElement = function(fieldName) {
         value: helpers.fieldValue
     };
     return (new notTemplate({
-        template: this._getFormElementTemplate(field.type, true),
+        templateElement: this._getFormElementTemplate(field.type, true),
         helpers: helpers,
         data: data
     })).exec();
@@ -558,7 +558,7 @@ notForm.prototype.buildFormElements = function(fields) {
 notForm.prototype.wrapFormBlockElements = function(block, elements){
     var params = this._getParams();
     return (new notTemplate({
-        template: this._getFormElementTemplate(formName+'Block', true),
+        templateElement: this._getFormElementTemplate(formName+'Block', true),
         data: this._getParams(),
         helpers: {
             formTitle: block.title,
@@ -572,7 +572,7 @@ notForm.prototype.wrapFormBlockElements = function(block, elements){
 notForm.prototype.buildFormWrapper = function(formName) {
     var params = this._getParams();
     return (new notTemplate({
-        template: this._getFormElementTemplate(formName, true),
+        templateElement: this._getFormElementTemplate(formName, true),
         data: this._getParams(),
         helpers: {
             formTitle: this._getFormTitle(),

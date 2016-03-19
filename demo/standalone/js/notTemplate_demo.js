@@ -40,6 +40,16 @@ var dataSetArray = [
     }
  ];
 
+ var dataComplex = {
+     title: 'complex data title',
+     complexData:{
+         title:{
+             title: 'Complex sub title'
+         },
+         items: dataSetArray
+     }
+ };
+
 var dataForSelect = {
     title: 'Select title',
     name: 'select',
@@ -63,10 +73,33 @@ var selectHelpers = {
 var helpers = {
     capitalize: function (item, index) {
         return item.toUpperCase(item.title);
+    },
+    new: function () {
+        return true
     }
 };
 
 $(function () {
+    notTemplateCache.load({
+        complexTemplate: './templates/complexTemplate.html',
+        manyTemplate: './templates/manyTemplate.html',
+        complexTemplatePart: './templates/complexTemplatePart.html',
+        complexTemplatePart2: './templates/complexTemplatePart2.html',
+    });
+    notTemplateCache.onLoad = function(){
+        var complexElementContent = (new notTemplate({
+            templateURL: './templates/complexTemplate.html',
+            data: dataComplex,
+            helpers: helpers,
+        })).execAndPut(document.getElementById('complexElement'));
+
+        var complexElementContent = (new notTemplate({
+            templateName: 'complexTemplate',
+            data: dataComplex,
+            helpers: helpers,
+        })).execAndPut(document.getElementById('complexElement2'));
+    };
+
     var singleElementContent = (new notTemplate({templateName: 'singleTemplate', data:dataSetSingle})).exec();
     console.log(singleElementContent);
     $('#singleElement').append(singleElementContent);
@@ -74,13 +107,19 @@ $(function () {
     var selectElementContent = (new notTemplate({templateName: 'selectTemplate', data:dataForSelect, helpers: selectHelpers})).exec();
     $('#selectElement').append(selectElementContent);
 
+
     var manyElementsContent = (new notTemplate({
         templateURL: './templates/templateMany.html',
+        helpers: helpers,
         data: dataSetArray
     })).exec(
         function (manyElementsContent) {
             console.log(manyElementsContent);
             $('#manyElements').append(manyElementsContent);
         });
+
+
+
+
 
 });

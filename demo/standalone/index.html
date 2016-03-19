@@ -54,24 +54,40 @@
     </div>
     <!-- /.navbar -->
 
-    <div data-notTemplate-name="singleTemplate">
-        <h1 data-not-provider-capitalize=":title" data-not-addClass-new-if=":new()"></h1>
+    <div data-not-template-name="singleTemplate">
+        <h1 data-not-provider-capitalize=":title" data-not-addClass-new-if="::new()"></h1>
         <p data-not-provider=":body"></p>
     </div>
 
-    <div data-notTemplate-name="selectTemplate">
+    <div data-not-template-name="selectTemplate">
         <div class="col-6 col-sm-6 col-lg-4">
             <span data-not-provider=":title"></span>
             <select data-not-attr-name=":name" data-not-attr-value=":value" data-not-options-title-_id="::options"></select>
         </div>
     </div>
 
-    <div data-notTemplate-name="manyTemplate">
-        <div class="col-6 col-sm-6 col-lg-4">
+    <div data-not-template-name="manyTemplate">
+        <div class="col-6 col-sm-6 col-lg-4" data-not-addClass-new-if="::new()">
             <h2 data-not-provider=":title"></h2>
             <p data-not-provider=":body"></p>
             <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
+    </div>
+
+    <div data-not-template-name="complexTemplate">
+        <h1 data-not-provider-capitalize=":title" data-not-addClass-new-if=":new()"></h1>
+        <div data-not-subtemplate-complex-template-part=":complexData"></div>
+    </div>
+
+    <div data-not-template-name="complexTemplatePart">
+        <div>
+        <div data-not-subtemplate-complex-template-part2=":title"></div>
+        <div><div data-not-subtemplate-many-template=":items"></div></div>
+      </div>
+    </div>
+
+    <div data-not-template-name="complexTemplatePart2">
+      <h1 data-not-provider-capitalize=":title" data-not-addClass-new-if=":new()"></h1>
     </div>
 
     <div class="container">
@@ -85,6 +101,8 @@
                 <div class="jumbotron" id="singleElement"></div>
                 <div class="row" id="selectElement"></div>
                 <div class="row" id="manyElements"></div>
+                <div class="row" id="complexElement"></div>
+                <div class="row" id="complexElement2"></div>
                 <!--/row-->
             </div>
             <!--/span-->
@@ -110,7 +128,7 @@
         <hr>
 
         <footer>
-            <p>&copy; Company 2014</p>
+
         </footer>
 
     </div>
@@ -123,7 +141,15 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="../../js/notRecord.js"></script>
     <script src="../../js/notTemplate.js"></script>
+    <script src="../../js/notView.js"></script>
+    <script src="../../js/notTable.js"></script>
+    <script src="../../js/notForm.js"></script>
+    <script src="../../js/notController.js"></script>
+    <script src="../../js/notApp.js"></script>
     <script src="./js/notTemplate_demo.js"></script>
 </body>
 

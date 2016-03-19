@@ -165,6 +165,55 @@ notApp.prototype.getOptions = function(){
     return this._notOptions.options;
 }
 
+var notCommon = {
+    extend: function(destination, source) {
+        for(var property in source) {
+            if(source[property] && source[property].constructor && source[property].constructor === Object) {
+                destination[property] = destination[property] || {};
+                arguments.callee(destination[property], source[property]);
+            } else {
+                destination[property] = source[property];
+            }
+        }
+        return destination;
+    },
+    defineIfNotExists: function(obj, key, defaultValue) {
+        if(!obj.hasOwnProperty(key) || typeof obj[key] === 'undefined' || obj[key] === null) {
+            obj[key] = defaultValue;
+        }
+    }
+};
+
+var notEvent = {
+    on: function(eventName, eventCallback) {
+        notCommon.defineIfNotExists(this, "working", {});
+        notCommon.defineIfNotExists(this.working, "events", {});
+        notCommon.defineIfNotExists(this.working.events, eventName, []);
+        this.working.events[eventName].push(eventCallback);
+    },
+    trigger: function(eventName) {
+        notCommon.defineIfNotExists(this, "working", {});
+        notCommon.defineIfNotExists(this.working, "events", {});
+        notCommon.defineIfNotExists(this.working.events, eventName, []);
+        for(var i in this.working.events[eventName]) {
+            this.working.events[eventName][i](arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
+        }
+    },
+    off: function(eventName, eventCallback) {
+        if(!this.hasOwnProperty("working")) {
+            return;
+        }
+        if(!this.working.hasOwnProperty("events")) {
+            return;
+        }
+        if(!this.working.events.hasOwnProperty(eventName)) {
+            return;
+        }
+        var index = this.working.events[eventName].indexOf(eventCallback);
+        this.working.events[eventName].splice(index, 1);
+    },
+}
+
 if (typeof extend === 'undefined' || extend === null){
     var extend = function ( defaults, options ) {
         var extended = {};
@@ -288,6 +337,27 @@ if (typeof extend === 'undefined' || extend === null){
     };
 }
 
+var notFormFactory = function(app, options){
+    this.app = app;
+    this._params = {
+        runActionOnSubmit: true,
+        removeOnRestore: true,
+        afterSubmit: function(data) {},
+        afterRestore: function(data) {},
+    };
+
+    this.options = options;
+    this._working = {
+        template: '',
+        prefix: 'notForm_',
+        formElements: {},
+        defaulField: {
+            type: 'text',
+            placeholder: 'text placeholder'
+        }
+    };
+    return this;
+}
 
 var notForm = function(app /* приложение к которому цепляемся */ , options /* опции */ ) {
     this.app = app;
@@ -308,7 +378,6 @@ var notForm = function(app /* приложение к которому цепл�
             placeholder: 'text placeholder'
         }
     };
-
     return this;
 };
 
@@ -343,22 +412,22 @@ notForm.prototype._setTemplate = function(response) {
 notForm.prototype.parseTemplate = function() {
     var containerElement = document.createElement('DIV');
     containerElement.innerHTML = this._working.template;
-    return containerElement.children;
+    for(var i = 0; i < containerElement.children; i++){
+        var thisTemplate = containerElement.children[i];
+        if (thisTemplate.nodeName !== '#text' && thisTemplate.dataset.hasOwnProperty('notTemplateName')){
+            notTemplateCache.setOne(thisTemplate.dataset.notTemplateName, thisTemplate);
+        }
+    }
 }
 
 notForm.prototype._getFormElementTemplate = function(fieldType, full) {
-    var templatesContainer = document.createElement('DIV');
-    templatesContainer.innerHTML = this._working.template;
-    var thisTemplates = templatesContainer.children,
-        i = 0,
-        elementTemplateSelector = this._working.prefix + fieldType;
-    for(i = 0; i < thisTemplates.length; i++) {
-        var thisTemplate = thisTemplates[i];
-        if(thisTemplate.nodeName !== '#text' && thisTemplate.dataset.notTemplateName == elementTemplateSelector) {
-            return full ? thisTemplate.outerHTML : thisTemplate.innerHTML;
-        }
+    var key = this._working.prefix + fieldType,
+        thisTemplate = notTemplateCache.get(key);
+    if(thisTemplate){
+        return full?thisTemplate.outerHTML:thisTemplate.innerHTML;
+    }else{
+        return '';
     }
-    return '';
 };
 
 notForm.prototype._getFieldValue = function(object, fieldName) {
@@ -1120,7 +1189,6 @@ var notRecord_Interface = {
                 }
             }
         };
-
         if(formData instanceof FormData) {
             var finalParams = jQuery.extend(basicParams, additionalParams);
         } else {
@@ -1179,6 +1247,10 @@ Object.defineProperties(notRecord.prototype, {
         }
     }
 });
+
+notRecord.prototype.on = notEvent.on;
+notRecord.prototype.off = notEvent.off;
+notRecord.prototype.trigger = notEvent.trigger;
 
 notRecord.prototype.setParam = function(paramName, paramValue) {
     'use strict';
@@ -1276,6 +1348,7 @@ notRecord.prototype.setAttr = function(attrName, attrValue) {
     if(typeof attrValue === 'Object') {
         notRecord.prototype._addMetaAttr(attrName, attrValue);
     }
+    this.trigger('onAttrChange');
     return this;
 }
 
@@ -1764,7 +1837,49 @@ function getAttributesStartsWith(el, startsWith) {
     return list;
 }
 
-
+var notTemplateCache = {
+    cache: {},
+    loading: [],
+    onLoad: null,
+    load: function(map){
+        this.loading = [];
+        for(var i in map){
+            this.loadOne(i, map[i]);
+        }
+    },
+    loadOne: function(key, url, callback){
+        this.loading.push(key);
+        var oRequest = new XMLHttpRequest();
+        oRequest.open("GET", url);
+        oRequest.addEventListener("load", function(response) {
+            if (this.loading.indexOf(key) > -1) this.loading.splice(this.loading.indexOf(key), 1);
+            var div = document.createElement('DIV');
+            div.dataset.notTemplateName = key;
+            div.dataset.notTemplateURL = url;
+            div.innerHTML = response.srcElement.responseText;
+            this.setOne(key, div);
+            callback && callback(key, url, div);
+            if (this.loading.length === 0){
+                this.onLoad && this.onLoad();
+            }
+        }.bind(this));
+        oRequest.send();
+    },
+    setOne: function(key, element){
+        this.cache[key] = element;
+    },
+    get:function(key){
+        return this.cache.hasOwnProperty(key)?this.cache[key].cloneNode(true):null;
+    },
+    getByURL: function(url){
+        for(var i in this.cache){
+            if (this.cache[i].dataset.notTemplateURL == url){
+                return this.get(i);
+            }
+        }
+        return null;
+    }
+};
 
 /*
  * Использует DOM поддерево в качестве шаблона.
@@ -1774,6 +1889,24 @@ function getAttributesStartsWith(el, startsWith) {
  * */
 
 var notTemplate = function(input) {
+    var getElement = function(){
+        var result = null;
+        if (input.hasOwnProperty('templateElement')){
+            result = input.templateElement;
+        }else{
+            if (input.hasOwnProperty('templateName') && document.querySelector('[data-not-template-name="' + input.templateName + '"]')){
+                result = document.querySelector('[data-not-template-name="' + input.templateName + '"]').cloneNode(true)
+            }else{
+                if (input.templateCache){
+                    var cached = notTemplateCache.get(input.templateCache);
+                    if (cached){
+                        result = cached.cloneNode(true);
+                    }
+                }
+            }
+        }
+        return result;
+    }
     this._notOptions = {
         proccessorIndexAttributeName: 'data-not-template-proccindex',
         proccessorExpressionPrefix: 'data-not-',
@@ -1788,17 +1921,16 @@ var notTemplate = function(input) {
         place: input.place,
         selector: input.templateName,
         template: input.hasOwnProperty('template') ? input.template : null,
-        templateElement: ((input.hasOwnProperty('templateElement'))?(input.templateElement):(input.hasOwnProperty('templateName') ? $('[data-not-template-name="' + input.templateName + '"]').cloneNode(true) : null)),
+        templateCache: input.hasOwnProperty('templateCache') ? input.templateCache : null,
+        templateElement: getElement(),
         templateURL: input.hasOwnProperty('templateURL') ? input.templateURL : null,
         helpers: input.helpers,
     };
 
-    console.log('data', input.data);
-
     this._working = {
         proccessors: [],
         templateHTML: input.hasOwnProperty('template') ? input.template : '',
-        templateLoaded: input.hasOwnProperty('templateName') || input.hasOwnProperty('template') || input.hasOwnProperty('templateElement'),
+        templateLoaded: this._notOptions.templateElement?true:false, //input.hasOwnProperty('templateName') || input.hasOwnProperty('template') || input.hasOwnProperty('templateElement'),
         result: null,
         currentEl: null,
         currentItem: null,
@@ -1831,18 +1963,21 @@ notTemplate.prototype.exec = function(afterExecCallback) {
     }
     //from template html file, thru ajax request
     else {
-        var oRequest = new XMLHttpRequest();
-        oRequest.open("GET", that._notOptions.templateURL);
-        oRequest.addEventListener("load", function(response) {
-            var div = document.createElement('DIV');
-            div.dataset.notTemplateName = that._notOptions.templateURL;
-            div.innerHTML = response.srcElement.responseText;
+        var preLoaded = notTemplateCache.getByURL(that._notOptions.templateURL);
+        if (preLoaded){
             that._working.templateLoaded = true;
-            that._notOptions.templateElement = div;
+            that._notOptions.templateElement = preLoaded;
             that._exec();
             if(typeof afterExecCallback !== 'undefined') afterExecCallback(that._working.result);
-        });
-        oRequest.send();
+        }else{
+            notTemplateCache.loadOne(that._notOptions.templateURL, that._notOptions.templateURL,
+            function(key, url, element){
+                that._working.templateLoaded = true;
+                that._notOptions.templateElement = element;
+                that._exec();
+                if(typeof afterExecCallback !== 'undefined') afterExecCallback(that._working.result);
+            });
+        }
     }
 }
 
@@ -1850,31 +1985,52 @@ notTemplate.prototype.execAndPut = function(place, afterExecCallback) {
     this.exec(function(result) {
         if(place instanceof HTMLElement) {
             place.innerHTML = '';
-            if(result instanceof HTMLCollection || result instanceof Array) {
-                for(var i = 0; i < result.length; i++) {
-                    if (result[i] instanceof HTMLElement) place.appendChild(result[i]);
-                }
-            } else {
-                if (result instanceof HTMLElement) place.appendChild(result);
-            }
+            this.insert(place, result);
         }
         if(typeof afterExecCallback !== 'undefined') afterExecCallback(result);
-    });
+    }.bind(this));
 }
+
+notTemplate.prototype.insert = function(parent, children){
+    if (parent instanceof HTMLElement){
+        if(children instanceof HTMLCollection || children instanceof Array) {
+            for(var i= 0; i < children.length; i++){
+                this.insert(parent, children[i]);
+            }
+        }else{
+            if (children instanceof HTMLElement) parent.appendChild(children.cloneNode(true));
+        }
+    }
+    return parent;
+}
+
+notTemplate.prototype.insertBefore = function(parent, children){
+    if (parent instanceof HTMLElement){
+        if(children instanceof HTMLCollection || children instanceof Array) {
+            for(var i= 0; i < children.length; i++){
+                this.insertBefore(parent, children[i]);
+            }
+        }else{
+            if (children instanceof HTMLElement) parent.parentNode.insertBefore(children.cloneNode(true), parent);
+        }
+    }
+    return parent;
+}
+
 
 notTemplate.prototype.execAndAdd = function(place, afterExecCallback) {
     this.exec(function(el) {
-        if(place instanceof HTMLElement) {
-            if(el instanceof HTMLCollection || el instanceof Array) {
-                for(var i = 0; i < el.length; i++) {
-                    if (el[i] instanceof HTMLElement) place.appendChild(el[i]);
-                }
-            } else {
-                if (el instanceof HTMLElement) place.appendChild(el);
-            }
-        }
+        this.insert(place, el);
         if(typeof afterExecCallback !== 'undefined') afterExecCallback(el);
-    });
+    }.bind(this));
+}
+
+notTemplate.prototype.execAndReplace = function(place, afterExecCallback) {
+    this.exec(function(el) {
+        this.insertBefore(place, el);
+        place.parentNode.removeChild(place);
+        if(typeof afterExecCallback !== 'undefined') afterExecCallback(el);
+    }.bind(this));
 }
 
 notTemplate.prototype._proccessItems = function() {
@@ -1905,6 +2061,8 @@ notTemplate.prototype._proccessItem = function() {
     this._working.currentEl = this._getTemplateElement();
     this._findAllTemplateProccessors();
     this._execProccessorsOnCurrent();
+    //$('footer').append(this._working.currentEl);
+    console.log(this._working.currentEl.innerHTML);
     // console.log(this._working.currentEl.html());
 }
 
@@ -2084,8 +2242,24 @@ notTemplate.prototype.proccessorsLib = {
             }
             return false;
         });
+    },
+    subtemplate: function(input, item, helpers){
+        var that = this;
+        var capitalizeFirstLetter = function(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        //console.log(input, item, helpers);
+        var tmplName = input.params[0];
+        for(var i = 1; i < input.params.length; i++){
+            tmplName+=capitalizeFirstLetter(input.params[i]);
+        }
+        var resultElements = (new notTemplate({
+            templateCache: tmplName,
+            templateName: tmplName,
+            helpers: helpers,
+            data: input.attributeResult
+        })).execAndReplace(input.element);
     }
-
 };
 
 /*

@@ -128,7 +128,6 @@ var notRecord_Interface = {
                 }
             }
         };
-
         if(formData instanceof FormData) {
             var finalParams = jQuery.extend(basicParams, additionalParams);
         } else {
@@ -187,6 +186,10 @@ Object.defineProperties(notRecord.prototype, {
         }
     }
 });
+
+notRecord.prototype.on = notEvent.on;
+notRecord.prototype.off = notEvent.off;
+notRecord.prototype.trigger = notEvent.trigger;
 
 notRecord.prototype.setParam = function(paramName, paramValue) {
     'use strict';
@@ -284,6 +287,7 @@ notRecord.prototype.setAttr = function(attrName, attrValue) {
     if(typeof attrValue === 'Object') {
         notRecord.prototype._addMetaAttr(attrName, attrValue);
     }
+    this.trigger('onAttrChange');
     return this;
 }
 

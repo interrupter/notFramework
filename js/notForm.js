@@ -16,6 +16,27 @@ if (typeof extend === 'undefined' || extend === null){
     };
 }
 
+var notFormFactory = function(app, options){
+    this.app = app;
+    this._params = {
+        runActionOnSubmit: true,
+        removeOnRestore: true,
+        afterSubmit: function(data) {},
+        afterRestore: function(data) {},
+    };
+
+    this.options = options;
+    this._working = {
+        template: '',
+        prefix: 'notForm_',
+        formElements: {},
+        defaulField: {
+            type: 'text',
+            placeholder: 'text placeholder'
+        }
+    };
+    return this;
+}
 
 var notForm = function(app /* приложение к которому цепляемся */ , options /* опции */ ) {
     this.app = app;
@@ -36,7 +57,6 @@ var notForm = function(app /* приложение к которому цепл�
             placeholder: 'text placeholder'
         }
     };
-
     return this;
 };
 
@@ -71,22 +91,22 @@ notForm.prototype._setTemplate = function(response) {
 notForm.prototype.parseTemplate = function() {
     var containerElement = document.createElement('DIV');
     containerElement.innerHTML = this._working.template;
-    return containerElement.children;
+    for(var i = 0; i < containerElement.children; i++){
+        var thisTemplate = containerElement.children[i];
+        if (thisTemplate.nodeName !== '#text' && thisTemplate.dataset.hasOwnProperty('notTemplateName')){
+            notTemplateCache.setOne(thisTemplate.dataset.notTemplateName, thisTemplate);
+        }
+    }
 }
 
 notForm.prototype._getFormElementTemplate = function(fieldType, full) {
-    var templatesContainer = document.createElement('DIV');
-    templatesContainer.innerHTML = this._working.template;
-    var thisTemplates = templatesContainer.children,
-        i = 0,
-        elementTemplateSelector = this._working.prefix + fieldType;
-    for(i = 0; i < thisTemplates.length; i++) {
-        var thisTemplate = thisTemplates[i];
-        if(thisTemplate.nodeName !== '#text' && thisTemplate.dataset.notTemplateName == elementTemplateSelector) {
-            return full ? thisTemplate.outerHTML : thisTemplate.innerHTML;
-        }
+    var key = this._working.prefix + fieldType,
+        thisTemplate = notTemplateCache.get(key);
+    if(thisTemplate){
+        return full?thisTemplate.outerHTML:thisTemplate.innerHTML;
+    }else{
+        return '';
     }
-    return '';
 };
 
 notForm.prototype._getFieldValue = function(object, fieldName) {

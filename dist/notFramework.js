@@ -417,7 +417,7 @@ notForm.prototype.parseTemplate = function() {
         if (thisTemplate.nodeName !== '#text' && thisTemplate.dataset.hasOwnProperty('notTemplateName')){
             var thisWrapper = document.createElement('div');
             thisWrapper.appendChild(thisTemplate);
-            notTemplateCache.setOne(thisTemplate.dataset.notTemplateName, thisWrappers);
+            notTemplateCache.setOne(thisTemplate.dataset.notTemplateName, thisWrapper);
         }
     }
 }

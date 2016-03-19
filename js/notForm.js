@@ -94,7 +94,9 @@ notForm.prototype.parseTemplate = function() {
     for(var i = 0; i < containerElement.children.length; i++){
         var thisTemplate = containerElement.children[i];
         if (thisTemplate.nodeName !== '#text' && thisTemplate.dataset.hasOwnProperty('notTemplateName')){
-            notTemplateCache.setOne(thisTemplate.dataset.notTemplateName, thisTemplate);
+            var thisWrapper = document.createElement('div');
+            thisWrapper.appendChild(thisTemplate);
+            notTemplateCache.setOne(thisTemplate.dataset.notTemplateName, thisWrappers);
         }
     }
 }

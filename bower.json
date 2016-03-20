@@ -1,12 +1,12 @@
 {
   "name": "notFramework",
   "main": "notFramework.js",
-  "version": "1.4.6",
+  "version": "1.5.0",
   "homepage": "https://github.com/interrupter/notFramework",
   "authors": [
     "interrupter"
   ],
-  "description": "compilation of front-end libs that purposed to intergrate with node-manifest module.",
+  "description": "compilation of front-end libs that purposed to intergrate with not-node node.js module.",
   "keywords": [
     "template",
     "front-end",

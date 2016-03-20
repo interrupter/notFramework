@@ -1,10 +1,12 @@
-var dataSetSingle = {
+var dataSetSingle = new notRecord({}, {
     title: 'this is title',
     body: 'this is body',
     new: function () {
         return true
     }
-};
+});
+
+
 
 var dataSetArray = [
     {
@@ -50,11 +52,11 @@ var dataSetArray = [
      }
  };
 
-var dataForSelect = {
+var dataForSelect = new notRecord({},{
     title: 'Select title',
     name: 'select',
     value: 3
-};
+});
 
 var selectHelpers = {
     options: [
@@ -67,15 +69,25 @@ var selectHelpers = {
         {'_id': 6, 'title': 'option 6'},
         {'_id': 7, 'title': 'option 7'},
         {'_id': 8, 'title': 'option 8'},
-    ]
+    ],
+    reset: function(item){
+        item.setAttr("value", "4");
+    }
 };
 
 var helpers = {
     capitalize: function (item, index) {
         return item.toUpperCase(item.title);
     },
+    fake:function(){
+        alert('fake');
+    },
     new: function () {
         return true
+    },
+    reset: function(item){
+        item.setAttr('title', 'default title');
+        item.setAttr('name', 4);
     }
 };
 
@@ -100,7 +112,7 @@ $(function () {
         })).execAndPut(document.getElementById('complexElement2'));
     };
 
-    var singleElementContent = (new notTemplate({templateName: 'singleTemplate', data:dataSetSingle})).exec();
+    var singleElementContent = (new notTemplate({templateName: 'singleTemplate', data:dataSetSingle, helpers: helpers})).exec();
     console.log(singleElementContent);
     $('#singleElement').append(singleElementContent);
 

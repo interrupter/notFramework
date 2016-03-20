@@ -55,14 +55,17 @@
     <!-- /.navbar -->
 
     <div data-not-template-name="singleTemplate">
-        <h1 data-not-provider-capitalize=":title" data-not-addClass-new-if="::new()"></h1>
-        <p data-not-provider=":body"></p>
+        <h1 data-not-provider-capitalize-live=":title" data-not-addClass-new-if="::new()"></h1>
+        <p data-not-provider=":body" data-not-bind-click="fake"></p>
+        <input data-not-live="title" data-not-value-live=":title"/>
+        <button type="button" data-not-bind-click="reset">Reset</button>
     </div>
 
     <div data-not-template-name="selectTemplate">
         <div class="col-6 col-sm-6 col-lg-4">
             <span data-not-provider=":title"></span>
-            <select data-not-attr-name=":name" data-not-attr-value=":value" data-not-options-title-_id="::options"></select>
+            <select data-not-attr-name=":name" data-not-live="value"  data-not-value-live=":value" data-not-options-title-_id="::options"></select>
+            <button type="button" data-not-bind-click="reset">Reset</button>
         </div>
     </div>
 
@@ -87,7 +90,8 @@
     </div>
 
     <div data-not-template-name="complexTemplatePart2">
-      <h1 data-not-provider-capitalize=":title" data-not-addClass-new-if=":new()"></h1>
+      <h1 data-not-provider-capitalize=":title" data-not-bind-click="fake" data-not-addClass-new-if=":new()"></h1>
+      <input data-not-live="title" data-not-value=":title"/>
     </div>
 
     <div class="container">
@@ -143,6 +147,7 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="../../js/notCommon.js"></script>
     <script src="../../js/notRecord.js"></script>
     <script src="../../js/notTemplate.js"></script>
     <script src="../../js/notView.js"></script>

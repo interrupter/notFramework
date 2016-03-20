@@ -159,16 +159,20 @@ var notRecord = function(interfaceManifest, item) {
         this._addMetaAttrs();
     }
     var that = this;
-    $.each(this._notOptions.interfaceManifest.actions, function(index, actionManifest) {
-        if(!(this.hasOwnProperty('$' + index))) {
-            that['$' + index] = function(callbackSuccess, callbackError) {
-                console.log('$' + index);
-                (notRecord_Interface.request.bind(notRecord_Interface, this, index + '', callbackSuccess, callbackError)).call();
+    if (this._notOptions.hasOwnProperty('interfaceManifest') && typeof this._notOptions.interfaceManifest !== 'undefined' && this._notOptions.interfaceManifest !== null &&
+        this._notOptions.interfaceManifest.hasOwnProperty('actions') && typeof this._notOptions.interfaceManifest.actions !== 'undefined' && this._notOptions.interfaceManifest.actions !== null
+        ){
+        for(var actionName in this._notOptions.interfaceManifest.actions){
+            if(!(this.hasOwnProperty('$' + actionName))) {
+                this['$' + actionName] = function(callbackSuccess, callbackError) {
+                    console.log('$' + actionName);
+                    (notRecord_Interface.request.bind(notRecord_Interface, this, actionName+'', callbackSuccess, callbackError)).call();
+                }
+            } else {
+                console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + actionName, '" that alredy exists');
             }
-        } else {
-            console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + index, '" that alredy exists');
         }
-    });
+    }
     return this;
 };
 
@@ -287,7 +291,8 @@ notRecord.prototype.setAttr = function(attrName, attrValue) {
     if(typeof attrValue === 'Object') {
         notRecord.prototype._addMetaAttr(attrName, attrValue);
     }
-    this.trigger('onAttrChange');
+    this.trigger('onAttrChange_' + attrName, this, attrName, attrValue);
+    this.trigger('onAttrChange', this, attrName, attrValue);
     return this;
 }
 
@@ -316,7 +321,7 @@ notRecord.prototype.getAttrByPath = function(object, attrPath){
 notRecord.prototype.getAttr = function(attrName) {
     'use strict';
     var path = attrName.split('.');
-    switch (path.length > 1){
+    switch (path.length){
         case 0:
                 return undefined;
             break;

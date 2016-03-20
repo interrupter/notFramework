@@ -168,26 +168,28 @@ notTemplate.prototype.execAndPut = function(place, afterExecCallback) {
 }
 
 notTemplate.prototype.insert = function(parent, children){
+    var i = 0;
     if (parent instanceof HTMLElement){
         if(children instanceof HTMLCollection || children instanceof Array) {
-            for(var i= 0; i < children.length; i++){
-                this.insert(parent, children[i]);
+            while(children.length && ++i < 10000){
+                this.insert(parent, children[0]);
             }
         }else{
-            if (children instanceof HTMLElement) parent.appendChild(children.cloneNode(true));
+            if (children instanceof HTMLElement) parent.appendChild(children);
         }
     }
     return parent;
 }
 
 notTemplate.prototype.insertBefore = function(parent, children){
+    var i = 0;
     if (parent instanceof HTMLElement){
         if(children instanceof HTMLCollection || children instanceof Array) {
-            for(var i= 0; i < children.length; i++){
-                this.insertBefore(parent, children[i]);
+            while(children.length && ++i < 10000){
+                this.insertBefore(parent, children[0]);
             }
         }else{
-            if (children instanceof HTMLElement) parent.parentNode.insertBefore(children.cloneNode(true), parent);
+            if (children instanceof HTMLElement) parent.parentNode.insertBefore(children, parent);
         }
     }
     return parent;
@@ -280,6 +282,7 @@ notTemplate.prototype._parseProccessorExpression = function(proccessorExpression
     return result;
 }
 
+
 notTemplate.prototype._getAttributeExpressionResult = function(expression, item, index) {
     'use strict';
     var result = null,
@@ -340,10 +343,29 @@ notTemplate.prototype._execProccessorsOnCurrent = function() {
  */
 
 notTemplate.prototype.proccessorsLib = {
-    provider: function(input) {
+    //provider replace innerHTML with attributeResult
+    ////params
+    //capitalize - will turn all content to capital register
+    //live - should be last, will set event onAttrChange_[fieldname] for notRecord in which will change content if field value differs from innerHTML content
+    provider: function(input, item, helpers) {
         'use strict';
         if(input.params.indexOf('capitalize') > -1) input.attributeResult = input.attributeResult.toUpperCase();
         input.element.innerHTML = input.attributeResult;
+        var live = input.params.indexOf('live');
+        if (live > -1 && live == input.params.length - 1){
+            if (item.on && input.attributeExpression.indexOf(':')===0 && input.attributeExpression.indexOf('::')===-1){
+                var fieldName = input.attributeExpression.replace(':', '');
+                item.on('onAttrChange_' + fieldName, function(){
+                    console.log('on attr change', arguments);
+                    var value = item.getAttr(fieldName);
+                    if(input.params.indexOf('capitalize') > -1) value = value.toUpperCase();
+                    if (input.element.innerHTML!= value){
+                        input.element.innerHTML= value;
+                    }
+
+                });
+            }
+        }
     },
     options: function(input, item, helpers) {
         'use strict';
@@ -389,20 +411,47 @@ notTemplate.prototype.proccessorsLib = {
         }
 
     },
-    attr: function(input) {
+    attr: function(input, item, helpers) {
         'use strict';
         input.element.setAttribute(input.params[0], input.attributeResult);
+        var live = input.params.indexOf('live');
+        if (live > -1 && live == input.params.length - 1){
+            if (item.on && input.attributeExpression.indexOf(':')===0 && input.attributeExpression.indexOf('::')===-1){
+                var fieldName = input.attributeExpression.replace(':', '');
+                item.on('onAttrChange_' + fieldName, function(){
+                    console.log('on attr change', arguments);
+                    var newVal = item.getAttr(fieldName);
+                    if(input.element.getAttribute(input.params[0]) != newVal){
+                        input.element.setAttribute(input.params[0], newVal);
+                    }
+                });
+            }
+        }
     },
-    addclass: function(input) {
+    addclass: function(input, item, helpers) {
         if(input.attributeResult) {
             input.element.classList.add(input.params[0]);
         }
     },
-    value: function(input) {
+    //live - should be last, will set event onAttrChange_[fieldname] for notRecord in which will change content if field value differs from input element value content
+    value: function(input, item, helpers) {
         console.log('value', input);
         input.element.setAttribute('value', input.attributeResult);
+        var live = input.params.indexOf('live');
+        if (live > -1 && live == input.params.length - 1){
+            if (item.on && input.attributeExpression.indexOf(':')===0 && input.attributeExpression.indexOf('::')===-1){
+                var fieldName = input.attributeExpression.replace(':', '');
+                item.on('onAttrChange_' + fieldName, function(){
+                    console.log('on attr change', arguments);
+                    var newVal = item.getAttr(fieldName);
+                    if(input.element.value !=newVal){
+                        input.element.value = newVal;
+                    }
+                });
+            }
+        }
     },
-    checked: function(input) {
+    checked: function(input, item, helpers) {
         console.log('checked', input);
         input.element.setAttribute('checked', input.attributeResult);
         console.log(input);
@@ -435,5 +484,36 @@ notTemplate.prototype.proccessorsLib = {
             helpers: helpers,
             data: input.attributeResult
         })).execAndReplace(input.element);
+    },
+    //data-not-live="title"
+    //will watch for changes on liveEvents and change object field or notRecord attribute acordingly
+    live: function(input, item, helpers){
+        var that = this,
+            liveEvents = ['change', 'keyup'];
+        console.log('live', input);
+        for(var i = 0; i < liveEvents.length;i++){
+            input.element.addEventListener(liveEvents[i], function(e) {
+                var edit = true;
+                if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('validators') && helpers.validators.hasOwnProperty(input.attributeResult)) {
+                    edit = helpers.validators[input.attributeResult](input, item, e);
+                }
+                if (edit){
+                    if (item.setAttr){
+                        if (item.getAttr(input.attributeResult) == input.element.value){
+                            edit = false;
+                        }else{
+                            item.setAttr(input.attributeResult, input.element.value);
+                        }
+                    }else{
+                        if (item[input.attributeResult] == input.element.value){
+                            edit = false;
+                        }else{
+                            item[input.attributeResult] = input.element.value;
+                        }
+                    }
+                }
+                return edit;
+            });
+        }
     }
 };

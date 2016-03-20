@@ -98,7 +98,7 @@ notForm.prototype.parseTemplate = function() {
             thisWrapper.appendChild(thisTemplate);
             notTemplateCache.setOne(thisTemplate.dataset.notTemplateName, thisWrapper);
         }else{
-            i++
+            i++;
         }
     }
 }

@@ -179,8 +179,8 @@ var notRecord = function(interfaceManifest, item) {
                 this['$' + aName] = function(callbackSuccess, callbackError) {
                     console.log('$' + aName);
                     (notRecord_Interface.request.bind(notRecord_Interface, this, this.actionName, callbackSuccess, callbackError)).call();
-                }.bind(this);
-                this['$' + aName].prototype.actionName = aName;
+                }
+                this['$' + aName].actionName = aName;
             } else {
                 console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + actionName, '" that alredy exists');
             }

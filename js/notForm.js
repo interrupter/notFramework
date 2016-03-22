@@ -451,16 +451,14 @@ notForm.prototype.queryResultAll = function(many, query){
 
 notForm.prototype.addContent = function(el, container,mainContainer){
     if(el.dataset.hasOwnProperty("target")) {
-        var targetEl = container.querySelector(':scope [data-role="' + el.dataset.target + '"]');
+        var targetEl = this.queryResult(container, ':scope [data-role="' + el.dataset.target + '"]');
         if(targetEl) {
             targetEl.appendChild(el);
-        } else {
-            container.appendChild(el);
+            return;
         }
-    } else {
-        if (mainContainer && mainContainer instanceof HTMLElement){
-            mainContainer.appendChild(el);
-        }
+    }
+    if (mainContainer && mainContainer instanceof HTMLElement){
+        mainContainer.appendChild(el);
     }
 }
 

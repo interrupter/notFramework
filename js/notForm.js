@@ -708,11 +708,9 @@ notForm.prototype.attachRemoveOnRestore = function() {
 
 notForm.prototype._removeForm = function(e) {
     if(typeof e !== 'undefined' && e !== null) e.preventDefault();
-    this._working.resultForm.remove();
+    this.removeNodes(this._working.resultForm);    
     if(typeof e !== 'undefined' && e !== null) {
-        (this._getParams()
-            .hasOwnProperty('afterRestore') ? this._getParams()
-            .afterRestore(e) : null);
+        (this._getParams().hasOwnProperty('afterRestore') ? this._getParams().afterRestore(e) : null);
     }
     return false;
 };

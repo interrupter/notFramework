@@ -1424,18 +1424,7 @@ var notRecord_Interface = {
                     callbackSuccess && callbackSuccess(result);
                 } else {
                     if(typeof callbackError !== 'undefined' && callbackError !== null && code === "error") callbackError(data);
-                }
-                if((typeof record._notOptions.interfaceManifest.showMessages !== 'undefined') && record._notOptions.interfaceManifest.showMessages) {
-                    var msg = ((actionData.hasOwnProperty('messages') && actionData.messages.hasOwnProperty(code)) ? actionData.messages[code] : data.error);
-                    if((typeof msg !== 'undefined') && (msg != '')) {
-                        $('.top-left').notify({
-                            type: code == 'success' ? code : 'danger',
-                            message: {
-                                text: msg
-                            }
-                        }).show();
-                    }
-                }
+                }                
             }
         };
         if(formData instanceof FormData) {

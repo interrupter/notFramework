@@ -1,0 +1,221 @@
+<div data-not-template-name="notForm_textarea">
+    <div class="form-group">
+        <label data-not-attr-for="::fieldId" class="col-sm-2 control-label" data-not-provider-capitalizeFirst="::fieldName"></label>
+        <div class="col-sm-10">
+            <textarea class="form-control" data-not-provider="::fieldValue" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder"></textarea>
+            <span class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</span>
+        </div>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_text" class="col-sm-12 col-lg-12 form-group">
+    <label class="col-sm-12 col-lg-12 control-label " data-not-attr-for="::fieldId" data-not-provider-capitalizeFirst="::fieldPlaceHolder"></label>
+    <div class="col-sm-12 col-lg-12 ">
+        <input class="form-control" data-not-attr-value="::fieldValue" data-not-live="::fieldName" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name-live="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder">
+        <p class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</p>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_email" class="col-sm-12 col-lg-12 form-group">
+
+    <label class="col-sm-12 col-lg-12 control-label " data-not-attr-for="::fieldId" data-not-provider-capitalizeFirst="::fieldPlaceHolder"></label>
+    <div class="col-sm-12 col-lg-12 ">
+        <input class="form-control" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder">
+        <p class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</p>
+    </div>
+
+</div>
+
+
+<div class="col-sm-12 col-lg-12 form-group" data-not-template-name="notForm_address">
+    <label class="col-sm-12 col-lg-12 control-label " data-not-attr-for="::fieldId" data-not-provider-capitalizeFirst="::fieldPlaceHolder"></label>
+    <div class="col-sm-12 col-lg-12 ">
+        <input class="form-control" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder">
+        <p class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</p>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_block">
+    <header data-not-provider="::formTitle"></header>
+    <fieldset data-role="block" class="col-sm-12 col-lg-12">
+
+    </fieldset>
+</div>
+
+
+<li data-not-template-name="notForm_address"><span data-not-provider=":city"></span>, <span data-not-provider=":street"></span>, <span data-not-provider=":house"></span> <span data-not-bind-click="removeShop">remove</span></li>
+
+
+<div data-not-template-name="notForm_addresses" class="col-sm-12 col-lg-12 form-group">
+    <ul class="">
+        <div data-not-subtemplate-not-form_address-live="::fieldValue"></div>
+    </ul>
+    <div>
+        <input class="form-control" class="form-control" id="addShopAddressField_City" data-not-attr-placeholder="::fieldPlaceHolder" />
+        <input class="form-control" class="form-control" id="addShopAddressField_Street" data-not-attr-placeholder="::fieldPlaceHolder" />
+        <input class="form-control" class="form-control" id="addShopAddressField_House" data-not-attr-placeholder="::fieldPlaceHolder" />
+        <button data-not-action="addShop" type="button">Добавить магазин</button>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_path">
+    <div class="col-sm-12 col-lg-12 form-group">
+        <label class="col-sm-12 col-lg-12 control-label " data-not-attr-for="::fieldId" data-not-provider-capitalizeFirst="::fieldPlaceHolder"></label>
+        <div class="col-sm-12 col-lg-12">
+            <input class="form-control" class="form-control" id="pathInput" data-not-attr-placeholder="::fieldPlaceHolder">
+            <button class="addPoint" data-not-action="addPathPoint" type="button">Добавить точку</button>
+            <p class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</p>
+        </div>
+        <ul class="pathDescription list-inline"></ul>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_file">
+    <div class="col-sm-12 col-lg-12 form-group">
+        <label class="col-sm-12 col-lg-12 control-label " data-not-attr-for="::fieldId" data-not-provider-capitalizeFirst="::fieldPlaceHolder"></label>
+        <div class="col-sm-12 col-lg-12 ">
+            <input type="file" class="form-control" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder">
+            <p class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</p>
+        </div>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_digit">
+    <div class="col-sm-12 col-lg-12 form-group">
+        <label class="col-sm-12 col-lg-12 control-label" data-not-attr-for="::fieldId" data-not-provider-capitalizeFirst="::fieldPlaceHolder"></label>
+        <div class="col-sm-12 col-lg-12 ">
+            <input type="number" min="1" max="999" class="form-control" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder">
+            <p class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</p>
+        </div>
+    </div>
+</div>
+
+
+
+<div data-not-template-name="notForm_year">
+    <div class="col-sm-12 col-lg-12 form-group">
+        <label class="col-sm-12 col-lg-12 control-label" data-not-attr-for="::fieldId" data-not-provider-capitalizeFirst="::fieldPlaceHolder"></label>
+        <div class="col-sm-12 col-lg-12 ">
+            <input type="number" min="1900" max="2100" class="form-control" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder">
+            <p class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</p>
+        </div>
+    </div>
+</div>
+
+
+<div data-not-template-name="notForm_date">
+    <div class="col-sm-12 col-lg-12 form-group">
+        <label data-not-attr-for="::fieldId" class="col-sm-12 col-lg-12 control-label" data-not-provider-capitalizeFirst="::fieldPlaceHolder"></label>
+        <div class="col-sm-12 col-lg-12 ">
+            <input type="date" class="form-control" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder">
+            <p class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</p>
+        </div>
+    </div>
+</div>
+
+
+<div data-not-template-name="notForm_time">
+    <div class="col-sm-12 col-lg-12 form-group">
+        <label data-not-attr-for="::fieldId" class="col-sm-12 col-lg-12 control-label" data-not-provider-capitalizeFirst="::fieldPlaceHolder"></label>
+        <div class="col-sm-12 col-lg-12 ">
+            <input type="time" class="form-control" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder">
+            <p class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</p>
+        </div>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_selectold">
+    <div class="form-group">
+        <label data-not-attr-for="::fieldId" class="col-sm-2 control-label" data-not-provider-capitalizeFirst="::fieldName"></label>
+        <div class="col-sm-10">
+            <select type="text" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder" data-not-options-title-_id="::optionsLib"></select>
+            <span class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</span>
+        </div>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_select">
+    <div class="col-sm-12 col-lg-12 form-group">
+        <label data-not-attr-for="::fieldId" class="col-sm-12 col-lg-12 control-label" data-not-provider-capitalizeFirst="::fieldLabel"></label>
+        <div class="col-sm-12 col-lg-12 ">
+            <select class="form-control" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder" data-not-options-title-_id="::optionsLib"></select>
+            <span class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</span>
+        </div>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_status">
+    <div class="col-sm-12 col-lg-12 form-group">
+        <label data-not-attr-for="::fieldId" class="col-sm-12 col-lg-12 control-label" data-not-provider-capitalizeFirst="::fieldLabel"></label>
+        <div class="col-sm-12 col-lg-12 ">
+            <select class="form-control" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder" data-not-options-title-_id="::optionsLib"></select>
+            <span class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</span>
+        </div>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_multi">
+    <div class="col-sm-12 col-lg-12 form-group">
+        <label data-not-attr-for="::fieldId" class="col-sm-12 col-lg-12 control-label" data-not-provider-capitalizeFirst="::fieldLabel"></label>
+        <div class="col-sm-12 col-lg-12 ">
+            <select class="form-control" multiple="true" data-not-attr-value="::fieldValue" class="form-control" data-not-attr-id="::fieldId" data-not-attr-name="::fieldName" data-not-attr-placeholder="::fieldPlaceHolder" data-not-options-title-_id="::optionsLib"></select>
+            <span class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</span>
+        </div>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_checkbox">
+    <div class="form-group">
+        <label data-not-attr-for="::fieldId" class="col-sm-2 control-label" data-not-provider-capitalizeFirst="::fieldName"></label>
+        <div class="col-sm-10">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" data-not-attr-value="1" data-not-checked="::fieldValue" data-not-attr-name="::fieldName" data-not-attr-id="::fieldId"></input>
+                    <span class="help-block" style="display: none;"><i class="fa fa-warning"></i> Error!</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_submit">
+    <div class="form-group">
+        <div class="col-sm-2">
+            <button type="restore" class="btn btn-danger pull-right">Отмена</button>
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<div data-not-template-name="notForm_submitFull">
+    <div class="form-group">
+        <div class="col-sm-2">
+            <button type="restore" class="btn btn-danger pull-right">Отмена</button>
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+        <div class="col-sm-3">
+            <button type="button" data-not-action="createTemplate" class="btn btn-primary">Создать шаблон</button>
+        </div>
+        <div class="col-sm-3">
+            <button type="button" data-not-action="searchWorker" class="btn btn-primary">Найти исполнителя</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-lg-12" data-not-template-name="notForm_itemEditForm">
+    <div class="panel panel-default">
+        <div class="panel-heading" data-not-provider="::formTitle"></div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form role="form" method="POST" data-not-attr-id="::formId" enctype="multipart/form-data"></form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

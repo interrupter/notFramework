@@ -38,10 +38,10 @@ notApp.prototype._update = function () {
     //нужно инициализировать
     //модели полученными интерфейсами
     this._updateInterfaces();
-    //иницилицировать и запустить контроллер инициализации
-    this._initController();
     //создание объектов автогенерация форм
     this._initFormBuilders();
+    //иницилицировать и запустить контроллер инициализации
+    this._initController();
     if (this.allResourcesReady()){
         this.startApp();
     }
@@ -99,10 +99,16 @@ notApp.prototype._getControllerName = function(name){
     return 'nc'+name.capitalizeFirstLetter();
 };
 
-
 notApp.prototype._initInterface = function (index, manifest) {
     console.log(index, manifest);
     this._working.interfaces[this._getRecordName(index)] = new notRecord(manifest);
+};
+
+notApp.prototype.nr = function(modelName, data) {
+
+    var manifest = this._notOptions.interfaceManifest.hasOwnProperty(modelName)?this._notOptions.interfaceManifest[modelName]:{};
+    console.log(modelName, manifest, data);
+    return new notRecord(manifest, data);
 };
 
 notApp.prototype._getInterfaces = function () {
@@ -122,7 +128,7 @@ notApp.prototype._initFormBuilders = function(){
 
 notApp.prototype._initFormBuilder = function(index, manifest){
     console.log('init form builder', index,  manifest);
-    this._working.forms[index] = new notForm(this, manifest);
+    this._working.forms[index] = new notFormFactory(this, manifest);
     this._working.forms[index].init(this.waitThisResource('form', index));
 };
 

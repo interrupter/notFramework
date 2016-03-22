@@ -70,14 +70,14 @@ var notTemplate = function(input) {
         if (input.hasOwnProperty('templateElement')){
             result = input.templateElement;
         }else{
-            if (input.hasOwnProperty('templateName') && document.querySelector('[data-not-template-name="' + input.templateName + '"]')){
-                result = document.querySelector('[data-not-template-name="' + input.templateName + '"]').cloneNode(true)
+            if (input.templateCache){
+                var cached = notTemplateCache.get(input.templateCache);
+                if (cached){
+                    result = cached.cloneNode(true);
+                }
             }else{
-                if (input.templateCache){
-                    var cached = notTemplateCache.get(input.templateCache);
-                    if (cached){
-                        result = cached.cloneNode(true);
-                    }
+                if (input.hasOwnProperty('templateName') && document.querySelector('[data-not-template-name="' + input.templateName + '"]')){
+                    result = document.querySelector('[data-not-template-name="' + input.templateName + '"]').cloneNode(true)
                 }
             }
         }
@@ -107,7 +107,7 @@ var notTemplate = function(input) {
         proccessors: [],
         templateHTML: input.hasOwnProperty('template') ? input.template : '',
         templateLoaded: this._notOptions.templateElement?true:false, //input.hasOwnProperty('templateName') || input.hasOwnProperty('template') || input.hasOwnProperty('templateElement'),
-        result: null,
+        result: [],
         currentEl: null,
         currentItem: null,
         currentIndex: null
@@ -122,7 +122,9 @@ notTemplate.prototype._exec = function() {
         this._working.currentIndex = 0;
         this._working.currentItem = this._notOptions.data;
         this._proccessItem();
-        this._working.result = this._working.currentEl.children;
+        for(var j = 0; j < this._working.currentEl.children.length; j++){            
+            this._working.result.push(this._working.currentEl.children[j]);
+        }
     }
 }
 
@@ -170,12 +172,18 @@ notTemplate.prototype.execAndPut = function(place, afterExecCallback) {
 notTemplate.prototype.insert = function(parent, children){
     var i = 0;
     if (parent instanceof HTMLElement){
-        if(children instanceof HTMLCollection || children instanceof Array) {
+        if(children instanceof HTMLCollection) {
             while(children.length && ++i < 10000){
                 this.insert(parent, children[0]);
             }
         }else{
-            if (children instanceof HTMLElement) parent.appendChild(children);
+            if( Array.isArray(children)){
+                for(var j = 0; j < children.length; j++){
+                    this.insert(parent, children[j]);
+                }
+            }else{
+                if (children instanceof HTMLElement) parent.parentNode.insertBefore(children, parent);
+            }
         }
     }
     return parent;
@@ -184,12 +192,18 @@ notTemplate.prototype.insert = function(parent, children){
 notTemplate.prototype.insertBefore = function(parent, children){
     var i = 0;
     if (parent instanceof HTMLElement){
-        if(children instanceof HTMLCollection || children instanceof Array) {
+        if(children instanceof HTMLCollection) {
             while(children.length && ++i < 10000){
                 this.insertBefore(parent, children[0]);
             }
         }else{
-            if (children instanceof HTMLElement) parent.parentNode.insertBefore(children, parent);
+            if( Array.isArray(children)){
+                for(var j = 0; j < children.length; j++){
+                    this.insertBefore(parent, children[j]);
+                }
+            }else{
+                if (children instanceof HTMLElement) parent.parentNode.insertBefore(children, parent);
+            }
         }
     }
     return parent;
@@ -219,7 +233,9 @@ notTemplate.prototype._proccessItems = function() {
         this._working.currentIndex = i;
         this._working.currentItem = this._notOptions.data[i];
         this._proccessItem();
-        this._working.result.push(this._working.currentEl.children);
+        for(var j = 0; j < this._working.currentEl.children.length; j++){
+            this._working.result.push(this._working.currentEl.children[j]);
+        }
     }
 }
 
@@ -240,7 +256,7 @@ notTemplate.prototype._proccessItem = function() {
     this._findAllTemplateProccessors();
     this._execProccessorsOnCurrent();
     //$('footer').append(this._working.currentEl);
-    console.log(this._working.currentEl.innerHTML);
+    //console.log(this._working.currentEl.innerHTML);
     // console.log(this._working.currentEl.html());
 }
 
@@ -353,8 +369,18 @@ notTemplate.prototype.proccessorsLib = {
         input.element.innerHTML = input.attributeResult;
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){
-            if (item.on && input.attributeExpression.indexOf(':')===0 && input.attributeExpression.indexOf('::')===-1){
-                var fieldName = input.attributeExpression.replace(':', '');
+            var fieldName = null;
+            if (input.attributeExpression.indexOf('::')===0){
+                var helperName = input.attributeExpression.replace('::', '');
+                if(helpers.hasOwnProperty(helperName)&& helpers[helperName]){
+                    fieldName = helpers[helperName];
+                }
+            }else{
+                if(item.on && input.attributeExpression.indexOf(':')===0 ){
+                    var fieldName = input.attributeExpression.replace(':', '');
+                }
+            }
+            if (fieldName){
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
                     var value = item.getAttr(fieldName);
@@ -416,8 +442,18 @@ notTemplate.prototype.proccessorsLib = {
         input.element.setAttribute(input.params[0], input.attributeResult);
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){
-            if (item.on && input.attributeExpression.indexOf(':')===0 && input.attributeExpression.indexOf('::')===-1){
-                var fieldName = input.attributeExpression.replace(':', '');
+            var fieldName = null;
+            if (input.attributeExpression.indexOf('::')===0){
+                var helperName = input.attributeExpression.replace('::', '');
+                if(helpers.hasOwnProperty(helperName)&& helpers[helperName]){
+                    fieldName = helpers[helperName];
+                }
+            }else{
+                if(item.on && input.attributeExpression.indexOf(':')===0 ){
+                    var fieldName = input.attributeExpression.replace(':', '');
+                }
+            }
+            if (fieldName){
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
@@ -439,8 +475,18 @@ notTemplate.prototype.proccessorsLib = {
         input.element.setAttribute('value', input.attributeResult);
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){
-            if (item.on && input.attributeExpression.indexOf(':')===0 && input.attributeExpression.indexOf('::')===-1){
-                var fieldName = input.attributeExpression.replace(':', '');
+            var fieldName = null;
+            if (input.attributeExpression.indexOf('::')===0){
+                var helperName = input.attributeExpression.replace('::', '');
+                if(helpers.hasOwnProperty(helperName)&& helpers[helperName]){
+                    fieldName = helpers[helperName];
+                }
+            }else{
+                if(item.on && input.attributeExpression.indexOf(':')===0 ){
+                    var fieldName = input.attributeExpression.replace(':', '');
+                }
+            }
+            if (fieldName){
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
@@ -476,6 +522,9 @@ notTemplate.prototype.proccessorsLib = {
         //console.log(input, item, helpers);
         var tmplName = input.params[0];
         for(var i = 1; i < input.params.length; i++){
+            if (input.params[i]== 'live' && i+1==input.params.length){
+                break;
+            }
             tmplName+=capitalizeFirstLetter(input.params[i]);
         }
         var resultElements = (new notTemplate({
@@ -484,6 +533,18 @@ notTemplate.prototype.proccessorsLib = {
             helpers: helpers,
             data: input.attributeResult
         })).execAndReplace(input.element);
+
+
+        var live = input.params.indexOf('live');
+        if (live > -1 && live == input.params.length - 1){
+            var fieldName = helpers.hasOwnProperty('fieldName')?helpers.fieldName:null;
+            if (fieldName){
+                item.on('onAttrChange_' + fieldName, function(){
+                    console.log('on attr change', arguments);
+
+                });
+            }
+        }
     },
     //data-not-live="title"
     //will watch for changes on liveEvents and change object field or notRecord attribute acordingly

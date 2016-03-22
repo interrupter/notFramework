@@ -7,7 +7,6 @@ var dataSetSingle = new notRecord({}, {
 });
 
 
-
 var dataSetArray = [
     {
         title: 'title 1',
@@ -92,6 +91,28 @@ var helpers = {
 };
 
 $(function () {
+    var app = new notApp({
+        //url from which will take interfaceManifest json file
+        interfaceManifestURL: './js/manifest.json',
+        siteManifest: {
+            //routie route desription: controller name, real controller is function preffixed with 'nc', ncMain, ncPublication
+            '': 'main',
+        },
+        //base controller, executed on every site page before any other controller
+        initController: 'init',
+        //form auto generation
+        forms: {
+            //common is for profile
+            //associated object is options for generator object
+            //default generator notForm
+            common: {
+                templateUrl: './templates/elements.html'
+            }
+        }
+    }).exec();
+
+    //var form = new notForm({});
+/*
     notTemplateCache.load({
         complexTemplate: './templates/complexTemplate.html',
         manyTemplate: './templates/manyTemplate.html',
@@ -130,7 +151,7 @@ $(function () {
             $('#manyElements').append(manyElementsContent);
         });
 
-
+*/
 
 
 

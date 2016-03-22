@@ -1,3 +1,4 @@
+
 String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
@@ -84,7 +85,7 @@ var notRecord_Interface = {
                 formData.append(i, requestData[i]);
             }
         }
-        return (actionData.method === 'POST' && (actionData.hasOwnProperty('formData')&& actionData.formData)) ? (record.getParam('formData')||formData) : requestData;
+        return (actionData.method === 'POST' && (actionData.hasOwnProperty('formData')&& actionData.formData)) ? (record.getModelParam('formData')||formData) : requestData;
     },
 
     request: function(record, actionName, callbackSuccess, callbackError) {
@@ -144,7 +145,17 @@ var notRecord_Interface = {
 
 //создаем объект с заданым манифестом интерфейса, если есть данные, то добавляем в него
 var notRecord = function(interfaceManifest, item) {
-    'use strict';
+    if(item && item.isRecord){
+        return item;
+    }else{
+        if (Array.isArray(item)){
+            var collection = [];
+            for(var i = 0; i < item.length; i++){
+                collection.push(new notRecord(interfaceManifest, item[i]));
+            }
+            return collection;
+        }
+    }
     this._notOptions = {
         interfaceManifest: interfaceManifest,
         filter: {},
@@ -167,7 +178,7 @@ var notRecord = function(interfaceManifest, item) {
                 this['$' + actionName] = function(callbackSuccess, callbackError) {
                     console.log('$' + actionName);
                     (notRecord_Interface.request.bind(notRecord_Interface, this, actionName+'', callbackSuccess, callbackError)).call();
-                }
+                }.bind(this)
             } else {
                 console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + actionName, '" that alredy exists');
             }
@@ -175,6 +186,8 @@ var notRecord = function(interfaceManifest, item) {
     }
     return this;
 };
+
+notRecord.prototype.isRecord = true;
 
 Object.defineProperties(notRecord.prototype, {
     'modelName': {
@@ -195,20 +208,23 @@ notRecord.prototype.on = notEvent.on;
 notRecord.prototype.off = notEvent.off;
 notRecord.prototype.trigger = notEvent.trigger;
 
-notRecord.prototype.setParam = function(paramName, paramValue) {
-    'use strict';
-    this._notOptions[paramName] = paramValue;
+notRecord.prototype.setModelParam = function(paramName, paramValue) {
+    if (this){
+        if (this.hasOwnProperty('_notOptions')){
+            this._notOptions[paramName] = paramValue;
+        }
+    }
+
     return this;
 }
 
-notRecord.prototype.getParam = function(paramName) {
-    'use strict';
-    return this._notOptions[paramName];
+notRecord.prototype.getModelParam = function(paramName) {
+    return this&&this.hasOwnProperty('_notOptions')?this._notOptions[paramName]: null;
 }
 
 notRecord.prototype.getModelName = function() {
-    'use strict';
-    return this._notOptions.interfaceManifest.model;
+
+    return this&&this.hasOwnProperty('_notOptions')?this._notOptions.interfaceManifest.model:null;
 }
 
 
@@ -243,8 +259,8 @@ notRecord.prototype.getFieldTitle = function(fieldName) {
 notRecord.prototype.getFieldTitles = function() {
     var defaultResult = [];
     if((typeof this._notOptions.interfaceManifest.formFieldsTypes !== 'undefined') && (this._notOptions.interfaceManifest.formFieldsTypes) && Object.keys(this._notOptions.interfaceManifest.formFieldsTypes).length > 0) {
-        for(var i = 0; i < this.getParam('fields').length; i++) {
-            var fieldName = this.getParam('fields')[i];
+        for(var i = 0; i < this.getModelParam('fields').length; i++) {
+            var fieldName = this.getModelParam('fields')[i];
             var fieldTitle = {};
             fieldTitle[fieldName] = this.getFieldTitle(fieldName);
             defaultResult.push(fieldTitle);
@@ -257,7 +273,7 @@ notRecord.prototype._addMetaAttrs = function() {
     var i,
         fieldName,
         fieldType,
-        fields = this.getParam('fields');
+        fields = this.getModelParam('fields');
     for(i in fields) {
         fieldName = fields[i];
         fieldType = typeof this[fieldName];
@@ -268,7 +284,7 @@ notRecord.prototype._addMetaAttrs = function() {
 };
 
 notRecord.prototype._addMetaAttr = function(name, value) {
-    var i;
+    var i, k;
     for(i in value) {
         k = i + "";
         Object.defineProperty(this, name + i.capitalizeFirstLetter(), {
@@ -280,12 +296,18 @@ notRecord.prototype._addMetaAttr = function(name, value) {
     }
 };
 
+notRecord.prototype.setChanged = function(attrName, attrValue) {    
+    this.trigger('onAttrChange_' + attrName, this, attrName, attrValue);
+    this.trigger('onAttrChange', this, attrName, attrValue);
+    return this;
+}
+
 notRecord.prototype.setAttr = function(attrName, attrValue) {
     'use strict';
-    var fields = this.getParam('fields');
+    var fields = this.getModelParam('fields');
     if(fields.indexOf(attrName) == -1) {
         fields.push(attrName);
-        this.setParam('fields', fields);
+        this.setModelParam('fields', fields);
     }
     this[attrName] = attrValue;
     if(typeof attrValue === 'Object') {
@@ -326,7 +348,7 @@ notRecord.prototype.getAttr = function(attrName) {
                 return undefined;
             break;
         case 1:
-            if(this.getParam('fields').indexOf(attrName) > -1) {
+            if(this.getModelParam('fields').indexOf(attrName) > -1) {
                 return this[attrName];
             } else {
                 return undefined;
@@ -339,49 +361,49 @@ notRecord.prototype.getAttr = function(attrName) {
 
 notRecord.prototype.setFilter = function(filterData) {
     'use strict';
-    this.setParam('filter', filterData);
+    this.setModelParam('filter', filterData);
     return this;
 };
 
 notRecord.prototype.getFilter = function() {
     'use strict';
-    return this.getParam('filter');
+    return this.getModelParam('filter');
 };
 
 notRecord.prototype.setSorter = function(sorterData) {
     'use strict';
-    this.setParam('sorter', sorterData);
+    this.setModelParam('sorter', sorterData);
     return this;
 };
 
 notRecord.prototype.getSorter = function() {
     'use strict';
-    return this.getParam('sorter');
+    return this.getModelParam('sorter');
 };
 
 notRecord.prototype.setPageNumber = function(pageNumber) {
     'use strict';
-    this.setParam('pageNumber', pageNumber);
+    this.setModelParam('pageNumber', pageNumber);
     return this;
 };
 
 notRecord.prototype.setPageSize = function(pageSize) {
     'use strict';
-    this.setParam('pageSize', pageSize);
+    this.setModelParam('pageSize', pageSize);
     return this;
 };
 
 notRecord.prototype.setPager = function(pageSize, pageNumber) {
     'use strict';
-    this.setParam('pageSize', pageSize).setParam('pageNumber', pageNumber);
+    this.setModelParam('pageSize', pageSize).setModelParam('pageNumber', pageNumber);
     return this;
 };
 
 notRecord.prototype.getPager = function() {
     'use strict';
     return {
-        pageSize: this.getParam('pageSize'),
-        pageNumber: this.getParam('pageNumber')
+        pageSize: this.getModelParam('pageSize'),
+        pageNumber: this.getModelParam('pageNumber')
     };
 };
 
@@ -390,10 +412,25 @@ notRecord.prototype.getRecord = function() {
     var result = {},
         i = 0,
         fieldName,
-        fields = this.getParam('fields');
+        fields = this.getModelParam('fields');
     for(i = 0; i < fields.length; i++) {
         fieldName = fields[i];
         result[fieldName] = this.getAttr(fieldName);
+        if (result[fieldName] && result[fieldName].isRecord){
+            result[fieldName] = result[fieldName].getRecord();
+        }else{
+            if (Array.isArray(result[fieldName])){
+                var col = [];
+                for(var j = 0; j < result[fieldName].length; j++){
+                    if (result[fieldName][j] && result[fieldName][j].isRecord){
+                        col.push(result[fieldName][j].getRecord());
+                    }else{
+                        col.push(result[fieldName][j]);
+                    }
+                }
+                result[fieldName] = col;
+            }
+        }
     }
     return result;
 };

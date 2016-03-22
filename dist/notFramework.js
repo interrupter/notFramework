@@ -1389,7 +1389,8 @@ var notRecord_Interface = {
             }
         }
         var formData = new FormData();
-        if(Object.keys(requestData).length > 0) {
+        var len = Object.keys(requestData).length;
+        if(len > 0) {
             for(var i in requestData) {
                 formData.append(i, requestData[i]);
             }
@@ -1424,7 +1425,7 @@ var notRecord_Interface = {
                     callbackSuccess && callbackSuccess(result);
                 } else {
                     if(typeof callbackError !== 'undefined' && callbackError !== null && code === "error") callbackError(data);
-                }                
+                }
             }
         };
         if(formData instanceof FormData) {
@@ -1474,10 +1475,11 @@ var notRecord = function(interfaceManifest, item) {
         for(var actionName in this._notOptions.interfaceManifest.actions){
             if(!(this.hasOwnProperty('$' + actionName))) {
                 var action = function(callbackSuccess, callbackError) {
-                    (notRecord_Interface.request.bind(notRecord_Interface, that, this.actionName, callbackSuccess, callbackError)).call();
+                    (notRecord_Interface.request.bind(notRecord_Interface, this.actionOwner, this.actionName, callbackSuccess, callbackError)).call();
                 };
                 action.actionName = actionName;
-                that['$' + actionName] = action.bind(action);
+                action.actionOwner = this;
+                this['$' + actionName] = action.bind(action);
             } else {
                 console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + actionName, '" that alredy exists');
             }

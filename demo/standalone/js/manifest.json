@@ -106,6 +106,13 @@
                         }
                     }
                 }
+            },
+            "status":{
+              "method": "POST",
+              "isArray": false,
+              "data": ["record"],
+              "auth": true,
+              "role": ["guest"]
             }
         }
     }

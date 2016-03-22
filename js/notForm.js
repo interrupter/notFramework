@@ -708,7 +708,7 @@ notForm.prototype.attachRemoveOnRestore = function() {
 
 notForm.prototype._removeForm = function(e) {
     if(typeof e !== 'undefined' && e !== null) e.preventDefault();
-    this.removeNodes(this._working.resultForm);    
+    this.removeNodes(this._working.resultForm);
     if(typeof e !== 'undefined' && e !== null) {
         (this._getParams().hasOwnProperty('afterRestore') ? this._getParams().afterRestore(e) : null);
     }
@@ -719,13 +719,10 @@ notForm.prototype._getModelName = function() {
     if(typeof this._getParams()
         .modelName !== 'undefined' && this._getParams()
         .modelName !== null) {
-        return this._getParams()
-            .modelName;
+        return this._getParams().modelName;
     } else {
-        if(this._getParams()
-            .hasOwnProperty('data')) {
-            var data = this._getParams()
-                .data;
+        if(this._getParams().hasOwnProperty('data')) {
+            var data = this._getParams().data;
             if(typeof data.modelName !== 'undefined' && data.modelName !== null) {
                 return data.modelName;
             }

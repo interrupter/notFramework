@@ -1035,7 +1035,7 @@ notForm.prototype.attachRemoveOnRestore = function() {
 
 notForm.prototype._removeForm = function(e) {
     if(typeof e !== 'undefined' && e !== null) e.preventDefault();
-    this.removeNodes(this._working.resultForm);    
+    this.removeNodes(this._working.resultForm);
     if(typeof e !== 'undefined' && e !== null) {
         (this._getParams().hasOwnProperty('afterRestore') ? this._getParams().afterRestore(e) : null);
     }
@@ -1046,13 +1046,10 @@ notForm.prototype._getModelName = function() {
     if(typeof this._getParams()
         .modelName !== 'undefined' && this._getParams()
         .modelName !== null) {
-        return this._getParams()
-            .modelName;
+        return this._getParams().modelName;
     } else {
-        if(this._getParams()
-            .hasOwnProperty('data')) {
-            var data = this._getParams()
-                .data;
+        if(this._getParams().hasOwnProperty('data')) {
+            var data = this._getParams().data;
             if(typeof data.modelName !== 'undefined' && data.modelName !== null) {
                 return data.modelName;
             }
@@ -1487,12 +1484,10 @@ var notRecord = function(interfaceManifest, item) {
         ){
         for(var actionName in this._notOptions.interfaceManifest.actions){
             if(!(this.hasOwnProperty('$' + actionName))) {
-                var aName = actionName+'';
-                this['$' + aName] = function(callbackSuccess, callbackError) {
-                    console.log('$' + aName);
-                    (notRecord_Interface.request.bind(notRecord_Interface, this, this.actionName, callbackSuccess, callbackError)).call();
+                that['$' + index] = function(callbackSuccess, callbackError) {
+                    console.log('$' + index);
+                    (notRecord_Interface.request.bind(notRecord_Interface, this, index + '', callbackSuccess, callbackError)).call();
                 }
-                this['$' + aName].actionName = aName;
             } else {
                 console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + actionName, '" that alredy exists');
             }

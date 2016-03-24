@@ -1404,7 +1404,15 @@ var notRecord_Interface = {
                 formData.append(i, requestData[i]);
             }
         }
-        return (actionData.method === 'POST' && (actionData.hasOwnProperty('formData')&& actionData.formData)) ? (record.getModelParam('formData')||formData) : JSON.stringify(requestData);
+        if ((actionData.method === 'POST' && (actionData.hasOwnProperty('formData')&& actionData.formData))){
+            return (record.getModelParam('formData')||formData);
+        }else{
+            if (actionData.hasOwnProperty('json') && actionData.json){
+                return JSON.stringify(requestData);
+            }else{
+                return requestData;
+            }
+        }
     },
 
     request: function(record, actionName, callbackSuccess, callbackError) {

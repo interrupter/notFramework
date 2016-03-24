@@ -1859,7 +1859,8 @@ notTable.prototype.renderWrapper = function() {
 };
 
 notTable.prototype.renderHeader = function() {
-    var tableHeader = this.options.place.querySelectorAll(':scope thead tr')[0];
+    var tableHeader = this.options.place.querySelector(':scope thead tr');
+    if (!tableHeader) return;
     for(var i = 0; i < this.options.headerTitles.length; i++) {
         var newTh = document.createElement('TH');
         newTh.innerHTML = this.options.headerTitles[i].title;
@@ -1872,15 +1873,23 @@ notTable.prototype.renderHeader = function() {
     }
 };
 
+notTable.prototype.findBody = function(){
+    return this.options.place.querySelector(':scope tbody');
+}
+
+notTable.prototype.clearBody = function(){
+    var tableBody = this.findBody();
+    if (!tableBody) return;
+    tableBody.innerHTML = '';
+}
+
 notTable.prototype.renderBody = function() {
     if(!this.options.onePager) {
-        this.options.place.querySelectorAll(':scope tbody')[0].innerHTML = '';
+        this.clearBody();
     }
-
     var thisPageStarts = this.options.pageSize * (this.options.pageNumber),
         nextPageEnds = this.options.pageSize * (this.options.pageNumber + 1),
-        tbody = this.options.place.querySelectorAll(':scope tbody')[0];
-
+        tbody = this.findBody();
     for(var i = thisPageStarts; i < Math.min(nextPageEnds, this._working.filteredData.length); i++) {
         tbody.appendChild(this.renderRow(this._working.filteredData[i]));
     }
@@ -1888,7 +1897,11 @@ notTable.prototype.renderBody = function() {
 
 
 notTable.prototype.refreshBody = function() {
-    this.options.place.querySelectorAll(':scope tbody')[0].innerHTML = '';
+    var tbody = this.findBody();
+    if (!body){
+        return ;
+    }
+    this.clearBody();
     var thisPageStarts = 0,
         nextPageEnds = this.options.pageSize * (this.options.pageNumber + 1),
         tbody = this.options.place.querySelectorAll(':scope tbody')[0];

@@ -1489,7 +1489,7 @@ var notRecord = function(interfaceManifest, item) {
     if (this._notOptions.hasOwnProperty('interfaceManifest') && typeof this._notOptions.interfaceManifest !== 'undefined' && this._notOptions.interfaceManifest !== null &&
         this._notOptions.interfaceManifest.hasOwnProperty('actions') && typeof this._notOptions.interfaceManifest.actions !== 'undefined' && this._notOptions.interfaceManifest.actions !== null
         ){
-        for(var actionName in this._notOptions.interfaceManifest.actions){
+        /*for(var actionName in this._notOptions.interfaceManifest.actions){
             if(!(this.hasOwnProperty('$' + actionName))) {
                 var action = function(callbackSuccess, callbackError) {
                     (notRecord_Interface.request.bind(notRecord_Interface, this.actionOwner, this.actionName, callbackSuccess, callbackError)).call();
@@ -1500,7 +1500,17 @@ var notRecord = function(interfaceManifest, item) {
             } else {
                 console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + actionName, '" that alredy exists');
             }
+        }*/
+        $.each(this._notOptions.interfaceManifest.actions, function (index, actionManifest) {
+        if (!(this.hasOwnProperty('$' + index))) {
+            that['$' + index] = function (callbackSuccess, callbackError) {
+                console.log('$' + index);
+                (notRecord_Interface.request.bind(notRecord_Interface, this, index + '', callbackSuccess, callbackError)).call();
+            }
+        } else {
+            console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + index, '" that alredy exists');
         }
+    });
     }
     return this;
 };

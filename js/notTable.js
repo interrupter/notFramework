@@ -136,13 +136,12 @@ notTable.prototype.renderBody = function() {
 
 notTable.prototype.refreshBody = function() {
     var tbody = this.findBody();
-    if (!body){
+    if (!tbody){
         return ;
     }
     this.clearBody();
     var thisPageStarts = 0,
-        nextPageEnds = this.options.pageSize * (this.options.pageNumber + 1),
-        tbody = this.options.place.querySelectorAll(':scope tbody')[0];
+        nextPageEnds = this.options.pageSize * (this.options.pageNumber + 1);
 
     for(var i = thisPageStarts; i < Math.min(nextPageEnds, this._working.filteredData.length); i++) {
         tbody.appendChild(this.renderRow(this._working.filteredData[i]));

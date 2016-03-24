@@ -2305,7 +2305,7 @@ notTemplate.prototype.insert = function(parent, children){
                     this.insert(parent, children[j]);
                 }
             }else{
-                if (children instanceof HTMLElement) parent.parentNode.insertBefore(children, parent);
+                if (children instanceof HTMLElement) parent.appendChild(children, parent);
             }
         }
     }

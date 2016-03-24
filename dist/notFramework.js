@@ -105,7 +105,6 @@ notApp.prototype._initInterface = function (index, manifest) {
 };
 
 notApp.prototype.nr = function(modelName, data) {
-
     var manifest = this._notOptions.interfaceManifest.hasOwnProperty(modelName)?this._notOptions.interfaceManifest[modelName]:{};
     console.log(modelName, manifest, data);
     return new notRecord(manifest, data);
@@ -571,7 +570,9 @@ notForm.prototype.buildFormBlockElement = function(block) {
         title:      block.title,
         scenario:   this._getParams().scenario,
         blockType:  block.type,
-        data:       this.app.nr(block.modelName, fieldValue)
+        modelName:  block.modelName?block.modelName:null,
+        data:       block.modelName?this.app.nr(block.modelName, fieldValue):this.app.nr(this._getParams().data.getModelName(), fieldValue),
+        fields:     block.fields?block.fields:null
     });
     return [subForm];
 }
@@ -730,10 +731,18 @@ notForm.prototype.buildBlockWrapper = function(blockName) {
 notForm.prototype.buildBlock = function() {
     var block = '',
         i = 0,
-        scenario = this._getScenario();
-    if(typeof scenario !== 'undefined' && scenario !== null) {
-        this.buildContents(scenario.fields);
-        block = this.buildBlockWrapper(this._getParams().blockType);
+        fields = null,
+        params = this._getParams();
+    if(params.fields){
+        fields = params.fields
+    }else{
+        if (params.data && params.data.isRecord){
+            fields = scenario.fields;
+        }
+    }
+    if(fields) {
+        this.buildContents(fields);
+        block = this.buildBlockWrapper(params.blockType);
         var blockElement = this.queryResult(block, ':scope [data-role="block"]');
         console.log(blockElement);
         this.fillWithContent(block, blockElement);
@@ -897,7 +906,7 @@ notForm.prototype._collectFieldsDataToRecord = function() {
                 }
                 break;
             case 'multi':
-                var inpEls = this.queryResult(form, ':scope [name="' + fieldName + '"] option:checked');
+                var inpEls = this.queryResultAll(form, ':scope [name="' + fieldName + '"] option:checked');
                 if(inpEls) {
                     fieldValue = [];
                     for(var j = 0; j < inpEls.length; j++) {
@@ -1067,7 +1076,7 @@ notForm.prototype._getModel = function() {
 
 notForm.prototype._getFormFieldsTypes = function() {
     var model = this._getModel();
-    return model.formFieldsTypes;
+    return model&&model.formFieldsTypes?model.formFieldsTypes:null;
 };
 
 notForm.prototype._getFormField = function(field) {
@@ -2228,7 +2237,7 @@ notTemplate.prototype._exec = function() {
         this._working.currentIndex = 0;
         this._working.currentItem = this._notOptions.data;
         this._proccessItem();
-        for(var j = 0; j < this._working.currentEl.children.length; j++){            
+        for(var j = 0; j < this._working.currentEl.children.length; j++){
             this._working.result.push(this._working.currentEl.children[j]);
         }
     }
@@ -2559,7 +2568,7 @@ notTemplate.prototype.proccessorsLib = {
                     var fieldName = input.attributeExpression.replace(':', '');
                 }
             }
-            if (fieldName){
+            if (fieldName && item.isRecord){
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
@@ -2592,7 +2601,7 @@ notTemplate.prototype.proccessorsLib = {
                     var fieldName = input.attributeExpression.replace(':', '');
                 }
             }
-            if (fieldName){
+            if (fieldName && item.isRecord){
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
@@ -2644,7 +2653,7 @@ notTemplate.prototype.proccessorsLib = {
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){
             var fieldName = helpers.hasOwnProperty('fieldName')?helpers.fieldName:null;
-            if (fieldName){
+            if (fieldName && item.isRecord){
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
 
@@ -2664,7 +2673,7 @@ notTemplate.prototype.proccessorsLib = {
                 if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('validators') && helpers.validators.hasOwnProperty(input.attributeResult)) {
                     edit = helpers.validators[input.attributeResult](input, item, e);
                 }
-                if (edit){
+                if (edit && item.isRecord){
                     if (item.setAttr){
                         if (item.getAttr(input.attributeResult) == input.element.value){
                             edit = false;

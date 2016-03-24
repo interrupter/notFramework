@@ -3,7 +3,7 @@
         "model": "user",
         "url": "/api/:modelName",
         "showMessages": false,
-        "formFieldsTypes":{
+        "formFieldsTypes": {
             "address": {
                 "type": "text",
                 "placeholder": "Адрес"
@@ -48,7 +48,7 @@
         "model": "firm",
         "url": "/api/:modelName",
         "showMessages": false,
-        "formFieldsTypes":{
+        "formFieldsTypes": {
             "address": {
                 "type": "text",
                 "placeholder": "Адрес"
@@ -65,7 +65,7 @@
                 "type": "addresses",
                 "placeholder": "Адреса"
             },
-            "submit":{
+            "submit": {
                 "type": "submit"
             }
         },
@@ -83,21 +83,25 @@
                             "fields": [
                                 "name",
                                 "address",
-                                "phone",
-                                {
+                                "phone", {
+                                    "type": "block",
+                                    "name": "contacts",
+                                    "title": "Контакты",
+                                    "modelField": "contacts",
+                                    "fields": ["phone", "email"]
+                                }, {
                                     "type": "block",
                                     "name": "director",
                                     "title": "Директор",
-                                    "form":       "new",
+                                    "form": "new",
                                     "modelField": "director",
                                     "modelName": "user"
-                                },
-                                {
-                                    "type":       "block",
-                                    "name":       "vice",
-                                    "title":      "Заместитель",
+                                }, {
+                                    "type": "block",
+                                    "name": "vice",
+                                    "title": "Заместитель",
                                     "modelName": "user",
-                                    "form":       "new",
+                                    "form": "new",
                                     "modelField": "vice"
                                 },
                                 "shops",
@@ -107,12 +111,12 @@
                     }
                 }
             },
-            "status":{
-              "method": "POST",
-              "isArray": false,
-              "data": ["record"],
-              "auth": true,
-              "role": ["guest"]
+            "status": {
+                "method": "POST",
+                "isArray": false,
+                "data": ["record"],
+                "auth": true,
+                "role": ["guest"]
             }
         }
     }

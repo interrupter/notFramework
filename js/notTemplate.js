@@ -122,7 +122,7 @@ notTemplate.prototype._exec = function() {
         this._working.currentIndex = 0;
         this._working.currentItem = this._notOptions.data;
         this._proccessItem();
-        for(var j = 0; j < this._working.currentEl.children.length; j++){            
+        for(var j = 0; j < this._working.currentEl.children.length; j++){
             this._working.result.push(this._working.currentEl.children[j]);
         }
     }
@@ -453,7 +453,7 @@ notTemplate.prototype.proccessorsLib = {
                     var fieldName = input.attributeExpression.replace(':', '');
                 }
             }
-            if (fieldName){
+            if (fieldName && item.isRecord){
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
@@ -486,7 +486,7 @@ notTemplate.prototype.proccessorsLib = {
                     var fieldName = input.attributeExpression.replace(':', '');
                 }
             }
-            if (fieldName){
+            if (fieldName && item.isRecord){
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
@@ -538,7 +538,7 @@ notTemplate.prototype.proccessorsLib = {
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){
             var fieldName = helpers.hasOwnProperty('fieldName')?helpers.fieldName:null;
-            if (fieldName){
+            if (fieldName && item.isRecord){
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
 
@@ -558,7 +558,7 @@ notTemplate.prototype.proccessorsLib = {
                 if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('validators') && helpers.validators.hasOwnProperty(input.attributeResult)) {
                     edit = helpers.validators[input.attributeResult](input, item, e);
                 }
-                if (edit){
+                if (edit && item.isRecord){
                     if (item.setAttr){
                         if (item.getAttr(input.attributeResult) == input.element.value){
                             edit = false;

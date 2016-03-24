@@ -105,7 +105,6 @@ notApp.prototype._initInterface = function (index, manifest) {
 };
 
 notApp.prototype.nr = function(modelName, data) {
-
     var manifest = this._notOptions.interfaceManifest.hasOwnProperty(modelName)?this._notOptions.interfaceManifest[modelName]:{};
     console.log(modelName, manifest, data);
     return new notRecord(manifest, data);

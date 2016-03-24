@@ -45,6 +45,10 @@ var ncMain = function(app, params){
             name: 'firm 1',
             phone: '1234567890',
             address: 'city',
+            contacts:   {
+                phone: '+87162816283',
+                email: 'levo@joasdf.ru'
+            },
             director: app.nr('user', {
                 username: 'director 1',
                 email: 'director@mail.ru',

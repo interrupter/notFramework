@@ -899,10 +899,13 @@ notForm.prototype._collectFieldsDataToRecord = function() {
             case 'date':
             case 'checkbox':
                 var inpEl = this.queryResult(form, ':scope [name="' + fieldName + '"]');
-
                 if(inpEl && inpEl.type !== 'submit') {
                     console.log(inpEl, inpEl.value);
-                    fieldValue = inpEl.value;
+                    if (inpEl.type=='checkbox' ){
+                        fieldValue = inpEl.getAttribute('checked')?inpEl.value:null;
+                    }else{
+                        fieldValue = inpEl.value;
+                    }
                 }
                 break;
             case 'multi':

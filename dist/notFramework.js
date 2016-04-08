@@ -324,6 +324,7 @@ notController.prototype.exec = function(params) {
     }
 }
 
+
 if(typeof extend === 'undefined' || extend === null) {
     var extend = function(defaults, options) {
         var extended = {};
@@ -511,7 +512,7 @@ notForm.prototype.buildFormElement = function(fieldName) {
     var field = this._getFormField(fieldName);
     var helpers = {
         fieldValue: (params && typeof params.data !== 'undefined' && params.data !== null) ? this._getFieldValue(params.data, fieldName) : '',
-        fieldName: fieldName,
+        fieldName: params.modelField?params.modelField+'['+fieldName+']':fieldName,
         fieldLabel: field.hasOwnProperty('label') ? field.label : '',
         fieldId: fieldName + 'Input',
         fieldPlaceHolder: field.hasOwnProperty('placeholder') ? field.placeholder : '',
@@ -571,6 +572,7 @@ notForm.prototype.buildFormBlockElement = function(block) {
         scenario:   this._getParams().scenario,
         blockType:  block.type,
         modelName:  block.modelName?block.modelName:null,
+        modelField:  block.modelField?block.modelField:null,
         data:       block.modelName?this.app.nr(block.modelName, fieldValue):this.app.nr(this._getParams().data.getModelName(), fieldValue),
         fields:     block.fields?block.fields:null
     });
@@ -877,9 +879,56 @@ notForm.prototype._getFormTitle = function() {
     return 'Form title';
 };
 
+notForm.prototype.extractFieldValue = function(fieldName, fieldValue){
+    var fieldValue = fieldValue?fieldValue:undefined,
+        field = this._getFormField(fieldName),
+        form = this.queryResult(this._working.resultForm, ':scope form');
+    switch(field.type) {
+        case 'multi':
+            var inpEls = this.queryResultAll(form, ':scope [name="' + fieldName + '"] option:checked');
+            if(inpEls) {
+                fieldValue = [];
+                for(var j = 0; j < inpEls.length; j++) {
+                    console.log(inpEls[j], inpEls[j].value);
+                    fieldValue.push(inpEls[j].value);
+                }
+            }
+            break;
+        case 'submit':
+        case 'file':  break;
+        default:
+            var inpEl = this.queryResult(form, ':scope [name="' + fieldName + '"]');
+            if(inpEl && inpEl.type !== 'submit') {
+                console.log(inpEl, inpEl.value);
+                if (inpEl.type=='checkbox' ){
+                    fieldValue = inpEl.checked?inpEl.value:null;
+                }else{
+                    fieldValue = inpEl.value;
+                }
+            }
+    }
+    return fieldValue;
+}
+
+notForm.prototype.extractBlockValue = function(block, blockValue){
+    var blockValue = blockValue?blockValue:{};
+    for(var i = 0; i < block.fields.length; i++) {
+        fieldName = block.fields[i];
+        field = this._getFormField(fieldName);
+        if(field.hasOwnProperty('ignore') && field.ignore){
+            continue;
+        }else{
+            fieldValue = this.extractFieldValue(block.modelField+'['+fieldName+']');
+        }
+        if(typeof fieldValue !== 'undefined') {
+            blockValue[fieldName] = fieldValue;
+        }
+    }
+    return blockValue;
+}
+
 notForm.prototype._collectFieldsDataToRecord = function() {
     console.log(this._working.resultForm);
-
     var params = this._getParams(),
         record = params.data,
         scenario = this._getScenario(),
@@ -893,54 +942,19 @@ notForm.prototype._collectFieldsDataToRecord = function() {
 
     for(i = 0; i < scenario.fields.length; i++) {
         fieldName = scenario.fields[i];
-        field = this._getFormField(fieldName);
-        if(field.hasOwnProperty('ignore') && field.ignore) continue;
-        fieldValue = undefined;
-        switch(field.type) {
-            case 'text':
-            case 'select':
-            case 'textarea':
-            case 'time':
-            case 'date':
-            case 'checkbox':
-                var inpEl = this.queryResult(form, ':scope [name="' + fieldName + '"]');
-                if(inpEl && inpEl.type !== 'submit') {
-                    console.log(inpEl, inpEl.value);
-                    if (inpEl.type=='checkbox' ){
-                        fieldValue = inpEl.checked?inpEl.value:null;
-                    }else{
-                        fieldValue = inpEl.value;
-                    }
-                }
-                break;
-            case 'multi':
-                var inpEls = this.queryResultAll(form, ':scope [name="' + fieldName + '"] option:checked');
-                if(inpEls) {
-                    fieldValue = [];
-                    for(var j = 0; j < inpEls.length; j++) {
-                        console.log(inpEls[j], inpEls[j].value);
-                        fieldValue.push(inpEls[j].value);
-                    }
-                }
-                break;
-            case 'submit':
-            case 'file':
-                continue;
-            default:
-                var inpEl = this.queryResult(form, ':scope [name="' + fieldName + '"]');
-                if(inpEl && inpEl.type !== 'submit') {
-                    console.log(inpEl, inpEl.value);
-                    if (inpEl.type=='checkbox' ){
-                        fieldValue = inpEl.checked?inpEl.value:null;
-                    }else{
-                        fieldValue = inpEl.value;
-                    }
-                }
+        if (this.isFieldBlock(fieldName)){
+            fieldValue = this.extractBlockValue(fieldName, record[fieldName.modelField]);
+        }else{
+            field = this._getFormField(fieldName);
+            if(field.hasOwnProperty('ignore') && field.ignore){
+                continue
+            }else{
+                fieldValue = this.extractFieldValue(fieldName);
+            }
         }
         if(typeof fieldValue !== 'undefined') {
-            record.setAttr(fieldName, fieldValue);
+            record.setAttr(this.getFieldName(fieldName), fieldValue);
         }
-
     }
     record.setModelParam('formData', formData);
 };

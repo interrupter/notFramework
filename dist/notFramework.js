@@ -925,7 +925,11 @@ notForm.prototype._collectFieldsDataToRecord = function() {
                 var inpEl = this.queryResult(form, ':scope [name="' + fieldName + '"]');
                 if(inpEl && inpEl.type !== 'submit') {
                     console.log(inpEl, inpEl.value);
-                    fieldValue = inpEl.value;
+                    if (inpEl.type=='checkbox' ){
+                        fieldValue = inpEl.checked?inpEl.value:null;
+                    }else{
+                        fieldValue = inpEl.value;
+                    }
                 }
         }
         if(typeof fieldValue !== 'undefined') {

@@ -473,7 +473,12 @@ notForm.prototype.addContent = function(el, container,mainContainer){
 }
 
 notForm.prototype.fillWithContent = function(container, mainContainer){
-    var fields = scenario = this._getScenario().fields;
+    var scenario = this._getScenario(),
+        params = this._getParams(),
+        fields = scenario?scenario.fields:(params&&params.hasOwnProperty('fields')?params.fields:null);
+    if (!fields){
+        return;
+    }
     for(var i = 0; i < fields.length; i++){
         var fieldName = this.getFieldName(fields[i]);
         var fieldContent = this.getFieldContent(fieldName);

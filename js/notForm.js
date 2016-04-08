@@ -576,7 +576,7 @@ notForm.prototype._collectFieldsDataToRecord = function() {
                 if(inpEl && inpEl.type !== 'submit') {
                     console.log(inpEl, inpEl.value);
                     if (inpEl.type=='checkbox' ){
-                        fieldValue = inpEl.getAttribute('checked')?inpEl.value:null;
+                        fieldValue = inpEl.checked?inpEl.value:null;
                     }else{
                         fieldValue = inpEl.value;
                     }

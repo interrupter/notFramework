@@ -502,8 +502,8 @@ notForm.prototype.buildForm = function() {
 notForm.prototype._getScenario = function() {
     var action = this._getAction(),
         params = this._getParams();
-    if(action.hasOwnProperty('form')) {
-        if(params.hasOwnProperty('scenario') && action.form.hasOwnProperty('scenario')) {
+    if(action && action.hasOwnProperty('form')) {
+        if(params && params.hasOwnProperty('scenario') && action.form.hasOwnProperty('scenario')) {
             if(action.form.scenario.hasOwnProperty(params.scenario)) {
                 return action.form.scenario[params.scenario];
             } else {

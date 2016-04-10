@@ -2731,16 +2731,24 @@ notTemplate.prototype.proccessorsLib = {
                 }
                 if (edit && item.isRecord){
                     if (item.setAttr){
-                        if ((input.element.type !=='checkbox') && item.getAttr(input.attributeResult) == input.element.value){
-                            edit = false;
+                        if(input.element.type == 'checkbox'){
+                            item.setAttr(input.attributeResult, input.element.checked?input.element.value:undefined);
                         }else{
-                            item.setAttr(input.attributeResult, input.element.value);
+                            if (item.getAttr(input.attributeResult) == input.element.value){
+                                edit = false;
+                            }else{
+                                item.setAttr(input.attributeResult, input.element.value);
+                            }
                         }
                     }else{
-                        if ((input.element.type !=='checkbox') && item[input.attributeResult] == input.element.value){
-                            edit = false;
+                        if(input.element.type == 'checkbox'){
+                            item.setAttr(input.attributeResult, input.element.checked?input.element.value:undefined);
                         }else{
-                            item[input.attributeResult] = input.element.value;
+                            if (item[input.attributeResult] == input.element.value){
+                                edit = false;
+                            }else{
+                                item[input.attributeResult] = input.element.value;
+                            }
                         }
                     }
                 }

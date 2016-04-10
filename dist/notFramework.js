@@ -723,6 +723,8 @@ notForm.prototype.buildBlockWrapper = function(blockName) {
             data: this._getParams(),
             helpers: {
                 formTitle: this._getParams().title,
+                blockName: blockName,
+                blockId: blockName,
                 formId: 'Form_' + params.data.getModelName() + '_' + params.actionName,
                 formName: 'Form_' + params.data.getModelName() + '_' + params.actionName,
                 formContainerId: 'FormContainer_' + params.data.getModelName() + '_' + params.actionName,

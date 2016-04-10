@@ -2731,13 +2731,13 @@ notTemplate.prototype.proccessorsLib = {
                 }
                 if (edit && item.isRecord){
                     if (item.setAttr){
-                        if (item.getAttr(input.attributeResult) == input.element.value){
+                        if ((input.element.type !=='checkbox') && item.getAttr(input.attributeResult) == input.element.value){
                             edit = false;
                         }else{
                             item.setAttr(input.attributeResult, input.element.value);
                         }
                     }else{
-                        if (item[input.attributeResult] == input.element.value){
+                        if ((input.element.type !=='checkbox') && item[input.attributeResult] == input.element.value){
                             edit = false;
                         }else{
                             item[input.attributeResult] = input.element.value;

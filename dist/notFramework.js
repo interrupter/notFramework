@@ -497,7 +497,7 @@ notForm.prototype._getFieldValue = function(object, fieldName) {
         }
     } else {
         if(object && object.hasOwnProperty(fieldName)) {
-            if(typeof object[fieldName] === 'object' && object[fieldName].hasOwnProperty('_id')) {
+            if(typeof object[fieldName] === 'object' &&  (object[fieldName] !== null) && object[fieldName].hasOwnProperty('_id')) {
                 value = object[fieldName]._id;
             } else {
                 value = object[fieldName];

@@ -269,7 +269,8 @@ notTable.prototype.updateData = function(){
         this.options.notRecord = this.options.notRecord.setFilter(this.getFilter()).setSorter(this.getSorter()).setPager(this.getPager().pageSize,this.getPager().pageNumber);
         this.options.notRecord.$list(function(data){
             console.log('$list for table', data);
-            that._working.filteredData = that._working.filteredData.concat(data);
+            this.options.data = this.options.data.concat(data);
+            this.proccessData();
             that.refreshBody();
         });
     }else{
@@ -304,7 +305,7 @@ notTable.prototype.proccessData = function(){
 
 notTable.prototype.bindSearch = function(){
     if(!searchEl) return;
-    var searchEl = this.options.place.querySelectorAll(':scope input[name="search"]')[0];
+    var searchEl = this.options.place.querySelectorAll('input[name="search"]')[0];
     var that = this;
     var onEvent = function(e){
         that.setFilter({filterSearch: this.value});
@@ -322,7 +323,7 @@ notTable.prototype.bindCustomBindings = function(){
     var that = this;
     setTimeout(function(){
         for(var selector in that.options.bindings){
-            var els = that.options.place.querySelectorAll(':scope '+selector);
+            var els = that.options.place.querySelectorAll(selector);
             for(var elId = 0; elId < els.length; elId++){
                 var el = els[elId];
                 for(var event in that.options.bindings[selector]){

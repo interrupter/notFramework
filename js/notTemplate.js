@@ -490,7 +490,7 @@ notTemplate.prototype.proccessorsLib = {
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
-                    if(input.element.value !=newVal){
+                    if(input.element.value != newVal){
                         input.element.value = newVal;
                     }
                 });

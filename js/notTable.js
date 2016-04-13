@@ -30,8 +30,8 @@ var notTable = function(options) {
 
             },
             pager: {
-                pageSize: 10,
-                pageNumber: 0,
+                pageSize: this.options.pageSize?this.options.pageSize:10,
+                pageNumber: this.options.pageNumber?this.options.pageNumber:0,
             }
         },
         filteredData: []
@@ -348,7 +348,7 @@ notTable.prototype.addData = function() {
 };
 
 notTable.prototype.loadNext = function() {
-    this.options.pageNumber++;
+    this._working.viewPrefs.pageNumber++;
     this.updateData();
 };
 

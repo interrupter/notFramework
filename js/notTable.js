@@ -281,7 +281,7 @@ notTable.prototype.updateData = function(){
 };
 
 notTable.prototype.proccessData = function(){
-    var thatFilter = that.getFilter();
+    var thatFilter = this.getFilter();
     if(typeof thatFilter !== 'undefined' && thatFilter !== null && typeof thatFilter.filterSearch !== 'undefined' && thatFilter.filterSearch!== null && thatFilter.filterSearch.length > 0){
         //
         this._working.filteredData = this.options.data.filter(that.testDataItem.bind(that));

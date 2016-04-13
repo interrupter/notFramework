@@ -262,8 +262,8 @@ notTable.prototype.setPager = function(hash){
 
 notTable.prototype.resetPager = function(hash){
     this.setPager({
-        pageSize: this.DEFAULT_PAGE_SIZE,
-        pageNumber: this.DEFAULT_PAGE_NUMBER,
+        pageSize: this.options.pageSize?this.options.pageSize:this.DEFAULT_PAGE_SIZE,
+        pageNumber: this.options.pageNumber?this.options.pageNumber:this.DEFAULT_PAGE_NUMBER,
     });
 };
 

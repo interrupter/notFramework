@@ -1925,8 +1925,8 @@ notTable.prototype.renderBody = function() {
     if(!this.options.onePager) {
         this.clearBody();
     }
-    var thisPageStarts = this.options.pageSize * (this.options.pageNumber),
-        nextPageEnds = this.options.pageSize * (this.options.pageNumber + 1),
+    var thisPageStarts = this.getPager().pageSize * (this.getPager().pageNumber),
+        nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1),
         tbody = this.findBody();
     for(var i = thisPageStarts; i < Math.min(nextPageEnds, this._working.filteredData.length); i++) {
         tbody.appendChild(this.renderRow(this._working.filteredData[i]));
@@ -1941,7 +1941,7 @@ notTable.prototype.refreshBody = function() {
     }
     this.clearBody();
     var thisPageStarts = 0,
-        nextPageEnds = this.options.pageSize * (this.options.pageNumber + 1);
+        nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1);
 
     for(var i = thisPageStarts; i < Math.min(nextPageEnds, this._working.filteredData.length); i++) {
         tbody.appendChild(this.renderRow(this._working.filteredData[i]));

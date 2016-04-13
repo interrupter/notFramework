@@ -260,11 +260,11 @@ notTable.prototype.setPager = function(hash){
     this.updateData();
 };
 
-notTable.prototype.resetPager = function(hash){
-    this.setPager({
+notTable.prototype.resetPager = function(){
+    this._working.viewPrefs.pager = {
         pageSize: this.options.pageSize?this.options.pageSize:this.DEFAULT_PAGE_SIZE,
         pageNumber: this.options.pageNumber?this.options.pageNumber:this.DEFAULT_PAGE_NUMBER,
-    });
+    };
 };
 
 

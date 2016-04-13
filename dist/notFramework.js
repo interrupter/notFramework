@@ -2069,7 +2069,7 @@ notTable.prototype.updateData = function(){
         this.options.notRecord = this.options.notRecord.setFilter(this.getFilter()).setSorter(this.getSorter()).setPager(this.getPager().pageSize,this.getPager().pageNumber);
         this.options.notRecord.$list(function(data){
             console.log('$list for table', data);
-            that._working.filteredData = data;
+            that._working.filteredData = that._working.filteredData.concat(data);
             that.refreshBody();
         });
     }else{

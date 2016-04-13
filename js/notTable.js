@@ -348,7 +348,7 @@ notTable.prototype.addData = function() {
 };
 
 notTable.prototype.loadNext = function() {
-    this._working.viewPrefs.pageNumber++;
+    this._working.viewPrefs.pager.pageNumber++;
     this.updateData();
 };
 

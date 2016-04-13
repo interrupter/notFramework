@@ -269,8 +269,8 @@ notTable.prototype.updateData = function(){
         this.options.notRecord = this.options.notRecord.setFilter(this.getFilter()).setSorter(this.getSorter()).setPager(this.getPager().pageSize,this.getPager().pageNumber);
         this.options.notRecord.$list(function(data){
             console.log('$list for table', data);
-            this.options.data = this.options.data.concat(data);
-            this.proccessData();
+            that.options.data = that.options.data.concat(data);
+            that.proccessData();
             that.refreshBody();
         });
     }else{

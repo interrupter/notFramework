@@ -2042,8 +2042,10 @@ notTable.prototype.getFilterSearch = function(){
 };
 
 notTable.prototype.invalidateData = function(){
-    this.options.data = [];
-    this.resetPager();
+    if (this.options.liveLoad && this.options.onePager){
+        this.options.data = [];
+        this.resetPager();
+    }
 }
 
 notTable.prototype.setFilter = function(hash){
@@ -2084,17 +2086,35 @@ notTable.prototype.testDataItem = function(item){
     return false;
 };
 
+notTable.prototype.setUpdating = function(){
+    this._working.updating = true;
+}
+
+notTable.prototype.setUpdated = function(){
+    this._working.updating = false;
+}
+
+notTable.prototype.ifUpdating = function(){
+    return this._working.updating;
+}
+
 notTable.prototype.updateData = function(){
     var that = this;
     if (this.options.liveLoad && this.options.notRecord){
+        if (this.ifUpdating()){
+            return;
+        }
         //load from server
         this.options.notRecord = this.options.notRecord.setFilter(this.getFilter()).setSorter(this.getSorter()).setPager(this.getPager().pageSize,this.getPager().pageNumber);
+        this.setUpdating();
         this.options.notRecord.$list(function(data){
             console.log('$list for table', data);
             that.options.data = that.options.data.concat(data);
             that.proccessData();
             that.refreshBody();
+            that.setUpdated();
         });
+
     }else{
         //local magic
         this.proccessData();

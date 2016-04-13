@@ -352,6 +352,7 @@ notRecord.prototype.getAttrByPath = function(object, attrPath){
 
 notRecord.prototype.getAttr = function(attrName) {
     'use strict';
+    if(typeof attrName === 'undefined' || attrName == null) return undefined;
     var path = attrName.split('.');
     switch (path.length){
         case 0:

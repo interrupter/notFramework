@@ -1698,6 +1698,7 @@ notRecord.prototype.getAttrByPath = function(object, attrPath){
 
 notRecord.prototype.getAttr = function(attrName) {
     'use strict';
+    if(typeof attrName === 'undefined' || attrName == null) return undefined;
     var path = attrName.split('.');
     switch (path.length){
         case 0:
@@ -1830,8 +1831,8 @@ var notTable = function(options) {
 
             },
             pager: {
-                pageSize: this.options.pageSize?this.options.pageSize:10,
-                pageNumber: this.options.pageNumber?this.options.pageNumber:0,
+                pageSize: this.options.pageSize?this.options.pageSize:this.DEFAULT_PAGE_SIZE,
+                pageNumber: this.options.pageNumber?this.options.pageNumber:this.DEFAULT_PAGE_NUMBER,
             }
         },
         filteredData: []
@@ -1839,6 +1840,9 @@ var notTable = function(options) {
     this.init();
     return this;
 };
+
+notTable.prototype.DEFAULT_PAGE_SIZE = 10;
+notTable.prototype.DEFAULT_PAGE_NUMBER = 0;
 
 notTable.prototype.init = function() {
     var oRequest = new XMLHttpRequest();
@@ -1949,16 +1953,22 @@ notTable.prototype.refreshBody = function() {
 };
 
 notTable.prototype.extractAttrValue = function(rItem, fieldName){
+    var result = undefined;
     if(rItem.getAttr){
-        return rItem.getAttr(fieldName);
+        result = rItem.getAttr(fieldName);
     }else{
-        return rItem[fieldName];
+        result =  rItem[fieldName];
+    }
+
+    if (typeof result !== 'undefined' && result !== null){
+        return result;
+    }else{
+        return 0;
     }
 }
 
 notTable.prototype.renderRow = function(item, index) {
     var newRow = document.createElement('TR');
-
     for(var i = 0; i < this.options.headerTitles.length; i++) {
         var newTd = document.createElement('TD');
         if (this.options.headerTitles[i].hasOwnProperty('editable')){
@@ -1983,8 +1993,6 @@ notTable.prototype.renderRow = function(item, index) {
     }
     return newRow;
 };
-
-
 
 notTable.prototype.attachSortingHandlers = function(headCell) {
     var that = this;
@@ -2021,6 +2029,7 @@ notTable.prototype.changeSortingOptions = function(el) {
 
 notTable.prototype.setSorter = function(hash){
     this._working.viewPrefs.sorter = hash;
+    this.invalidateData();
     this.updateData();
 };
 
@@ -2032,8 +2041,14 @@ notTable.prototype.getFilterSearch = function(){
     return (typeof this.getFilter() !== 'undefined' && this.getFilter() !== null && typeof this.getFilter().filterSearch !== 'undefined' && this.getFilter().filterSearch !== null)?this.getFilter().filterSearch.toString():'';
 };
 
+notTable.prototype.invalidateData = function(){
+    this.options.data = [];
+    this.resetPager();
+}
+
 notTable.prototype.setFilter = function(hash){
     this._working.viewPrefs.filter = hash;
+    this.invalidateData();
     this.updateData();
 };
 
@@ -2044,6 +2059,13 @@ notTable.prototype.getFilter = function(){
 notTable.prototype.setPager = function(hash){
     this._working.viewPrefs.pager = hash;
     this.updateData();
+};
+
+notTable.prototype.resetPager = function(hash){
+    this.setPager({
+        pageSize: this.DEFAULT_PAGE_SIZE,
+        pageNumber: this.DEFAULT_PAGE_NUMBER,
+    });
 };
 
 
@@ -2081,6 +2103,7 @@ notTable.prototype.updateData = function(){
 };
 
 notTable.prototype.proccessData = function(){
+    var that = this;
     var thatFilter = this.getFilter();
     if(typeof thatFilter !== 'undefined' && thatFilter !== null && typeof thatFilter.filterSearch !== 'undefined' && thatFilter.filterSearch!== null && thatFilter.filterSearch.length > 0){
         //
@@ -2090,7 +2113,7 @@ notTable.prototype.proccessData = function(){
     }
     ////sorter
     var thatSorter = that.getSorter();
-    var that = this;
+
     if(typeof thatSorter !== 'undefined' && thatSorter !== null){
         this._working.filteredData.sort(function(item1, item2){
             if (isNaN(that.extractAttrValue(item1, thatSorter.fieldName))){
@@ -2104,8 +2127,9 @@ notTable.prototype.proccessData = function(){
 }
 
 notTable.prototype.bindSearch = function(){
-    if(!searchEl) return;
+
     var searchEl = this.options.place.querySelectorAll('input[name="search"]')[0];
+    if(!searchEl) return;
     var that = this;
     var onEvent = function(e){
         that.setFilter({filterSearch: this.value});

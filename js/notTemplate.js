@@ -320,10 +320,10 @@ notTemplate.prototype._getAttributeExpressionResult = function(expression, item,
     }
 
     if(isFunction) {
-        result = (runner.hasOwnProperty(fieldName) ? runner[fieldName](item, index) : this._notOptions.attributeExpressionDefaultResult);
+        result = (runner.hasOwnProperty(fieldName) ? ((runner.getAttr && runner.getAttr(fieldName)) || runner[fieldName])(item, index) : this._notOptions.attributeExpressionDefaultResult);
     } else {
-        console.log(runner[fieldName]);
-        result = ((typeof runner[fieldName] !== 'undefined') ? runner[fieldName] : this._notOptions.attributeExpressionDefaultResult);
+        //console.log(runner[fieldName]);
+        result = ((typeof runner[fieldName] !== 'undefined' || (runner.getAttr &&  (typeof runner.getAttr(fieldName) !== 'undefined'))) ?((runner.getAttr && runner.getAttr(fieldName)) || runner[fieldName] ): this._notOptions.attributeExpressionDefaultResult);
     }
     return result;
 };

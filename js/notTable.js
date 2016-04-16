@@ -23,12 +23,8 @@ var notTable = function(options) {
     this._working = {
         templateNamesPrefix: 'notTable_',
         viewPrefs: {
-            sorter: {
-
-            },
-            filter: {
-
-            },
+            sorter: this.options.sorter?this.options.sorter:{},
+            filter: this.options.filter?this.options.filter:{},
             pager: {
                 pageSize: this.options.pageSize?this.options.pageSize:this.DEFAULT_PAGE_SIZE,
                 pageNumber: this.options.pageNumber?this.options.pageNumber:this.DEFAULT_PAGE_NUMBER,

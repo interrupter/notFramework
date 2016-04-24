@@ -2733,20 +2733,17 @@ notTemplate.prototype.proccessorsLib = {
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){
             var fieldName = null;
-            if (input.attributeExpression.indexOf('::')===0){
-                var helperName = input.attributeExpression.replace('::', '');
-                if(helpers.hasOwnProperty(helperName)&& helpers[helperName]){
-                    fieldName = helpers[helperName];
-                }
+            if (input.attributeExpression.indexOf('::')===0 && helpers.hasOwnProperty('fieldName')){
+                fieldName = valuePath;
             }else{
                 if(item.on && input.attributeExpression.indexOf(':')===0 ){
-                    var fieldName = input.attributeExpression.replace(':', '');
+                    var fieldName = valuePath;
                 }
             }
-            if (fieldName && item.isRecord){
-                item.on('onAttrChange_' + fieldName, function(){
+            if (fieldName && fieldName.length && item.isRecord){
+                item.on('onAttrChange_' + fieldName[0], function(){
                     console.log('on attr change', arguments);
-                    var newVal = item.getAttr(fieldName);
+                    var newVal = item.getAttr(fieldName.join('.'));
                     if(input.element.value != newVal){
                         input.element.value = newVal;
                     }

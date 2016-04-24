@@ -2734,10 +2734,10 @@ notTemplate.prototype.proccessorsLib = {
         if (live > -1 && live == input.params.length - 1){
             var fieldName = null;
             if (input.attributeExpression.indexOf('::')===0 && helpers.hasOwnProperty('fieldName')){
-                fieldName = valuePath;
+                fieldName = notCommon.normilizePath(input.attributeExpression);
             }else{
                 if(item.on && input.attributeExpression.indexOf(':')===0 ){
-                    var fieldName = valuePath;
+                    var fieldName = notCommon.normilizePath(input.attributeExpression);
                 }
             }
             if (fieldName && fieldName.length && item.isRecord){

@@ -558,31 +558,40 @@ notTemplate.prototype.proccessorsLib = {
         var that = this,
             liveEvents = ['change', 'keyup'];
         console.log('live', input);
+        var attrPath = input.attributeResult;
+        if (input.attributeExpression.indexOf(':')===0){
+            attrPath = input.attributeExpression;
+            if(input.attributeExpression.indexOf('::')===0){
+                attrPath = attrPath.replace('::fieldName', helpers.fieldName);
+            }else{
+                attrPath = attrPath.replace(':', '');
+            }
+        }
         for(var i = 0; i < liveEvents.length;i++){
             input.element.addEventListener(liveEvents[i], function(e) {
                 var edit = true;
-                if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('validators') && helpers.validators.hasOwnProperty(input.attributeResult)) {
-                    edit = helpers.validators[input.attributeResult](input, item, e);
+                if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('validators') && helpers.validators.hasOwnProperty(attrPath)) {
+                    edit = helpers.validators[attrPath](input, item, e);
                 }
                 if (edit && item.isRecord){
                     if (item.setAttr){
                         if(input.element.type == 'checkbox'){
-                            item.setAttr(input.attributeResult, input.element.checked?input.element.value:undefined);
+                            item.setAttr(attrPath, input.element.checked?input.element.value:undefined);
                         }else{
-                            if (item.getAttr(input.attributeResult) == input.element.value){
+                            if (item.getAttr(attrPath) == input.element.value){
                                 edit = false;
                             }else{
-                                item.setAttr(input.attributeResult, input.element.value);
+                                item.setAttr(attrPath, input.element.value);
                             }
                         }
                     }else{
                         if(input.element.type == 'checkbox'){
-                            item.setAttr(input.attributeResult, input.element.checked?input.element.value:undefined);
+                            item.setAttr(attrPath, input.element.checked?input.element.value:undefined);
                         }else{
-                            if (item[input.attributeResult] == input.element.value){
+                            if (item[attrPath] == input.element.value){
                                 edit = false;
                             }else{
-                                item[input.attributeResult] = input.element.value;
+                                item[attrPath] = input.element.value;
                             }
                         }
                     }

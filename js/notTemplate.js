@@ -484,6 +484,9 @@ notTemplate.prototype.proccessorsLib = {
             var fieldName = null;
             if (input.attributeExpression.indexOf('::')===0 && helpers.hasOwnProperty('fieldName')){
                 fieldName = notCommon.normilizePath(input.attributeExpression);
+                if (fieldName.indexOf('fieldValue')>-1){
+                    fieldName[fieldName.indexOf('fieldValue')] = helpers.fieldName;
+                }
             }else{
                 if(item.on && input.attributeExpression.indexOf(':')===0 ){
                     var fieldName = notCommon.normilizePath(input.attributeExpression);

@@ -199,7 +199,7 @@ var notCommon = {
     },
     getValueByPath: function(object, attrPath){
         var attrPath = this.normilizePath(attrPath);
-        var attrName = attrPath.shift();
+        var attrName = attrPath.shift();        
         if (object.hasOwnProperty(attrName)){
             if (attrPath.length > 0){
                 return this.getAttrByPath(object[attrName], attrPath);
@@ -2723,9 +2723,12 @@ notTemplate.prototype.proccessorsLib = {
     //live - should be last, will set event onAttrChange_[fieldname] for notRecord in which will change content if field value differs from input element value content
     value: function(input, item, helpers) {
         console.log('value', input);
+        var src = item;
+        if (input.attributeExpression.indexOf('::') > -1){
+            src = helpers;
+        }
         var valuePath = notCommon.normilizePath(input.attributeExpression);
-        valuePath.shift();
-        var value = input.attributeExpression.indexOf('.') > -1 ? notCommon.getValueByPath(input.attributeResult, valuePath):input.attributeResult;
+        var value = input.attributeExpression.indexOf('.') > -1 && input.attributeExpression.indexOf('()') == -1 ? notCommon.getValueByPath(src, valuePath):input.attributeResult;
         input.element.setAttribute('value', value);
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){

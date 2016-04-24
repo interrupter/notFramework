@@ -27,7 +27,7 @@ var notCommon = {
     },
     getValueByPath: function(object, attrPath){
         var attrPath = this.normilizePath(attrPath);
-        var attrName = attrPath.shift();
+        var attrName = attrPath.shift();        
         if (object.hasOwnProperty(attrName)){
             if (attrPath.length > 0){
                 return this.getAttrByPath(object[attrName], attrPath);

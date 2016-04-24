@@ -1704,7 +1704,7 @@ notRecord.prototype.setAttr = function(attrName, attrValue) {
         fields.push(attrName);
         this.setModelParam('fields', fields);
     }
-    notCommon.setValueByPath(this.getAttr(attrName), attrPath, attrValue);
+    notCommon.setValueByPath(this.getAttr(attrName)||{}, attrPath, attrValue);
     if(typeof attrValue === 'Object') {
         notRecord.prototype._addMetaAttr(attrName, attrValue);
     }

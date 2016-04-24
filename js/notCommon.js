@@ -27,10 +27,10 @@ var notCommon = {
     },
     getValueByPath: function(object, attrPath){
         var attrPath = this.normilizePath(attrPath);
-        var attrName = attrPath.shift();        
+        var attrName = attrPath.shift();
         if (object.hasOwnProperty(attrName)){
             if (attrPath.length > 0){
-                return this.getAttrByPath(object[attrName], attrPath);
+                return this.getValueByPath(object[attrName], attrPath);
             }else{
                 return object[attrName];
             }
@@ -43,7 +43,7 @@ var notCommon = {
         var attrName = attrPath.shift();
         if (attrPath.length > 0){
             if (!object.hasOwnProperty(attrName)){object[attrName] = {};}
-            this.setAttrByPath(object[attrName], attrPath, attrValue);
+            this.setValueByPath(object[attrName], attrPath, attrValue);
         }else{
             object[attrName] = attrValue;
         }

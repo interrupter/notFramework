@@ -186,6 +186,43 @@ var notCommon = {
         if(!obj.hasOwnProperty(key) || typeof obj[key] === 'undefined' || obj[key] === null) {
             obj[key] = defaultValue;
         }
+    },
+    normilizePath: function(path){
+        if (Array.isArray(path)){
+            return path;
+        }else{
+            while(path.indexOf(':') > -1){
+                path = path.replace(':','');
+            }
+            return path.split('.');
+        }
+    },
+    getValueByPath: function(object, attrPath){
+        var attrPath = this.normilizePath(attrPath);
+        var attrName = attrPath.shift();
+        if (object.hasOwnProperty(attrName)){
+            if (attrPath.length > 0){
+                return this.getAttrByPath(object[attrName], attrPath);
+            }else{
+                return object[attrName];
+            }
+        }else{
+            return undefined;
+        }
+    },
+    setValueByPath: function(object, attrPath, attrValue){
+        var attrPath = this.normilizePath(attrPath);
+        var attrName = attrPath.shift();
+        if (attrPath.length > 0){
+            if (!object.hasOwnProperty(attrName)){object[attrName] = {};}
+            this.setAttrByPath(object[attrName], attrPath, attrValue);
+        }else{
+            object[attrName] = attrValue;
+        }
+        if (object && object.isRecord){
+            object.trigger('onAttrChange_' + attrName, object, attrName, attrValue);
+            object.trigger('onAttrChange', object, attrName, attrValue);
+        }
     }
 };
 
@@ -2686,7 +2723,10 @@ notTemplate.prototype.proccessorsLib = {
     //live - should be last, will set event onAttrChange_[fieldname] for notRecord in which will change content if field value differs from input element value content
     value: function(input, item, helpers) {
         console.log('value', input);
-        input.element.setAttribute('value', input.attributeResult);
+        var valuePath = notCommon.normilizePath(input.attributeExpression);
+        valuePath.shift();
+        var value = input.attributeExpression.indexOf('.') > -1 ? notCommon.getValueByPath(input.attributeResult, valuePath):input.attributeResult;
+        input.element.setAttribute('value', value);
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){
             var fieldName = null;

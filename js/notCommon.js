@@ -58,7 +58,7 @@ var notCommon = {
     },
     identicalArrays: function(arr1, arr2){
         arr1.sort(); arr2.sort();
-        return arr1.join(',').localeCompare(arr2.join(','));
+        return (arr1.join(',').localeCompare(arr2.join(',')) === 0);
     },
     identicalToArray: function(arr, val){
         return ((arr.length == 1) && arr.indexOf(val)===0);

@@ -399,7 +399,7 @@ notTemplate.prototype.proccessorsLib = {
             option = null,
             valueFieldName = 'value',
             labelFieldName = 'name',
-            itemValueFieldName = 'value';
+            itemValueFieldName = helpers.hasOwnProperty('fieldName')?helpers['fieldName']:'value';
         if(input.params.length === 2) {
             labelFieldName = input.params[0];
             valueFieldName = input.params[1];
@@ -422,7 +422,7 @@ notTemplate.prototype.proccessorsLib = {
                 option = document.createElement('option');
                 option.setAttribute('value', input.attributeResult[i][valueFieldName]);
                 option.textContent = input.attributeResult[i][labelFieldName];
-                if(Object.prototype.toString.call(item[itemValueFieldName]) === '[object Array]') {
+                if(Array.isArray(item[itemValueFieldName])) {
                     if(item[itemValueFieldName].indexOf(input.attributeResult[i][valueFieldName]) > -1) {
                         option.setAttribute('selected', true);
                     }
@@ -431,7 +431,6 @@ notTemplate.prototype.proccessorsLib = {
                         option.setAttribute('selected', true);
                     }
                 }
-
                 input.element.appendChild(option);
             }
         }

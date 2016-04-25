@@ -2894,7 +2894,7 @@ notTemplate.prototype.proccessorsLib = {
                             for(var g = 0; g < input.element.selectedOptions.length; g++){
                                 curElVal.push(input.element.selectedOptions[g].value);
                             }
-                            if (array1.sort(notCommon.identical(curElVal, notCommon.getValueByPath(item, attrPath)))){
+                            if (notCommon.identical(curElVal, notCommon.getValueByPath(item, attrPath))){
                                 edit = false;
                             }else{
                                 notCommon.setValueByPath(item, attrPath, curElVal);

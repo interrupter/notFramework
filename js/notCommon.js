@@ -55,6 +55,24 @@ var notCommon = {
             object.trigger('onAttrChange_' + attrName, object, attrName, attrValue);
             object.trigger('onAttrChange', object, attrName, attrValue);
         }
+    },
+    identicalArrays: function(arr1, arr2){
+        arr1.sort(); arr2.sort();
+        return arr1.join(',').localeCompare(arr2.join(','));
+    },
+    identicalToArray: function(arr, val){
+        return ((arr.length == 1) && arr.indexOf(val)===0);
+    },
+    identical: function(a, b){
+        if (Array.isArray(a) && Array.isArray(b)){
+            return this.identicalArrays(a, b);
+        }else{
+            if((Array.isArray(a) && !Array.isArray(b)) || (!Array.isArray(a) && Array.isArray(b))){
+                return Array.isArray(a)?this.identicalToArray(a, b):this.identicalToArray(b, a);
+            }else{
+                return a == b;
+            }
+        }
     }
 };
 

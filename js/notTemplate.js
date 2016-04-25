@@ -495,8 +495,22 @@ notTemplate.prototype.proccessorsLib = {
                 item.on('onAttrChange_' + fieldName[0], function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName.join('.'));
-                    if(typeof newVal !== 'undefined' && input.element.value != newVal){
-                        input.element.value = newVal;
+                    if (input.element.nodeName == "SELECT" && input.element.multiple){
+                        curElVal = [];
+                        for(var g = 0; g < input.element.selectedOptions.length; g++){
+                            curElVal.push(input.element.selectedOptions[g].value);
+                        }
+                        if(!notCommon.identical(newVal, curElVal)){
+                            for(var g = 0; g < input.element.children.length;g++){
+                                if(input.element.children[g].nodeName === 'OPTION'){
+                                    input.element.children[g].selected = newVal.indexOf(input.element.children[g].value)>-1;
+                                }
+                            }
+                        }
+                    }else{
+                        if(typeof newVal !== 'undefined' && !notCommon.identical(input.element.value,newVal)){
+                            input.element.value = newVal;
+                        }
                     }
                 });
             }
@@ -582,9 +596,14 @@ notTemplate.prototype.proccessorsLib = {
                             for(var g = 0; g < input.element.selectedOptions.length; g++){
                                 curElVal.push(input.element.selectedOptions[g].value);
                             }
-                            notCommon.setValueByPath(item, attrPath, curElVal);
+                            if (array1.sort(notCommon.identical(curElVal, notCommon.getValueByPath(item, attrPath)))){
+                                edit = false;
+                            }else{
+                                notCommon.setValueByPath(item, attrPath, curElVal);
+                            }
+
                         }else{
-                            if (notCommon.getValueByPath(item, attrPath) == curElVal){
+                            if (notCommon.identical(notCommon.getValueByPath(item, attrPath), curElVal)){
                                 edit = false;
                             }else{
                                 notCommon.setValueByPath(item, attrPath, curElVal);

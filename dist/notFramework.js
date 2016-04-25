@@ -227,6 +227,24 @@ var notCommon = {
             object.trigger('onAttrChange_' + attrName, object, attrName, attrValue);
             object.trigger('onAttrChange', object, attrName, attrValue);
         }
+    },
+    identicalArrays: function(arr1, arr2){
+        arr1.sort(); arr2.sort();
+        return arr1.join(',').localeCompare(arr2.join(','));
+    },
+    identicalToArray: function(arr, val){
+        return ((arr.length == 1) && arr.indexOf(val)===0);
+    },
+    identical: function(a, b){
+        if (Array.isArray(a) && Array.isArray(b)){
+            return this.identicalArrays(a, b);
+        }else{
+            if((Array.isArray(a) && !Array.isArray(b)) || (!Array.isArray(a) && Array.isArray(b))){
+                return Array.isArray(a)?this.identicalToArray(a, b):this.identicalToArray(b, a);
+            }else{
+                return a == b;
+            }
+        }
     }
 };
 
@@ -2775,8 +2793,22 @@ notTemplate.prototype.proccessorsLib = {
                 item.on('onAttrChange_' + fieldName[0], function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName.join('.'));
-                    if(typeof newVal !== 'undefined' && input.element.value != newVal){
-                        input.element.value = newVal;
+                    if (input.element.nodeName == "SELECT" && input.element.multiple){
+                        curElVal = [];
+                        for(var g = 0; g < input.element.selectedOptions.length; g++){
+                            curElVal.push(input.element.selectedOptions[g].value);
+                        }
+                        if(!notCommon.identical(newVal, curElVal)){
+                            for(var g = 0; g < input.element.children.length;g++){
+                                if(input.element.children[g].nodeName === 'OPTION'){
+                                    input.element.children[g].selected = newVal.indexOf(input.element.children[g].value)>-1;
+                                }
+                            }
+                        }
+                    }else{
+                        if(typeof newVal !== 'undefined' && !notCommon.identical(input.element.value,newVal)){
+                            input.element.value = newVal;
+                        }
                     }
                 });
             }
@@ -2862,9 +2894,14 @@ notTemplate.prototype.proccessorsLib = {
                             for(var g = 0; g < input.element.selectedOptions.length; g++){
                                 curElVal.push(input.element.selectedOptions[g].value);
                             }
-                            notCommon.setValueByPath(item, attrPath, curElVal);
+                            if (array1.sort(notCommon.identical(curElVal, notCommon.getValueByPath(item, attrPath)))){
+                                edit = false;
+                            }else{
+                                notCommon.setValueByPath(item, attrPath, curElVal);
+                            }
+
                         }else{
-                            if (notCommon.getValueByPath(item, attrPath) == curElVal){
+                            if (notCommon.identical(notCommon.getValueByPath(item, attrPath), curElVal)){
                                 edit = false;
                             }else{
                                 notCommon.setValueByPath(item, attrPath, curElVal);

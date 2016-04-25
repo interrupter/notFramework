@@ -456,7 +456,7 @@ notTemplate.prototype.proccessorsLib = {
                 item.on('onAttrChange_' + fieldName, function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
-                    if(input.element.getAttribute(input.params[0]) != newVal){
+                    if(typeof newVal !== 'undefined' && input.element.getAttribute(input.params[0]) != newVal){
                         input.element.setAttribute(input.params[0], newVal);
                     }
                 });
@@ -495,7 +495,7 @@ notTemplate.prototype.proccessorsLib = {
                 item.on('onAttrChange_' + fieldName[0], function(){
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName.join('.'));
-                    if(input.element.value != newVal){
+                    if(typeof newVal !== 'undefined' && input.element.value != newVal){
                         input.element.value = newVal;
                     }
                 });

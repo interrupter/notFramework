@@ -312,6 +312,25 @@ notRecord.prototype.setChanged = function(attrName, attrValue) {
     return this;
 }
 
+notRecord.prototype._setAttr = function(attrName, attrValue, silent) {
+    'use strict';
+    var fields = this.getModelParam('fields');
+    if(fields.indexOf(attrName) == -1) {
+        fields.push(attrName);
+        this.setModelParam('fields', fields);
+    }
+    this[attrName] = attrValue;
+    if(typeof attrValue === 'Object') {
+        notRecord.prototype._addMetaAttr(attrName, attrValue);
+    }
+    if(!silent){
+        this.trigger('onAttrChange_' + attrName, this, attrName, attrValue);
+        this.trigger('onAttrChange', this, attrName, attrValue);
+    }    
+    return this;
+}
+
+
 notRecord.prototype.setAttr = function(attrName, attrValue) {
     'use strict';
     var attrPath = notCommon.normilizePath(attrName);

@@ -45,7 +45,11 @@ var notCommon = {
             if (!object.hasOwnProperty(attrName)){object[attrName] = {};}
             this.setValueByPath(object[attrName], attrPath, attrValue);
         }else{
-            object[attrName] = attrValue;
+            if(object && object.isRecord){
+                object._setAttr(attrName, attrValue, true);
+            }else{
+                object[attrName] = attrValue;
+            }
         }
         if (object && object.isRecord){
             object.trigger('onAttrChange_' + attrName, object, attrName, attrValue);

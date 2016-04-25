@@ -577,20 +577,38 @@ notTemplate.prototype.proccessorsLib = {
                         if(input.element.type == 'checkbox'){
                             item.setAttr(attrPath, input.element.checked?input.element.value:undefined);
                         }else{
-                            if (item.getAttr(attrPath) == input.element.value){
-                                edit = false;
+                            var curElVal = input.element.value;
+                            if(input.element.nodeName === 'SELECT' && input.element.multiple && typeof input.element.selectedOptions !== 'undefined'){
+                                curElVal = [];
+                                for(var g = 0; g < input.element.selectedOptions.length; g++){
+                                    curElVal.push(input.element.selectedOptions[g].value);
+                                }
+                                item.setAttr(attrPath, curElVal);
                             }else{
-                                item.setAttr(attrPath, input.element.value);
+                                if (item.getAttr(attrPath) == curElVal){
+                                    edit = false;
+                                }else{
+                                    item.setAttr(attrPath, curElVal);
+                                }
                             }
                         }
                     }else{
                         if(input.element.type == 'checkbox'){
-                            item.setAttr(attrPath, input.element.checked?input.element.value:undefined);
+                            item[attrPath] = input.element.checked?input.element.value:undefined;
                         }else{
-                            if (item[attrPath] == input.element.value){
-                                edit = false;
+                            var curElVal = input.element.value;
+                            if(input.element.nodeName === 'SELECT' && input.element.multiple && typeof input.element.selectedOptions !== 'undefined'){
+                                curElVal = [];
+                                for(var g = 0; g < input.element.selectedOptions.length; g++){
+                                    curElVal.push(input.element.selectedOptions[g].value);
+                                }
+                                item[attrPath] = curElVal;
                             }else{
-                                item[attrPath] = input.element.value;
+                                if (item[attrPath] == input.element.value){
+                                    edit = false;
+                                }else{
+                                    item[attrPath] = input.element.value;
+                                }
                             }
                         }
                     }

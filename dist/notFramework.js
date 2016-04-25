@@ -217,7 +217,11 @@ var notCommon = {
             if (!object.hasOwnProperty(attrName)){object[attrName] = {};}
             this.setValueByPath(object[attrName], attrPath, attrValue);
         }else{
-            object[attrName] = attrValue;
+            if(object && object.isRecord){
+                object._setAttr(attrName, attrValue, true);
+            }else{
+                object[attrName] = attrValue;
+            }
         }
         if (object && object.isRecord){
             object.trigger('onAttrChange_' + attrName, object, attrName, attrValue);
@@ -1695,6 +1699,25 @@ notRecord.prototype.setChanged = function(attrName, attrValue) {
     return this;
 }
 
+notRecord.prototype._setAttr = function(attrName, attrValue, silent) {
+    'use strict';
+    var fields = this.getModelParam('fields');
+    if(fields.indexOf(attrName) == -1) {
+        fields.push(attrName);
+        this.setModelParam('fields', fields);
+    }
+    this[attrName] = attrValue;
+    if(typeof attrValue === 'Object') {
+        notRecord.prototype._addMetaAttr(attrName, attrValue);
+    }
+    if(!silent){
+        this.trigger('onAttrChange_' + attrName, this, attrName, attrValue);
+        this.trigger('onAttrChange', this, attrName, attrValue);
+    }    
+    return this;
+}
+
+
 notRecord.prototype.setAttr = function(attrName, attrValue) {
     'use strict';
     var attrPath = notCommon.normilizePath(attrName);
@@ -2834,20 +2857,38 @@ notTemplate.prototype.proccessorsLib = {
                         if(input.element.type == 'checkbox'){
                             item.setAttr(attrPath, input.element.checked?input.element.value:undefined);
                         }else{
-                            if (item.getAttr(attrPath) == input.element.value){
-                                edit = false;
+                            var curElVal = input.element.value;
+                            if(input.element.nodeName === 'SELECT' && input.element.multiple && typeof input.element.selectedOptions !== 'undefined'){
+                                curElVal = [];
+                                for(var g = 0; g < input.element.selectedOptions.length; g++){
+                                    curElVal.push(input.element.selectedOptions[g].value);
+                                }
+                                item.setAttr(attrPath, curElVal);
                             }else{
-                                item.setAttr(attrPath, input.element.value);
+                                if (item.getAttr(attrPath) == curElVal){
+                                    edit = false;
+                                }else{
+                                    item.setAttr(attrPath, curElVal);
+                                }
                             }
                         }
                     }else{
                         if(input.element.type == 'checkbox'){
-                            item.setAttr(attrPath, input.element.checked?input.element.value:undefined);
+                            item[attrPath] = input.element.checked?input.element.value:undefined;
                         }else{
-                            if (item[attrPath] == input.element.value){
-                                edit = false;
+                            var curElVal = input.element.value;
+                            if(input.element.nodeName === 'SELECT' && input.element.multiple && typeof input.element.selectedOptions !== 'undefined'){
+                                curElVal = [];
+                                for(var g = 0; g < input.element.selectedOptions.length; g++){
+                                    curElVal.push(input.element.selectedOptions[g].value);
+                                }
+                                item[attrPath] = curElVal;
                             }else{
-                                item[attrPath] = input.element.value;
+                                if (item[attrPath] == input.element.value){
+                                    edit = false;
+                                }else{
+                                    item[attrPath] = input.element.value;
+                                }
                             }
                         }
                     }

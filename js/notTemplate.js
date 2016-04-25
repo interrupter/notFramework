@@ -573,6 +573,28 @@ notTemplate.prototype.proccessorsLib = {
                     edit = helpers.validators[attrPath](input, item, e);
                 }
                 if (edit && item.isRecord){
+
+                    if(input.element.type == 'checkbox'){
+                        notCommon.setValueByPath(item, attrPath, input.element.checked?input.element.value:undefined);
+                    }else{
+                        var curElVal = input.element.value;
+                        if(input.element.nodeName === 'SELECT' && input.element.multiple && typeof input.element.selectedOptions !== 'undefined'){
+                            curElVal = [];
+                            for(var g = 0; g < input.element.selectedOptions.length; g++){
+                                curElVal.push(input.element.selectedOptions[g].value);
+                            }
+                            notCommon.setValueByPath(item, attrPath, curElVal);
+                        }else{
+                            if (notCommon.getValueByPath(item, attrPath) == curElVal){
+                                edit = false;
+                            }else{
+                                notCommon.setValueByPath(item, attrPath, curElVal);
+                            }
+                        }
+                    }
+
+
+
                     if (item.setAttr){
                         if(input.element.type == 'checkbox'){
                             item.setAttr(attrPath, input.element.checked?input.element.value:undefined);

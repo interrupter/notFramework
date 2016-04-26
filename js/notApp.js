@@ -100,13 +100,13 @@ notApp.prototype._getControllerName = function(name){
 };
 
 notApp.prototype._initInterface = function (index, manifest) {
-    console.log(index, manifest);
+    //console.log(index, manifest);
     this._working.interfaces[this._getRecordName(index)] = new notRecord(manifest);
 };
 
 notApp.prototype.nr = function(modelName, data) {
     var manifest = this._notOptions.interfaceManifest.hasOwnProperty(modelName)?this._notOptions.interfaceManifest[modelName]:{};
-    console.log(modelName, manifest, data);
+    //console.log(modelName, manifest, data);
     return new notRecord(manifest, data);
 };
 
@@ -126,7 +126,7 @@ notApp.prototype._initFormBuilders = function(){
 };
 
 notApp.prototype._initFormBuilder = function(index, manifest){
-    console.log('init form builder', index,  manifest);
+    //console.log('init form builder', index,  manifest);
     this._working.forms[index] = new notFormFactory(this, manifest);
     this._working.forms[index].init(this.waitThisResource('form', index));
 };

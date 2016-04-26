@@ -177,7 +177,7 @@ notTable.prototype.renderRow = function(item, index) {
 
         if (this.options.headerTitles[i].hasOwnProperty('events') && this.options.headerTitles[i].events){
             for(var j in this.options.headerTitles[i].events){
-                console.log(j);
+                //console.log(j);
                 newTd.addEventListener(j, this.options.headerTitles[i].events[j], false);
             }
         }
@@ -303,7 +303,7 @@ notTable.prototype.updateData = function(){
         this.options.notRecord = this.options.notRecord.setFilter(this.getFilter()).setSorter(this.getSorter()).setPager(this.getPager().pageSize,this.getPager().pageNumber);
         this.setUpdating();
         this.options.notRecord.$list(function(data){
-            console.log('$list for table', data);
+            //console.log('$list for table', data);
             that.options.data = that.options.data.concat(data);
             that.proccessData();
             that.refreshBody();

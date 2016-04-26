@@ -99,7 +99,7 @@ var notRecord_Interface = {
 
     request: function(record, actionName, callbackSuccess, callbackError) {
         'use strict';
-        console.log('request', actionName);
+        //console.log('request', actionName);
         var actionData = record._notOptions.interfaceManifest.actions[actionName];
         var additionalParams = {
             cache: false,
@@ -132,7 +132,7 @@ var notRecord_Interface = {
         } else {
             var finalParams = basicParams;
         }
-        console.log('finalParams', finalParams);
+        //console.log('finalParams', finalParams);
         $.ajax(this.getURL(record, actionData, actionName), finalParams);
     }
 };
@@ -186,11 +186,11 @@ var notRecord = function(interfaceManifest, item) {
         $.each(this._notOptions.interfaceManifest.actions, function (index, actionManifest) {
         if (!(this.hasOwnProperty('$' + index))) {
             that['$' + index] = function (callbackSuccess, callbackError) {
-                console.log('$' + index);
+                //console.log('$' + index);
                 (notRecord_Interface.request.bind(notRecord_Interface, this, index + '', callbackSuccess, callbackError)).call();
             }
         } else {
-            console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + index, '" that alredy exists');
+            //console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + index, '" that alredy exists');
         }
     });
     }
@@ -326,7 +326,7 @@ notRecord.prototype._setAttr = function(attrName, attrValue, silent) {
     if(!silent){
         this.trigger('onAttrChange_' + attrName, this, attrName, attrValue);
         this.trigger('onAttrChange', this, attrName, attrValue);
-    }    
+    }
     return this;
 }
 

@@ -477,7 +477,9 @@ notTemplate.prototype.proccessorsLib = {
         }
         var valuePath = notCommon.normilizePath(input.attributeExpression);
         var value = input.attributeExpression.indexOf('.') > -1 && input.attributeExpression.indexOf('()') == -1 ? notCommon.getValueByPath(src, valuePath):input.attributeResult;
+
         input.element.setAttribute('value', value);
+        
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){
             var fieldName = null;

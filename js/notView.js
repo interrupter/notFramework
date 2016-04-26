@@ -23,7 +23,9 @@ notView.prototype.getPlaceToPut = function(){
 }
 
 notView.prototype.getAfterExecCallback = function(callback){
-    var defaultResult = function(){console.log('default view after exec callback');};
+    var defaultResult = function(){
+        //console.log('default view after exec callback');
+    };
     if (typeof callback !== 'undefined' && callback !== null){
         return callback;
     }

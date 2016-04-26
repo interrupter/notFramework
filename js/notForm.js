@@ -220,9 +220,6 @@ notForm.prototype.buildFormElement = function(fieldName) {
 };
 
 notForm.prototype.isFieldBlock = function(field) {
-    console.log(typeof field);
-    console.log(field.hasOwnProperty('form'));
-    console.log(field.hasOwnProperty('fields'));
     return typeof field !== 'string' && typeof field === 'object' && (field.hasOwnProperty('form') || field.hasOwnProperty('fields'));
 }
 
@@ -422,7 +419,7 @@ notForm.prototype.buildBlock = function() {
         this.buildContents(fields);
         block = this.buildBlockWrapper(params.blockType);
         var blockElement = this.queryResult(block, ':scope [data-role="block"]');
-        console.log(blockElement);
+        ////console.log(blockElement);
         this.fillWithContent(block, blockElement);
     }
     this._working.resultForm = block;
@@ -565,7 +562,7 @@ notForm.prototype.extractFieldValue = function(fieldName, fieldValue){
             if(inpEls) {
                 fieldValue = [];
                 for(var j = 0; j < inpEls.length; j++) {
-                    console.log(inpEls[j], inpEls[j].value);
+                    ////console.log(inpEls[j], inpEls[j].value);
                     fieldValue.push(inpEls[j].value);
                 }
             }
@@ -575,7 +572,7 @@ notForm.prototype.extractFieldValue = function(fieldName, fieldValue){
         default:
             var inpEl = this.queryResult(form, ':scope [name="' + fieldName + '"]');
             if(inpEl && inpEl.type !== 'submit') {
-                console.log(inpEl, inpEl.value);
+                ////console.log(inpEl, inpEl.value);
                 if (inpEl.type=='checkbox' ){
                     fieldValue = inpEl.checked?inpEl.value:null;
                 }else{
@@ -604,7 +601,7 @@ notForm.prototype.extractBlockValue = function(block, blockValue){
 }
 
 notForm.prototype._collectFieldsDataToRecord = function() {
-    console.log(this._working.resultForm);
+    ////console.log(this._working.resultForm);
     var params = this._getParams(),
         record = params.data,
         scenario = this._getScenario(),
@@ -801,7 +798,7 @@ notForm.prototype._clearWorking = function() {
 notForm.prototype.build = function(formParams) {
     this._clearWorking();
     this._working.params = extend(this._params, formParams);
-    console.log('build form ', this._getModelName(), this._getActionName(), this._getFormFieldsTypes(), this._getParams());
+    ////console.log('build form ', this._getModelName(), this._getActionName(), this._getFormFieldsTypes(), this._getParams());
     if(this._working.params.hasOwnProperty('blockType') && this._working.params.blockType) {
         this.buildBlock();
     } else {

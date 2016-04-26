@@ -100,13 +100,13 @@ notApp.prototype._getControllerName = function(name){
 };
 
 notApp.prototype._initInterface = function (index, manifest) {
-    console.log(index, manifest);
+    //console.log(index, manifest);
     this._working.interfaces[this._getRecordName(index)] = new notRecord(manifest);
 };
 
 notApp.prototype.nr = function(modelName, data) {
     var manifest = this._notOptions.interfaceManifest.hasOwnProperty(modelName)?this._notOptions.interfaceManifest[modelName]:{};
-    console.log(modelName, manifest, data);
+    //console.log(modelName, manifest, data);
     return new notRecord(manifest, data);
 };
 
@@ -126,7 +126,7 @@ notApp.prototype._initFormBuilders = function(){
 };
 
 notApp.prototype._initFormBuilder = function(index, manifest){
-    console.log('init form builder', index,  manifest);
+    //console.log('init form builder', index,  manifest);
     this._working.forms[index] = new notFormFactory(this, manifest);
     this._working.forms[index].init(this.waitThisResource('form', index));
 };
@@ -362,7 +362,7 @@ notController.prototype.$render = function(nc/* ncName function this*/, name /* 
 }
 
 notController.prototype.exec = function(params) {
-    console.log('exec', this, Object.keys(this.__proto__));
+    //console.log('exec', this, Object.keys(this.__proto__));
 
     if(typeof((window[this.ncName])) !== 'undefined') {
         //ищем имена разделяемых функций
@@ -376,8 +376,8 @@ notController.prototype.exec = function(params) {
             }
         }
         //new(window[this.ncName])(this.app, params);
-        console.log(new(window[this.ncName])(this.app, params));
-        console.log('after new controller');
+        //console.log(new(window[this.ncName])(this.app, params));
+        //console.log('after new controller');
     } else {
 
     }
@@ -605,9 +605,6 @@ notForm.prototype.buildFormElement = function(fieldName) {
 };
 
 notForm.prototype.isFieldBlock = function(field) {
-    console.log(typeof field);
-    console.log(field.hasOwnProperty('form'));
-    console.log(field.hasOwnProperty('fields'));
     return typeof field !== 'string' && typeof field === 'object' && (field.hasOwnProperty('form') || field.hasOwnProperty('fields'));
 }
 
@@ -807,7 +804,7 @@ notForm.prototype.buildBlock = function() {
         this.buildContents(fields);
         block = this.buildBlockWrapper(params.blockType);
         var blockElement = this.queryResult(block, ':scope [data-role="block"]');
-        console.log(blockElement);
+        ////console.log(blockElement);
         this.fillWithContent(block, blockElement);
     }
     this._working.resultForm = block;
@@ -950,7 +947,7 @@ notForm.prototype.extractFieldValue = function(fieldName, fieldValue){
             if(inpEls) {
                 fieldValue = [];
                 for(var j = 0; j < inpEls.length; j++) {
-                    console.log(inpEls[j], inpEls[j].value);
+                    ////console.log(inpEls[j], inpEls[j].value);
                     fieldValue.push(inpEls[j].value);
                 }
             }
@@ -960,7 +957,7 @@ notForm.prototype.extractFieldValue = function(fieldName, fieldValue){
         default:
             var inpEl = this.queryResult(form, ':scope [name="' + fieldName + '"]');
             if(inpEl && inpEl.type !== 'submit') {
-                console.log(inpEl, inpEl.value);
+                ////console.log(inpEl, inpEl.value);
                 if (inpEl.type=='checkbox' ){
                     fieldValue = inpEl.checked?inpEl.value:null;
                 }else{
@@ -989,7 +986,7 @@ notForm.prototype.extractBlockValue = function(block, blockValue){
 }
 
 notForm.prototype._collectFieldsDataToRecord = function() {
-    console.log(this._working.resultForm);
+    ////console.log(this._working.resultForm);
     var params = this._getParams(),
         record = params.data,
         scenario = this._getScenario(),
@@ -1186,7 +1183,7 @@ notForm.prototype._clearWorking = function() {
 notForm.prototype.build = function(formParams) {
     this._clearWorking();
     this._working.params = extend(this._params, formParams);
-    console.log('build form ', this._getModelName(), this._getActionName(), this._getFormFieldsTypes(), this._getParams());
+    ////console.log('build form ', this._getModelName(), this._getActionName(), this._getFormFieldsTypes(), this._getParams());
     if(this._working.params.hasOwnProperty('blockType') && this._working.params.blockType) {
         this.buildBlock();
     } else {
@@ -1305,7 +1302,7 @@ var pager = {
 
     // обработка загруженных данных
     addPage: function (data) {
-        console.log('recieved', data);
+        //console.log('recieved', data);
         var cacheFull = false;
         this.PAGE_NUMBER_MAXIMUM = parseInt(data.PAGES);
         this.cacheSize++;
@@ -1335,8 +1332,8 @@ var pager = {
         }
         //разблокируем загрузку, для синхронизации
         this.unBlockApi();
-        console.log('CacheSize:', this.cacheSize);
-        console.log('rebuilded complects:', this.complects);
+        //console.log('CacheSize:', this.cacheSize);
+        //console.log('rebuilded complects:', this.complects);
         //теперь можно перестраивать DOM
         this.onPageLoad(this.complects, data.ELEMENTS, this.lastDirection, cacheFull);
     },
@@ -1362,7 +1359,7 @@ var pager = {
         };
         //блокируем загрузку, для синхронизации
         this.blockApi();
-        console.log('pager params:', jQuery.param(params));
+        //console.log('pager params:', jQuery.param(params));
         $.getJSON(this.apiURL+'?'+jQuery.param(params), this.addPage.bind(this));
     },
 
@@ -1398,7 +1395,7 @@ var pager = {
 
     //событие после загрузки и обработки данных
     onPageLoad: function (allData, newData, direction) {
-        console.log('rebuildElements of complects');
+        //console.log('rebuildElements of complects');
     }
 
 };
@@ -1504,7 +1501,7 @@ var notRecord_Interface = {
 
     request: function(record, actionName, callbackSuccess, callbackError) {
         'use strict';
-        console.log('request', actionName);
+        //console.log('request', actionName);
         var actionData = record._notOptions.interfaceManifest.actions[actionName];
         var additionalParams = {
             cache: false,
@@ -1537,7 +1534,7 @@ var notRecord_Interface = {
         } else {
             var finalParams = basicParams;
         }
-        console.log('finalParams', finalParams);
+        //console.log('finalParams', finalParams);
         $.ajax(this.getURL(record, actionData, actionName), finalParams);
     }
 };
@@ -1591,11 +1588,11 @@ var notRecord = function(interfaceManifest, item) {
         $.each(this._notOptions.interfaceManifest.actions, function (index, actionManifest) {
         if (!(this.hasOwnProperty('$' + index))) {
             that['$' + index] = function (callbackSuccess, callbackError) {
-                console.log('$' + index);
+                //console.log('$' + index);
                 (notRecord_Interface.request.bind(notRecord_Interface, this, index + '', callbackSuccess, callbackError)).call();
             }
         } else {
-            console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + index, '" that alredy exists');
+            //console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + index, '" that alredy exists');
         }
     });
     }
@@ -1731,7 +1728,7 @@ notRecord.prototype._setAttr = function(attrName, attrValue, silent) {
     if(!silent){
         this.trigger('onAttrChange_' + attrName, this, attrName, attrValue);
         this.trigger('onAttrChange', this, attrName, attrValue);
-    }    
+    }
     return this;
 }
 
@@ -2062,7 +2059,7 @@ notTable.prototype.renderRow = function(item, index) {
 
         if (this.options.headerTitles[i].hasOwnProperty('events') && this.options.headerTitles[i].events){
             for(var j in this.options.headerTitles[i].events){
-                console.log(j);
+                //console.log(j);
                 newTd.addEventListener(j, this.options.headerTitles[i].events[j], false);
             }
         }
@@ -2188,7 +2185,7 @@ notTable.prototype.updateData = function(){
         this.options.notRecord = this.options.notRecord.setFilter(this.getFilter()).setSorter(this.getSorter()).setPager(this.getPager().pageSize,this.getPager().pageNumber);
         this.setUpdating();
         this.options.notRecord.$list(function(data){
-            console.log('$list for table', data);
+            //console.log('$list for table', data);
             that.options.data = that.options.data.concat(data);
             that.proccessData();
             that.refreshBody();
@@ -2775,7 +2772,9 @@ notTemplate.prototype.proccessorsLib = {
         }
         var valuePath = notCommon.normilizePath(input.attributeExpression);
         var value = input.attributeExpression.indexOf('.') > -1 && input.attributeExpression.indexOf('()') == -1 ? notCommon.getValueByPath(src, valuePath):input.attributeResult;
+
         input.element.setAttribute('value', value);
+        
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){
             var fieldName = null;
@@ -2940,7 +2939,9 @@ notView.prototype.getPlaceToPut = function(){
 }
 
 notView.prototype.getAfterExecCallback = function(callback){
-    var defaultResult = function(){console.log('default view after exec callback');};
+    var defaultResult = function(){
+        //console.log('default view after exec callback');
+    };
     if (typeof callback !== 'undefined' && callback !== null){
         return callback;
     }

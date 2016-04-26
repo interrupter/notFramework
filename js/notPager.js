@@ -82,7 +82,7 @@ var pager = {
 
     // обработка загруженных данных
     addPage: function (data) {
-        console.log('recieved', data);
+        //console.log('recieved', data);
         var cacheFull = false;
         this.PAGE_NUMBER_MAXIMUM = parseInt(data.PAGES);
         this.cacheSize++;
@@ -112,8 +112,8 @@ var pager = {
         }
         //разблокируем загрузку, для синхронизации
         this.unBlockApi();
-        console.log('CacheSize:', this.cacheSize);
-        console.log('rebuilded complects:', this.complects);
+        //console.log('CacheSize:', this.cacheSize);
+        //console.log('rebuilded complects:', this.complects);
         //теперь можно перестраивать DOM
         this.onPageLoad(this.complects, data.ELEMENTS, this.lastDirection, cacheFull);
     },
@@ -139,7 +139,7 @@ var pager = {
         };
         //блокируем загрузку, для синхронизации
         this.blockApi();
-        console.log('pager params:', jQuery.param(params));
+        //console.log('pager params:', jQuery.param(params));
         $.getJSON(this.apiURL+'?'+jQuery.param(params), this.addPage.bind(this));
     },
 
@@ -175,7 +175,7 @@ var pager = {
 
     //событие после загрузки и обработки данных
     onPageLoad: function (allData, newData, direction) {
-        console.log('rebuildElements of complects');
+        //console.log('rebuildElements of complects');
     }
 
 };

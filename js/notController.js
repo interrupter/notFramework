@@ -82,7 +82,7 @@ notController.prototype.$render = function(nc/* ncName function this*/, name /* 
 }
 
 notController.prototype.exec = function(params) {
-    console.log('exec', this, Object.keys(this.__proto__));
+    //console.log('exec', this, Object.keys(this.__proto__));
 
     if(typeof((window[this.ncName])) !== 'undefined') {
         //ищем имена разделяемых функций
@@ -96,8 +96,8 @@ notController.prototype.exec = function(params) {
             }
         }
         //new(window[this.ncName])(this.app, params);
-        console.log(new(window[this.ncName])(this.app, params));
-        console.log('after new controller');
+        //console.log(new(window[this.ncName])(this.app, params));
+        //console.log('after new controller');
     } else {
 
     }

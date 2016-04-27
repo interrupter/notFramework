@@ -375,7 +375,7 @@ notController.prototype.exec = function(params) {
                 window[this.ncName].prototype[sharedList[k]] = this.__proto__[sharedList[k]];
             }
         }
-        //new(window[this.ncName])(this.app, params);
+        new(window[this.ncName])(this.app, params);
         //console.log(new(window[this.ncName])(this.app, params));
         //console.log('after new controller');
     } else {

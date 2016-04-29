@@ -2778,7 +2778,7 @@ notTemplate.prototype.proccessorsLib = {
             }
             var fieldNameLine  = fieldName.shift();
             while(fieldName.length > 0){
-                fieldNameLine=fieldNameLine+'['+fieldNameLine.shift()+']';
+                fieldNameLine=fieldNameLine+'['+fieldName.shift()+']';
             }
             input.element.setAttribute('name', fieldNameLine);
         }else{

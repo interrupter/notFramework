@@ -2714,7 +2714,7 @@ notTemplate.prototype.proccessorsLib = {
             var attrPath = notCommon.parsePath(input.attributeExpression, item, helpers);
             if(attrPath.length && item && item.isRecord) {
                 item.on('onAttrChange_' + attrPath[0], function() {
-                    var value = notCommon.getValueByPath(item, attrPath);
+                    var value = notCommon.getValueByPath(item, notCommon.parsePath(input.attributeExpression, item, helpers));
                     if(input.params.indexOf('capitalize') > -1) value = value.toUpperCase();
                     if(input.element.innerHTML != value) {
                         input.element.innerHTML = value;

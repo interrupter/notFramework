@@ -17,39 +17,39 @@ var notTemplateCache = {
     cache: {},
     loading: [],
     onLoad: null,
-    load: function(map){
+    load: function(map) {
         this.loading = [];
-        for(var i in map){
+        for(var i in map) {
             this.loadOne(i, map[i]);
         }
     },
-    loadOne: function(key, url, callback){
+    loadOne: function(key, url, callback) {
         this.loading.push(key);
         var oRequest = new XMLHttpRequest();
         oRequest.open("GET", url);
         oRequest.addEventListener("load", function(response) {
-            if (this.loading.indexOf(key) > -1) this.loading.splice(this.loading.indexOf(key), 1);
+            if(this.loading.indexOf(key) > -1) this.loading.splice(this.loading.indexOf(key), 1);
             var div = document.createElement('DIV');
             div.dataset.notTemplateName = key;
             div.dataset.notTemplateURL = url;
             div.innerHTML = response.srcElement.responseText;
             this.setOne(key, div);
             callback && callback(key, url, div);
-            if (this.loading.length === 0){
+            if(this.loading.length === 0) {
                 this.onLoad && this.onLoad();
             }
         }.bind(this));
         oRequest.send();
     },
-    setOne: function(key, element){
+    setOne: function(key, element) {
         this.cache[key] = element;
     },
-    get:function(key){
-        return this.cache.hasOwnProperty(key)?this.cache[key].cloneNode(true):null;
+    get: function(key) {
+        return this.cache.hasOwnProperty(key) ? this.cache[key].cloneNode(true) : null;
     },
-    getByURL: function(url){
-        for(var i in this.cache){
-            if (this.cache[i].dataset.notTemplateURL == url){
+    getByURL: function(url) {
+        for(var i in this.cache) {
+            if(this.cache[i].dataset.notTemplateURL == url) {
                 return this.get(i);
             }
         }
@@ -65,18 +65,18 @@ var notTemplateCache = {
  * */
 
 var notTemplate = function(input) {
-    var getElement = function(){
+    var getElement = function() {
         var result = null;
-        if (input.hasOwnProperty('templateElement')){
+        if(input.hasOwnProperty('templateElement')) {
             result = input.templateElement;
-        }else{
-            if (input.templateCache){
+        } else {
+            if(input.templateCache) {
                 var cached = notTemplateCache.get(input.templateCache);
-                if (cached){
+                if(cached) {
                     result = cached.cloneNode(true);
                 }
-            }else{
-                if (input.hasOwnProperty('templateName') && document.querySelector('[data-not-template-name="' + input.templateName + '"]')){
+            } else {
+                if(input.hasOwnProperty('templateName') && document.querySelector('[data-not-template-name="' + input.templateName + '"]')) {
                     result = document.querySelector('[data-not-template-name="' + input.templateName + '"]').cloneNode(true)
                 }
             }
@@ -106,7 +106,7 @@ var notTemplate = function(input) {
     this._working = {
         proccessors: [],
         templateHTML: input.hasOwnProperty('template') ? input.template : '',
-        templateLoaded: this._notOptions.templateElement?true:false, //input.hasOwnProperty('templateName') || input.hasOwnProperty('template') || input.hasOwnProperty('templateElement'),
+        templateLoaded: this._notOptions.templateElement ? true : false, //input.hasOwnProperty('templateName') || input.hasOwnProperty('template') || input.hasOwnProperty('templateElement'),
         result: [],
         currentEl: null,
         currentItem: null,
@@ -122,7 +122,7 @@ notTemplate.prototype._exec = function() {
         this._working.currentIndex = 0;
         this._working.currentItem = this._notOptions.data;
         this._proccessItem();
-        for(var j = 0; j < this._working.currentEl.children.length; j++){
+        for(var j = 0; j < this._working.currentEl.children.length; j++) {
             this._working.result.push(this._working.currentEl.children[j]);
         }
     }
@@ -142,19 +142,19 @@ notTemplate.prototype.exec = function(afterExecCallback) {
     //from template html file, thru ajax request
     else {
         var preLoaded = notTemplateCache.getByURL(that._notOptions.templateURL);
-        if (preLoaded){
+        if(preLoaded) {
             that._working.templateLoaded = true;
             that._notOptions.templateElement = preLoaded;
             that._exec();
             if(typeof afterExecCallback !== 'undefined') afterExecCallback(that._working.result);
-        }else{
+        } else {
             notTemplateCache.loadOne(that._notOptions.templateURL, that._notOptions.templateURL,
-            function(key, url, element){
-                that._working.templateLoaded = true;
-                that._notOptions.templateElement = element;
-                that._exec();
-                if(typeof afterExecCallback !== 'undefined') afterExecCallback(that._working.result);
-            });
+                function(key, url, element) {
+                    that._working.templateLoaded = true;
+                    that._notOptions.templateElement = element;
+                    that._exec();
+                    if(typeof afterExecCallback !== 'undefined') afterExecCallback(that._working.result);
+                });
         }
     }
 }
@@ -169,40 +169,40 @@ notTemplate.prototype.execAndPut = function(place, afterExecCallback) {
     }.bind(this));
 }
 
-notTemplate.prototype.insert = function(parent, children){
+notTemplate.prototype.insert = function(parent, children) {
     var i = 0;
-    if (parent instanceof HTMLElement){
+    if(parent instanceof HTMLElement) {
         if(children instanceof HTMLCollection) {
-            while(children.length && ++i < 10000){
+            while(children.length && ++i < 10000) {
                 this.insert(parent, children[0]);
             }
-        }else{
-            if( Array.isArray(children)){
-                for(var j = 0; j < children.length; j++){
+        } else {
+            if(Array.isArray(children)) {
+                for(var j = 0; j < children.length; j++) {
                     this.insert(parent, children[j]);
                 }
-            }else{
-                if (children instanceof HTMLElement) parent.appendChild(children, parent);
+            } else {
+                if(children instanceof HTMLElement) parent.appendChild(children, parent);
             }
         }
     }
     return parent;
 }
 
-notTemplate.prototype.insertBefore = function(parent, children){
+notTemplate.prototype.insertBefore = function(parent, children) {
     var i = 0;
-    if (parent instanceof HTMLElement){
+    if(parent instanceof HTMLElement) {
         if(children instanceof HTMLCollection) {
-            while(children.length && ++i < 10000){
+            while(children.length && ++i < 10000) {
                 this.insertBefore(parent, children[0]);
             }
-        }else{
-            if( Array.isArray(children)){
-                for(var j = 0; j < children.length; j++){
+        } else {
+            if(Array.isArray(children)) {
+                for(var j = 0; j < children.length; j++) {
                     this.insertBefore(parent, children[j]);
                 }
-            }else{
-                if (children instanceof HTMLElement) parent.parentNode.insertBefore(children, parent);
+            } else {
+                if(children instanceof HTMLElement) parent.parentNode.insertBefore(children, parent);
             }
         }
     }
@@ -233,7 +233,7 @@ notTemplate.prototype._proccessItems = function() {
         this._working.currentIndex = i;
         this._working.currentItem = this._notOptions.data[i];
         this._proccessItem();
-        for(var j = 0; j < this._working.currentEl.children.length; j++){
+        for(var j = 0; j < this._working.currentEl.children.length; j++) {
             this._working.result.push(this._working.currentEl.children[j]);
         }
     }
@@ -323,9 +323,9 @@ notTemplate.prototype._getAttributeExpressionResult = function(expression, item,
         result = (runner.hasOwnProperty(fieldName) ? ((runner.getAttr && runner.getAttr(fieldName)) || runner[fieldName])(item, index) : this._notOptions.attributeExpressionDefaultResult);
     } else {
         //console.log(runner[fieldName]);
-        if (typeof runner[fieldName] !== 'undefined' || (runner.getAttr &&  (typeof runner.getAttr(fieldName) !== 'undefined'))){
-            result = ((runner.getAttr && runner.getAttr(fieldName)) || runner[fieldName] );
-        }else{
+        if(typeof runner[fieldName] !== 'undefined' || (runner.getAttr && (typeof runner.getAttr(fieldName) !== 'undefined'))) {
+            result = ((runner.getAttr && runner.getAttr(fieldName)) || runner[fieldName]);
+        } else {
             result = this._notOptions.attributeExpressionDefaultResult;
         }
     }
@@ -372,27 +372,15 @@ notTemplate.prototype.proccessorsLib = {
         if(input.params.indexOf('capitalize') > -1) input.attributeResult = input.attributeResult.toUpperCase();
         input.element.innerHTML = input.attributeResult;
         var live = input.params.indexOf('live');
-        if (live > -1 && live == input.params.length - 1){
-            var fieldName = null;
-            if (input.attributeExpression.indexOf('::')===0){
-                var helperName = input.attributeExpression.replace('::', '');
-                if(helpers.hasOwnProperty(helperName)&& helpers[helperName]){
-                    fieldName = helpers[helperName];
-                }
-            }else{
-                if(item.on && input.attributeExpression.indexOf(':')===0 ){
-                    var fieldName = input.attributeExpression.replace(':', '');
-                }
-            }
-            if (fieldName){
-                item.on('onAttrChange_' + fieldName, function(){
-                    console.log('on attr change', arguments);
-                    var value = item.getAttr(fieldName);
+        if(live > -1 && live == input.params.length - 1) {
+            var attrPath = notCommon.parsePath(input.attributeExpression);
+            if(attrPath.length && item && item.isRecord) {
+                item.on('onAttrChange_' + attrPath[0], function() {
+                    var value = notCommon.getValueByPath(item, attrPath);
                     if(input.params.indexOf('capitalize') > -1) value = value.toUpperCase();
-                    if (input.element.innerHTML!= value){
-                        input.element.innerHTML= value;
+                    if(input.element.innerHTML != value) {
+                        input.element.innerHTML = value;
                     }
-
                 });
             }
         }
@@ -403,7 +391,7 @@ notTemplate.prototype.proccessorsLib = {
             option = null,
             valueFieldName = 'value',
             labelFieldName = 'name',
-            itemValueFieldName = helpers.hasOwnProperty('fieldName')?helpers['fieldName']:'value';
+            itemValueFieldName = helpers.hasOwnProperty('fieldName') ? helpers['fieldName'] : 'value';
         if(input.params.length === 2) {
             labelFieldName = input.params[0];
             valueFieldName = input.params[1];
@@ -421,7 +409,7 @@ notTemplate.prototype.proccessorsLib = {
             option.textContent = helpers.fieldPlaceHolder;
             input.element.appendChild(option);
         }
-        if(typeof item !== 'undefined' && item !== null){
+        if(typeof item !== 'undefined' && item !== null) {
             for(i = 0; i < input.attributeResult.length; i++) {
                 option = document.createElement('option');
                 option.setAttribute('value', input.attributeResult[i][valueFieldName]);
@@ -445,23 +433,23 @@ notTemplate.prototype.proccessorsLib = {
         'use strict';
         input.element.setAttribute(input.params[0], input.attributeResult);
         var live = input.params.indexOf('live');
-        if (live > -1 && live == input.params.length - 1){
+        if(live > -1 && live == input.params.length - 1) {
             var fieldName = null;
-            if (input.attributeExpression.indexOf('::')===0){
+            if(input.attributeExpression.indexOf('::') === 0) {
                 var helperName = input.attributeExpression.replace('::', '');
-                if(helpers.hasOwnProperty(helperName)&& helpers[helperName]){
+                if(helpers.hasOwnProperty(helperName) && helpers[helperName]) {
                     fieldName = helpers[helperName];
                 }
-            }else{
-                if(item.on && input.attributeExpression.indexOf(':')===0 ){
+            } else {
+                if(item.on && input.attributeExpression.indexOf(':') === 0) {
                     var fieldName = input.attributeExpression.replace(':', '');
                 }
             }
-            if (fieldName && item.isRecord){
-                item.on('onAttrChange_' + fieldName, function(){
+            if(fieldName && item.isRecord) {
+                item.on('onAttrChange_' + fieldName, function() {
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
-                    if(typeof newVal !== 'undefined' && input.element.getAttribute(input.params[0]) != newVal){
+                    if(typeof newVal !== 'undefined' && input.element.getAttribute(input.params[0]) != newVal) {
                         input.element.setAttribute(input.params[0], newVal);
                     }
                 });
@@ -470,43 +458,43 @@ notTemplate.prototype.proccessorsLib = {
     },
     name: function(input, item, helpers) {
         'use strict';
-        if (input.attributeExpression.indexOf(':')>-1){
-            if (input.attributeExpression.indexOf('::')===0 && helpers.hasOwnProperty('fieldName')){
+        if(input.attributeExpression.indexOf(':') > -1) {
+            if(input.attributeExpression.indexOf('::') === 0 && helpers.hasOwnProperty('fieldName')) {
                 fieldName = notCommon.normilizePath(input.attributeExpression);
-                if (fieldName.indexOf('fieldName')>-1){
+                if(fieldName.indexOf('fieldName') > -1) {
                     fieldName[fieldName.indexOf('fieldName')] = helpers.fieldName;
                 }
-            }else{
-                if(item.on && input.attributeExpression.indexOf(':')===0 ){
+            } else {
+                if(item.on && input.attributeExpression.indexOf(':') === 0) {
                     var fieldName = notCommon.normilizePath(input.attributeExpression);
                 }
             }
-            var fieldNameLine  = fieldName.shift();
-            while(fieldName.length > 0){
-                fieldNameLine=fieldNameLine+'['+fieldName.shift()+']';
+            var fieldNameLine = fieldName.shift();
+            while(fieldName.length > 0) {
+                fieldNameLine = fieldNameLine + '[' + fieldName.shift() + ']';
             }
             input.element.setAttribute('name', fieldNameLine);
-        }else{
+        } else {
             input.element.setAttribute('name', input.attributeResult);
         }
         var live = input.params.indexOf('live');
-        if (live > -1 && live == input.params.length - 1){
+        if(live > -1 && live == input.params.length - 1) {
             var fieldName = null;
-            if (input.attributeExpression.indexOf('::')===0){
+            if(input.attributeExpression.indexOf('::') === 0) {
                 var helperName = input.attributeExpression.replace('::', '');
-                if(helpers.hasOwnProperty(helperName)&& helpers[helperName]){
+                if(helpers.hasOwnProperty(helperName) && helpers[helperName]) {
                     fieldName = helpers[helperName];
                 }
-            }else{
-                if(item.on && input.attributeExpression.indexOf(':')===0 ){
+            } else {
+                if(item.on && input.attributeExpression.indexOf(':') === 0) {
                     var fieldName = input.attributeExpression.replace(':', '');
                 }
             }
-            if (fieldName && item.isRecord){
-                item.on('onAttrChange_' + fieldName, function(){
+            if(fieldName && item.isRecord) {
+                item.on('onAttrChange_' + fieldName, function() {
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
-                    if(typeof newVal !== 'undefined' && input.element.getAttribute('name') != newVal){
+                    if(typeof newVal !== 'undefined' && input.element.getAttribute('name') != newVal) {
                         input.element.setAttribute('name', newVal);
                     }
                 });
@@ -522,45 +510,45 @@ notTemplate.prototype.proccessorsLib = {
     value: function(input, item, helpers) {
         console.log('value', input);
         var src = item;
-        if (input.attributeExpression.indexOf('::') > -1){
+        if(input.attributeExpression.indexOf('::') > -1) {
             src = helpers;
         }
         var valuePath = notCommon.normilizePath(input.attributeExpression);
-        var value = input.attributeExpression.indexOf('.') > -1 && input.attributeExpression.indexOf('()') == -1 ? notCommon.getValueByPath(src, valuePath):input.attributeResult;
+        var value = input.attributeExpression.indexOf('.') > -1 && input.attributeExpression.indexOf('()') == -1 ? notCommon.getValueByPath(src, valuePath) : input.attributeResult;
 
         input.element.setAttribute('value', value);
 
         var live = input.params.indexOf('live');
-        if (live > -1 && live == input.params.length - 1){
+        if(live > -1 && live == input.params.length - 1) {
             var fieldName = null;
-            if (input.attributeExpression.indexOf('::')===0 && helpers.hasOwnProperty('fieldName')){
+            if(input.attributeExpression.indexOf('::') === 0 && helpers.hasOwnProperty('fieldName')) {
                 fieldName = notCommon.normilizePath(input.attributeExpression);
-                if (fieldName.indexOf('fieldValue')>-1){
+                if(fieldName.indexOf('fieldValue') > -1) {
                     fieldName[fieldName.indexOf('fieldValue')] = helpers.fieldName;
                 }
-            }else{
-                if(item.on && input.attributeExpression.indexOf(':')===0 ){
+            } else {
+                if(item.on && input.attributeExpression.indexOf(':') === 0) {
                     var fieldName = notCommon.normilizePath(input.attributeExpression);
                 }
             }
-            if (fieldName && fieldName.length && item.isRecord){
-                item.on('onAttrChange_' + fieldName[0], function(){
+            if(fieldName && fieldName.length && item.isRecord) {
+                item.on('onAttrChange_' + fieldName[0], function() {
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName.join('.'));
-                    if (input.element.nodeName == "SELECT" && input.element.multiple){
+                    if(input.element.nodeName == "SELECT" && input.element.multiple) {
                         curElVal = [];
-                        for(var g = 0; g < input.element.selectedOptions.length; g++){
+                        for(var g = 0; g < input.element.selectedOptions.length; g++) {
                             curElVal.push(input.element.selectedOptions[g].value);
                         }
-                        if(!notCommon.identical(newVal, curElVal)){
-                            for(var g = 0; g < input.element.children.length;g++){
-                                if(input.element.children[g].nodeName === 'OPTION'){
-                                    input.element.children[g].selected = newVal.indexOf(input.element.children[g].value)>-1;
+                        if(!notCommon.identical(newVal, curElVal)) {
+                            for(var g = 0; g < input.element.children.length; g++) {
+                                if(input.element.children[g].nodeName === 'OPTION') {
+                                    input.element.children[g].selected = newVal.indexOf(input.element.children[g].value) > -1;
                                 }
                             }
                         }
-                    }else{
-                        if(typeof newVal !== 'undefined' && !notCommon.identical(input.element.value,newVal)){
+                    } else {
+                        if(typeof newVal !== 'undefined' && !notCommon.identical(input.element.value, newVal)) {
                             input.element.value = newVal;
                         }
                     }
@@ -585,18 +573,18 @@ notTemplate.prototype.proccessorsLib = {
             return false;
         });
     },
-    subtemplate: function(input, item, helpers){
+    subtemplate: function(input, item, helpers) {
         var that = this;
         var capitalizeFirstLetter = function(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-        //console.log(input, item, helpers);
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+            //console.log(input, item, helpers);
         var tmplName = input.params[0];
-        for(var i = 1; i < input.params.length; i++){
-            if (input.params[i]== 'live' && i+1==input.params.length){
+        for(var i = 1; i < input.params.length; i++) {
+            if(input.params[i] == 'live' && i + 1 == input.params.length) {
                 break;
             }
-            tmplName+=capitalizeFirstLetter(input.params[i]);
+            tmplName += capitalizeFirstLetter(input.params[i]);
         }
         var resultElements = (new notTemplate({
             templateCache: tmplName,
@@ -607,10 +595,10 @@ notTemplate.prototype.proccessorsLib = {
 
 
         var live = input.params.indexOf('live');
-        if (live > -1 && live == input.params.length - 1){
-            var fieldName = helpers.hasOwnProperty('fieldName')?helpers.fieldName:null;
-            if (fieldName && item.isRecord){
-                item.on('onAttrChange_' + fieldName, function(){
+        if(live > -1 && live == input.params.length - 1) {
+            var fieldName = helpers.hasOwnProperty('fieldName') ? helpers.fieldName : null;
+            if(fieldName && item.isRecord) {
+                item.on('onAttrChange_' + fieldName, function() {
                     console.log('on attr change', arguments);
 
                 });
@@ -619,45 +607,45 @@ notTemplate.prototype.proccessorsLib = {
     },
     //data-not-live="title"
     //will watch for changes on liveEvents and change object field or notRecord attribute acordingly
-    live: function(input, item, helpers){
+    live: function(input, item, helpers) {
         var that = this,
             liveEvents = ['change', 'keyup'];
         console.log('live', input);
         var attrPath = input.attributeResult;
-        if (input.attributeExpression.indexOf(':')===0){
+        if(input.attributeExpression.indexOf(':') === 0) {
             attrPath = input.attributeExpression;
-            if(input.attributeExpression.indexOf('::')===0){
+            if(input.attributeExpression.indexOf('::') === 0) {
                 attrPath = attrPath.replace('::fieldName', helpers.fieldName);
-            }else{
+            } else {
                 attrPath = attrPath.replace(':', '');
             }
         }
-        for(var i = 0; i < liveEvents.length;i++){
+        for(var i = 0; i < liveEvents.length; i++) {
             input.element.addEventListener(liveEvents[i], function(e) {
                 var edit = true;
                 if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('validators') && helpers.validators.hasOwnProperty(attrPath)) {
                     edit = helpers.validators[attrPath](input, item, e);
                 }
-                if (edit && item.isRecord){
-                    if(input.element.type == 'checkbox'){
-                        notCommon.setValueByPath(item, attrPath, input.element.checked?input.element.value:undefined);
-                    }else{
+                if(edit && item.isRecord) {
+                    if(input.element.type == 'checkbox') {
+                        notCommon.setValueByPath(item, attrPath, input.element.checked ? input.element.value : undefined);
+                    } else {
                         var curElVal = input.element.value;
-                        if(input.element.nodeName === 'SELECT' && input.element.multiple && typeof input.element.selectedOptions !== 'undefined'){
+                        if(input.element.nodeName === 'SELECT' && input.element.multiple && typeof input.element.selectedOptions !== 'undefined') {
                             curElVal = [];
-                            for(var g = 0; g < input.element.selectedOptions.length; g++){
+                            for(var g = 0; g < input.element.selectedOptions.length; g++) {
                                 curElVal.push(input.element.selectedOptions[g].value);
                             }
-                            if (notCommon.identical(curElVal, notCommon.getValueByPath(item, attrPath))){
+                            if(notCommon.identical(curElVal, notCommon.getValueByPath(item, attrPath))) {
                                 edit = false;
-                            }else{
+                            } else {
                                 notCommon.setValueByPath(item, attrPath, curElVal);
                             }
 
-                        }else{
-                            if (notCommon.identical(notCommon.getValueByPath(item, attrPath), curElVal)){
+                        } else {
+                            if(notCommon.identical(notCommon.getValueByPath(item, attrPath), curElVal)) {
                                 edit = false;
-                            }else{
+                            } else {
                                 notCommon.setValueByPath(item, attrPath, curElVal);
                             }
                         }

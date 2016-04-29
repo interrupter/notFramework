@@ -15,6 +15,9 @@ var notCommon = {
             obj[key] = defaultValue;
         }
     },
+
+    //::fieldName.sub.value
+    ////['fieldName', 'sub', 'value']
     normilizePath: function(path){
         if (Array.isArray(path)){
             return path;
@@ -24,6 +27,46 @@ var notCommon = {
             }
             return path.split('.');
         }
+    },
+    parsePathStep: function(step, item, helper){
+        if(step.indexOf('::') === 0 && helper){
+            var rStep = step.replace('::');
+            if(rStep.indexOf('()') === rStep.length-2){
+                rStep = step.replace('()');
+                if(helper.hasOwnProperty(rStep)){
+                    return helper[rStep](item, undefined);
+                }
+            }else{
+                return helper[rStep];
+            }
+        }else{
+            if(step.indexOf(':') === 0 && item){
+                var rStep = step.replace(':');
+                if(rStep.indexOf('()') === rStep.length-2){
+                    rStep = step.replace('()');
+                    if(item.hasOwnProperty(rStep)){
+                        return item[rStep](item, undefined);
+                    }
+                }else{
+                    return item[rStep];
+                }
+            }
+        }
+        return step;
+    },
+
+    //::fieldName.result
+    //{}
+    //{fieldName: 'targetRecordField'}
+    ////['targetRecordField', 'result']
+    parsePath: function(path, item, helper){
+        if (!Array.isArray(path)){
+            path = path.split('.');
+        }
+        for(var i = 0; i < path.length;i++){
+            path = this.parsePathStep(path[i], item, helper);
+        }
+        return path;
     },
     getValueByPath: function(object, attrPath){
         var attrPath = this.normilizePath(attrPath);

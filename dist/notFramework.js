@@ -2618,7 +2618,11 @@ notTemplate.prototype._getAttributeExpressionResult = function(expression, item,
         result = (runner.hasOwnProperty(fieldName) ? ((runner.getAttr && runner.getAttr(fieldName)) || runner[fieldName])(item, index) : this._notOptions.attributeExpressionDefaultResult);
     } else {
         //console.log(runner[fieldName]);
-        result = ((typeof runner[fieldName] !== 'undefined' || (runner.getAttr &&  (typeof runner.getAttr(fieldName) !== 'undefined'))) ?((runner.getAttr && runner.getAttr(fieldName)) || runner[fieldName] ): this._notOptions.attributeExpressionDefaultResult);
+        if (typeof runner[fieldName] !== 'undefined' || (runner.getAttr &&  (typeof runner.getAttr(fieldName) !== 'undefined'))){
+            result = ((runner.getAttr && runner.getAttr(fieldName)) || runner[fieldName] );
+        }else{
+            result = this._notOptions.attributeExpressionDefaultResult;
+        }
     }
     return result;
 };
@@ -2731,6 +2735,7 @@ notTemplate.prototype.proccessorsLib = {
         }
 
     },
+
     attr: function(input, item, helpers) {
         'use strict';
         input.element.setAttribute(input.params[0], input.attributeResult);
@@ -2758,6 +2763,51 @@ notTemplate.prototype.proccessorsLib = {
             }
         }
     },
+    name: function(input, item, helpers) {
+        'use strict';
+        if (input.attributeExpression.indexOf(':')>-1){
+            if (input.attributeExpression.indexOf('::')===0 && helpers.hasOwnProperty('fieldName')){
+                fieldName = notCommon.normilizePath(input.attributeExpression);
+                if (fieldName.indexOf('fieldName')>-1){
+                    fieldName[fieldName.indexOf('fieldName')] = helpers.fieldName;
+                }
+            }else{
+                if(item.on && input.attributeExpression.indexOf(':')===0 ){
+                    var fieldName = notCommon.normilizePath(input.attributeExpression);
+                }
+            }
+            var fieldNameLine  = fieldName.shift();
+            while(fieldName.length > 0){
+                fieldNameLine=fieldNameLine+'['+fieldNameLine.shift()+']';
+            }
+            input.element.setAttribute('name', fieldNameLine);
+        }else{
+            input.element.setAttribute('name', input.attributeResult);
+        }
+        var live = input.params.indexOf('live');
+        if (live > -1 && live == input.params.length - 1){
+            var fieldName = null;
+            if (input.attributeExpression.indexOf('::')===0){
+                var helperName = input.attributeExpression.replace('::', '');
+                if(helpers.hasOwnProperty(helperName)&& helpers[helperName]){
+                    fieldName = helpers[helperName];
+                }
+            }else{
+                if(item.on && input.attributeExpression.indexOf(':')===0 ){
+                    var fieldName = input.attributeExpression.replace(':', '');
+                }
+            }
+            if (fieldName && item.isRecord){
+                item.on('onAttrChange_' + fieldName, function(){
+                    console.log('on attr change', arguments);
+                    var newVal = item.getAttr(fieldName);
+                    if(typeof newVal !== 'undefined' && input.element.getAttribute('name') != newVal){
+                        input.element.setAttribute('name', newVal);
+                    }
+                });
+            }
+        }
+    },
     addclass: function(input, item, helpers) {
         if(input.attributeResult) {
             input.element.classList.add(input.params[0]);
@@ -2774,7 +2824,7 @@ notTemplate.prototype.proccessorsLib = {
         var value = input.attributeExpression.indexOf('.') > -1 && input.attributeExpression.indexOf('()') == -1 ? notCommon.getValueByPath(src, valuePath):input.attributeResult;
 
         input.element.setAttribute('value', value);
-        
+
         var live = input.params.indexOf('live');
         if (live > -1 && live == input.params.length - 1){
             var fieldName = null;

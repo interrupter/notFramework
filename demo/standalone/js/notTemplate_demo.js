@@ -112,7 +112,7 @@ $(function () {
     }).exec();
 
     //var form = new notForm({});
-/*
+
     notTemplateCache.load({
         complexTemplate: './templates/complexTemplate.html',
         manyTemplate: './templates/manyTemplate.html',
@@ -151,7 +151,7 @@ $(function () {
             $('#manyElements').append(manyElementsContent);
         });
 
-*/
+
 
 
 

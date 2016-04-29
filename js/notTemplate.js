@@ -373,7 +373,7 @@ notTemplate.prototype.proccessorsLib = {
         input.element.innerHTML = input.attributeResult;
         var live = input.params.indexOf('live');
         if(live > -1 && live == input.params.length - 1) {
-            var attrPath = notCommon.parsePath(input.attributeExpression);
+            var attrPath = notCommon.parsePath(input.attributeExpression, item, helpers);
             if(attrPath.length && item && item.isRecord) {
                 item.on('onAttrChange_' + attrPath[0], function() {
                     var value = notCommon.getValueByPath(item, attrPath);

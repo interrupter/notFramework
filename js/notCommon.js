@@ -30,9 +30,9 @@ var notCommon = {
     },
     parsePathStep: function(step, item, helper){
         if(step.indexOf('::') === 0 && helper){
-            var rStep = step.replace('::');
+            var rStep = step.replace('::', '');
             if(rStep.indexOf('()') === rStep.length-2){
-                rStep = step.replace('()');
+                rStep = step.replace('()', '');
                 if(helper.hasOwnProperty(rStep)){
                     return helper[rStep](item, undefined);
                 }
@@ -41,9 +41,9 @@ var notCommon = {
             }
         }else{
             if(step.indexOf(':') === 0 && item){
-                var rStep = step.replace(':');
+                var rStep = step.replace(':', '');
                 if(rStep.indexOf('()') === rStep.length-2){
-                    rStep = step.replace('()');
+                    rStep = step.replace('()', '');
                     if(item.hasOwnProperty(rStep)){
                         return item[rStep](item, undefined);
                     }

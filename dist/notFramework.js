@@ -200,7 +200,7 @@ var notCommon = {
     getValueByPath: function(object, attrPath){
         var attrPath = this.normilizePath(attrPath);
         var attrName = attrPath.shift();
-        if (object.hasOwnProperty(attrName)){
+        if (typeof object == 'object' && object.hasOwnProperty(attrName)){
             if (attrPath.length > 0){
                 return this.getValueByPath(object[attrName], attrPath);
             }else{

@@ -236,7 +236,7 @@ var notCommon = {
             path = path.split('.');
         }
         for(var i = 0; i < path.length;i++){
-            path = this.parsePathStep(path[i], item, helper);
+            path[i] = this.parsePathStep(path[i], item, helper);
         }
         return path;
     },

@@ -87,7 +87,17 @@ var notRecord_Interface = {
             }
         }
         if ((actionData.method === 'POST' && (actionData.hasOwnProperty('formData')&& actionData.formData))){
-            return (record.getModelParam('formData')||formData);
+            var savedFormData = record.getModelParam('formData');
+            if(savedFormData){
+                for(var i in formData){
+                    if (!savedFormData.has(i)){
+                        savedFormData.append(i, formData[i]);
+                    }
+                }
+                return savedFormData;
+            }else{
+                return (formData);
+            }
         }else{
             if (actionData.hasOwnProperty('json') && actionData.json){
                 return JSON.stringify(requestData);

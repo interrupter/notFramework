@@ -467,6 +467,8 @@ notTemplate.prototype.proccessorsLib = {
             } else {
                 if(item.on && input.attributeExpression.indexOf(':') === 0) {
                     var fieldName = notCommon.normilizePath(input.attributeExpression);
+                }else{
+                    var fieldName = notCommon.parsePath(input.attributeExpression, item, helpers);
                 }
             }
             var fieldNameLine = fieldName.shift();

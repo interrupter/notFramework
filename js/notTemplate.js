@@ -628,7 +628,7 @@ notTemplate.prototype.proccessorsLib = {
                 if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('validators') && helpers.validators.hasOwnProperty(attrPath)) {
                     edit = helpers.validators[attrPath](input, item, e);
                 }
-                if(edit && item.isRecord) {
+                if(edit) {
                     if(input.element.type == 'checkbox') {
                         notCommon.setValueByPath(item, attrPath, input.element.checked ? input.element.value : undefined);
                     } else {

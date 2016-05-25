@@ -558,7 +558,7 @@ notTemplate.prototype.proccessorsLib = {
     },
     checked: function(input, item, helpers) {
         console.log('checked', input);
-        input.element.setAttribute('checked', input.attributeResult);
+        input.attributeResult? input.element.setAttribute('checked', true):input.element.removeAttribute('checked');
         console.log(input);
     },
     bind: function(input, item, helpers) {

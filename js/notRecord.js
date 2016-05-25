@@ -90,7 +90,7 @@ var notRecord_Interface = {
             var savedFormData = record.getModelParam('formData');
             if(savedFormData){
                 for(var i in formData){
-                    if (!savedFormData.has(i)){
+                    if (savedFormData.has && !savedFormData.has(i)){
                         savedFormData.append(i, formData[i]);
                     }
                 }

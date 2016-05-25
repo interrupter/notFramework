@@ -441,11 +441,11 @@ notTemplate.prototype.proccessorsLib = {
                     fieldName = helpers[helperName];
                 }
             } else {
-                if(item.on && input.attributeExpression.indexOf(':') === 0) {
+                if(item && item.on && input.attributeExpression.indexOf(':') === 0) {
                     var fieldName = input.attributeExpression.replace(':', '');
                 }
             }
-            if(fieldName && item.isRecord) {
+            if(fieldName && item && item.isRecord) {
                 item.on('onAttrChange_' + fieldName, function() {
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
@@ -465,7 +465,7 @@ notTemplate.prototype.proccessorsLib = {
                     fieldName[fieldName.indexOf('fieldName')] = helpers.fieldName;
                 }
             } else {
-                if(item.on && input.attributeExpression.indexOf(':') === 0) {
+                if(item && item.on && input.attributeExpression.indexOf(':') === 0) {
                     var fieldName = notCommon.normilizePath(input.attributeExpression);
                 }else{
                     var fieldName = notCommon.parsePath(input.attributeExpression, item, helpers);
@@ -488,11 +488,11 @@ notTemplate.prototype.proccessorsLib = {
                     fieldName = helpers[helperName];
                 }
             } else {
-                if(item.on && input.attributeExpression.indexOf(':') === 0) {
+                if(item && item.on && input.attributeExpression.indexOf(':') === 0) {
                     var fieldName = input.attributeExpression.replace(':', '');
                 }
             }
-            if(fieldName && item.isRecord) {
+            if(fieldName && item && item.isRecord) {
                 item.on('onAttrChange_' + fieldName, function() {
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName);
@@ -529,11 +529,11 @@ notTemplate.prototype.proccessorsLib = {
                     fieldName[fieldName.indexOf('fieldValue')] = helpers.fieldName;
                 }
             } else {
-                if(item.on && input.attributeExpression.indexOf(':') === 0) {
+                if(item && item.on && input.attributeExpression.indexOf(':') === 0) {
                     var fieldName = notCommon.normilizePath(input.attributeExpression);
                 }
             }
-            if(fieldName && fieldName.length && item.isRecord) {
+            if(fieldName && fieldName.length && item &&  item.isRecord) {
                 item.on('onAttrChange_' + fieldName[0], function() {
                     console.log('on attr change', arguments);
                     var newVal = item.getAttr(fieldName.join('.'));
@@ -599,7 +599,7 @@ notTemplate.prototype.proccessorsLib = {
         var live = input.params.indexOf('live');
         if(live > -1 && live == input.params.length - 1) {
             var fieldName = helpers.hasOwnProperty('fieldName') ? helpers.fieldName : null;
-            if(fieldName && item.isRecord) {
+            if(fieldName && item && item.isRecord) {
                 item.on('onAttrChange_' + fieldName, function() {
                     console.log('on attr change', arguments);
 

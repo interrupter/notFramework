@@ -227,7 +227,6 @@ Object.defineProperties(notRecord.prototype, {
 notRecord.prototype.on = notEvent.on;
 notRecord.prototype.off = notEvent.off;
 notRecord.prototype.trigger = notEvent.trigger;
-
 notRecord.prototype.setModelParam = function(paramName, paramValue) {
     if (this){
         if (this.hasOwnProperty('_notOptions')){

@@ -391,6 +391,7 @@ notTemplate.prototype.proccessorsLib = {
             option = null,
             valueFieldName = 'value',
             labelFieldName = 'name',
+            subLib = undefined,
             itemValueFieldName = helpers.hasOwnProperty('fieldName') ? helpers['fieldName'] : 'value';
         if(input.params.length === 2) {
             labelFieldName = input.params[0];
@@ -400,8 +401,11 @@ notTemplate.prototype.proccessorsLib = {
             labelFieldName = helpers.option.label;
             valueFieldName = helpers.option.value;
         }
-        if(input.params.length === 3) {
+        if(input.params.length > 2) {
             itemValueFieldName = input.params[2];
+        }
+        if(input.params.length > 3 && input.params[3] === 'different') {
+            subLib = valueFieldName;
         }
         if(typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('fieldPlaceHolder') && helpers.hasOwnProperty('fieldPlaceHolderDefault') && helpers.fieldPlaceHolderDefault) {
             option = document.createElement('option');
@@ -410,16 +414,20 @@ notTemplate.prototype.proccessorsLib = {
             input.element.appendChild(option);
         }
         if(typeof item !== 'undefined' && item !== null) {
-            for(i = 0; i < input.attributeResult.length; i++) {
+            var lib = input.attributeResult;
+            if (different && subLib && lib.hasOwnProperty(subLib)){
+                lib = lib[subLib];
+            }
+            for(i = 0; i < lib.length; i++) {
                 option = document.createElement('option');
-                option.setAttribute('value', input.attributeResult[i][valueFieldName]);
-                option.textContent = input.attributeResult[i][labelFieldName];
+                option.setAttribute('value', lib[i][valueFieldName]);
+                option.textContent = lib[i][labelFieldName];
                 if(Array.isArray(item[itemValueFieldName])) {
-                    if(item[itemValueFieldName].indexOf(input.attributeResult[i][valueFieldName]) > -1) {
+                    if(item[itemValueFieldName].indexOf(lib[i][valueFieldName]) > -1) {
                         option.setAttribute('selected', true);
                     }
                 } else {
-                    if(item[itemValueFieldName] === input.attributeResult[i][valueFieldName]) {
+                    if(item[itemValueFieldName] === lib[i][valueFieldName]) {
                         option.setAttribute('selected', true);
                     }
                 }

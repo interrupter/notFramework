@@ -1,0 +1,20 @@
+<nt name="todo">
+	<div>
+		<nt name="title" data="::">
+		<div>
+			<h3>Список</h3>
+			<ul>
+				<nt name="checkItem" data=":list" helpers="::list" />
+			</ul>
+		</div>
+		<div>
+			<input type="text" n-value=":newItem" />
+			<button n-bind-click="::add">+</button>
+		</div>
+		<nt src="./templates/copyrights.html" name="copyrights" />
+	</div>
+</nt>
+
+<nt name="checkItem">
+	<li n-bind-click="::toggle" n-change="::restyle" n-content="Item name is \"{:name}\""></li>
+</nt>

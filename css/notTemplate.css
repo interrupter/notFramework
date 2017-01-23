@@ -1,4 +1,4 @@
-div[data-notTemplate-name] {
+nt,div[data-notTemplate-name] {
     display: none!important;
     show: false!important;
     width:0px!important;

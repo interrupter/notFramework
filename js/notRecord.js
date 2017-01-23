@@ -71,6 +71,7 @@ var notRecord_Interface = {
         'use strict';
         var requestData = {},
             i = 0;
+
         if((actionData.hasOwnProperty('data')) && typeof(actionData.data) !== 'undefined' && actionData.data !== null) {
             for(i = 0; i < actionData.data.length; i++) {
                 var dataProviderName = 'get' + capitalizeFirstLetter(actionData.data[i]);
@@ -79,6 +80,7 @@ var notRecord_Interface = {
                 }
             }
         }
+
         var formData = new FormData();
         var len = Object.keys(requestData).length;
         if(len > 0) {
@@ -181,18 +183,6 @@ var notRecord = function(interfaceManifest, item) {
     if (this._notOptions.hasOwnProperty('interfaceManifest') && typeof this._notOptions.interfaceManifest !== 'undefined' && this._notOptions.interfaceManifest !== null &&
         this._notOptions.interfaceManifest.hasOwnProperty('actions') && typeof this._notOptions.interfaceManifest.actions !== 'undefined' && this._notOptions.interfaceManifest.actions !== null
         ){
-        /*for(var actionName in this._notOptions.interfaceManifest.actions){
-            if(!(this.hasOwnProperty('$' + actionName))) {
-                var action = function(callbackSuccess, callbackError) {
-                    (notRecord_Interface.request.bind(notRecord_Interface, this.actionOwner, this.actionName, callbackSuccess, callbackError)).call();
-                };
-                action.actionName = actionName;
-                action.actionOwner = this;
-                this['$' + actionName] = action.bind(action);
-            } else {
-                console.error('interface manifest for ', interfaceManifest.model, ' conflict with notRecord property "', '$' + actionName, '" that alredy exists');
-            }
-        }*/
         $.each(this._notOptions.interfaceManifest.actions, function (index, actionManifest) {
         if (!(this.hasOwnProperty('$' + index))) {
             that['$' + index] = function (callbackSuccess, callbackError) {
@@ -227,6 +217,7 @@ Object.defineProperties(notRecord.prototype, {
 notRecord.prototype.on = notEvent.on;
 notRecord.prototype.off = notEvent.off;
 notRecord.prototype.trigger = notEvent.trigger;
+
 notRecord.prototype.setModelParam = function(paramName, paramValue) {
     if (this){
         if (this.hasOwnProperty('_notOptions')){
@@ -242,7 +233,6 @@ notRecord.prototype.getModelParam = function(paramName) {
 }
 
 notRecord.prototype.getModelName = function() {
-
     return this&&this.hasOwnProperty('_notOptions')?this._notOptions.interfaceManifest.model:null;
 }
 
@@ -452,6 +442,13 @@ notRecord.prototype.getPager = function() {
     };
 };
 
+notRecord.prototype.setFindBy = function(key, value) {
+    'use strict';
+    var obj = {};
+    obj[key] = value;
+    return this.setFilter(obj);
+};
+
 notRecord.prototype.getRecord = function() {
     'use strict';
     var result = {},
@@ -478,11 +475,4 @@ notRecord.prototype.getRecord = function() {
         }
     }
     return result;
-};
-
-notRecord.prototype.setFindBy = function(key, value) {
-    'use strict';
-    var obj = {};
-    obj[key] = value;
-    return this.setFilter(obj);
 };

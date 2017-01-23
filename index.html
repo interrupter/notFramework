@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Mocha Tests</title>
+	<link rel="stylesheet" href="node_modules/mocha/mocha.css">
+</head>
+
+<body>
+	<nt id="testCase1" name="testCase1"><img/></nt>
+	<nt id="testCase2" name="testCase2"><ul><li>2</li></ul></nt>
+	<div id="mocha"></div>
+	<script src="node_modules/mocha/mocha.js"></script>
+	<script src="node_modules/chai/chai.js"></script>
+	<script src="build/notFramework.js"></script>
+	<script>
+		notFramework.notPath.findNextSubPath(':property');
+		mocha.setup('bdd');
+		const expect = chai.expect;
+	</script>
+	<script src="test/notPath.js"></script>
+	<script src="test/notRecord.js"></script>
+	<script src="test/notTemplateCache.js"></script>
+	<script src="test/notTemplateProcessors.js"></script>
+	<script src="test/notTemplate.js"></script>
+	<script src="test/notComponent.js"></script>
+	<script src="test/notView.js"></script>
+	<script src="test/notForm.js"></script>
+
+	<!-- load code you want to test here -->
+
+	<!-- load your test files here -->
+
+	<script>
+		mocha.run();
+	</script>
+	<input type="file" id="files" name="files[]" multiple />
+	<output id="list"></output>
+
+	<script>
+		function handleFileSelect(evt) {
+			var files = evt.target.files; // FileList object
+			// Loop through the FileList and render image files as thumbnails.
+			for (var i = 0, f; f = files[i]; i++) {
+				// Only process image files.
+				if (!f.type.match('image.*')) {
+					continue;
+				}
+				var reader = new FileReader();
+				// Closure to capture the file information.
+				reader.onload = (function(theFile) {
+					return function(e) {
+						// Render thumbnail.
+						var span = document.createElement('span');
+						span.innerHTML = ['<img class="thumb" src="', e.target.result, '" title="', theFile.name, '"/>'].join('');
+						document.getElementById('list').insertBefore(span, null);
+					};
+				})(f);
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+			}
+		}
+
+		document.getElementById('files').addEventListener('change', handleFileSelect, false);
+	</script>
+</body>
+
+</html>

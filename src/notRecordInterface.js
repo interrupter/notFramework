@@ -119,7 +119,7 @@ export default class notInterface extends notBase{
 	request(record, actionName) {
 		let actionData = this.getActionData(actionName),
 			url = this.getURL(record, actionData, actionName);
-		return notCommon.getAPI().queeRequest(actionData.method, url, JSON.stringify(record.getData()), this.onLoad.bind({actionData, manifest}));
+		return notCommon.getAPI().queeRequest(actionData.method, url, JSON.stringify(record.getData()), this.onLoad.bind({actionData, manifest: this.manifest}));
 	}
 /*
 	_request_Obsolete_(record, actionName) {

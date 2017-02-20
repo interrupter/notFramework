@@ -141,19 +141,21 @@ class notRecord extends notBase {
 	}
 
 	initProperties(item, path = ''){
-		let keys = Object.keys(item);
-		for(let key of keys){
-			let curPath = path+(path.length>0?'.':'')+key;
-			//notCommon.log('curPath', curPath);
-			if(item.hasOwnProperty(key)){
-				if(typeof item[key] === 'object'){
-					this.initProperties(item[key], curPath);
-					item[key] = new notProperty(this.getRoot.bind(this), curPath, item[key]);
+		if (typeof item !== 'undefined' && item !== null){
+			let keys = Object.keys(item);
+			for(let key of keys){
+				let curPath = path+(path.length>0?'.':'')+key;
+				//notCommon.log('curPath', curPath);
+				if(item.hasOwnProperty(key)){
+					if(typeof item[key] === 'object'){
+						this.initProperties(item[key], curPath);
+						item[key] = new notProperty(this.getRoot.bind(this), curPath, item[key]);
+					}else{
+						//notCommon.log(key, 'is own property, but not object');
+					}
 				}else{
-					//notCommon.log(key, 'is own property, but not object');
+					//notCommon.log(key, 'is not own property');
 				}
-			}else{
-				//notCommon.log(key, 'is not own property');
 			}
 		}
 		return item;

@@ -51,8 +51,11 @@ var createPropertyHandlers = function(owner) {
 
 class notProperty extends notBase{
 	constructor(getRoot, pathTo, item) {
+		if (typeof item === 'undefined' || item === null){
+			return item;
+		}
 		super();
-		if (item.isProxy){
+		if (item && item.isProxy){
 			//notCommon.error('this is Proxy property');
 			return item;
 		}
@@ -109,6 +112,9 @@ var createRecordHandlers = function(owner) {
 
 class notRecord extends notBase {
 	constructor(manifest, item) {
+		if (typeof item === 'undefined' || item === null){
+			return item;
+		}
 		super();
 		if (item && item.isProxy){
 			notCommon.error('this is Proxy item');

@@ -137,7 +137,7 @@ export default class notInterface extends notBase{
 			data = this.response,
 			result = [];
 		if (status == 200) {
-			if(('isArray' in this.actionData) && this.actionData.isArray) {
+			if(this.actionData && this.actionData.hasOwnProperty('isArray') && this.actionData.isArray) {
 				data.forEach((item) => {
 					result.push(new notRecord(this.manifest, item));
 				});

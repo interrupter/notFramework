@@ -1,4 +1,5 @@
 const notRecord = notFramework.notRecord,
+	notAPI = notFramework.notAPI,
 	notCommon = notFramework.notCommon;
 
 let testItem = {
@@ -54,6 +55,14 @@ let testItem = {
 		}
 	};
 
+before(function(){
+	notCommon.setManager({
+		setAPI(v){ this.api = v;},
+		getAPI(){return this.api;},
+	});
+	notCommon.getManager().setAPI(new notAPI({}));
+});
+
 describe("notRecord", function() {
 	describe("create", function() {
 		it("single", function() {
@@ -71,25 +80,29 @@ describe("notRecord", function() {
 		it("single get", function() {
 			let rec = new notRecord(manifest, notCommon.completeAssign({},testItem));
 			expect(rec.$view).to.be.ok;
-			rec.$view(function(data){
-					console.log('$view success', data);
-				},
-				function(data){
-					console.log('$view failure', data);
-				}
-			);
+			rec.$view()
+				.then(
+					(data)=>{
+						console.log('$view success', data);
+					}
+				)
+				.catch(
+					(data)=>{
+						console.log('$view failure', data);
+					}
+				);
 		});
 
 		it("single post", function() {
 			let rec = new notRecord(manifest, notCommon.completeAssign({},testItem));
 			expect(rec.$update).to.be.ok;
-			rec.$update(function(data){
+			rec.$update()
+				.then((data)=>{
 					console.log('$update one success', data);
-				},
-				function(data){
+				})
+				.catch((data)=>{
 					console.log('$update one failure', data);
-				}
-			);
+				});
 		});
 
 	});

@@ -6,6 +6,8 @@ import notCommon from './common';
 	framework wide parser for data access
 */
 import notPath from './notPath';
+
+import notAPI from './api';
 /*
 	basic event handlers and core data modifiers
 */
@@ -47,6 +49,7 @@ export {
 	notBase,
 	notImage,
 	notApp,
+	notAPI,
 	notController,
 	notTemplateProcessors,
 	notTemplateProcessorsLib,

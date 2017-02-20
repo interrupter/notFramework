@@ -1,6 +1,6 @@
 import notCommon from './common';
 import notBase from './notBase';
-import notRecord from './notRecord';
+import notRecord from './notRecord.js';
 
 export default class notInterface extends notBase{
 	constructor(manifest) {
@@ -115,10 +115,33 @@ export default class notInterface extends notBase{
 		return this.getActions() && this.getActions()[actionName] ? this.getActions()[actionName] : null;
 	}
 
-	request(record, actionName, callbackSuccess, callbackError) {
-		notCommon.log('request', record, actionName, callbackSuccess, callbackError);
+	//return Promise
+	request(record, actionName) {
 		let actionData = this.getActionData(actionName),
 			url = this.getURL(record, actionData, actionName);
+		return notCommon.getAPI().queeRequest(actionData.method, url, JSON.stringify(record.getData()), this.onLoad.bind({actionData, manifest}));
+	}
+/*
+	_request_Obsolete_(record, actionName) {
+		notCommon.log('request', record, actionName, callbackSuccess, callbackError);
+		return new Promise((resolve, reject) => {
+			let actionData = this.getActionData(actionName),
+				url = this.getURL(record, actionData, actionName);
+				notCommon.getAPI().queeRequest(actionData.method, url, record.getId(), JSON.stringify(record.getData()), good, bad)
+					.then(resolve)
+					.catch(reject);
+		});
+
+		return new Promise((resolve, reject) => {
+			notCommon.log('update');
+			let id = obj.getId(),
+				modelName = obj.getModelName(),
+				url = this.makeUrl([this.getOptions('base'), modelName, id]),
+				data = obj.getJSON();
+
+		});
+
+
 		if (actionData){
 			var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance
 			xmlhttp.open(actionData.method, url);
@@ -131,22 +154,15 @@ export default class notInterface extends notBase{
 			xmlhttp.send(JSON.stringify(record.getData()));
 		}
 	}
-
-	onLoad(){
-		let status = this.status,
-			data = this.response,
-			result = [];
-		if (status == 200) {
-			if(this.actionData && this.actionData.hasOwnProperty('isArray') && this.actionData.isArray) {
-				data.forEach((item) => {
-					result.push(new notRecord(this.manifest, item));
-				});
-			} else {
-				result = new notRecord(this.manifest, data);
+*/
+	onLoad(data){
+		let result = [];
+		if(this && this.actionData && this.actionData.hasOwnProperty('isArray') && this.actionData.isArray) {
+			for(let t = 0; t < data.length; t++){
+				data[t] = new notRecord(this.manifest, data[t]);
 			}
-			this.callbackSuccess && this.callbackSuccess(result);
 		} else {
-			this.callbackError && this.callbackError(data);
+			data = new notRecord(this.manifest, data);
 		}
 	}
 

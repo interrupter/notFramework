@@ -16,6 +16,27 @@ var CommonNetwork = {
 			}
 		}
 	},
+	requestJSON: function(method, url, data){
+		return new Promise((resolve, reject) => {
+			var xhr = new XMLHttpRequest();
+			xhr.open(method, url, true);
+			xhr.setRequestHeader('SessionID', this.getSessionID());
+			xhr.responseType = 'json';
+			xhr.withCredentials = true;
+			xhr.onload = function() {
+				var status = xhr.status;
+				if (status == 200) {
+					resolve(xhr.response);
+				} else {
+					reject(status, xhr.response);
+				}
+			};
+			let t = () => reject(xhr.status);
+			xhr.onerror = t;
+			xhr.ontimeout = t;
+			xhr.send(JSON.stringify(data));
+		});
+	},
 	getJSON: function(url, data) {
 		let that = this;
 		return new Promise(function(resolve, reject) {

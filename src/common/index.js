@@ -1,5 +1,6 @@
 import CommonNetwork from './net.js';
 import CommonLogs from './logs.js';
+import CommonShorts from './shorts.js';
 import CommonObjects from './objects.js';
 import CommonStrings from './strings.js';
 import CommonFunctions from './functions.js';
@@ -13,6 +14,7 @@ var notCommon = Object.assign({}, CommonObjects);
 notCommon.extendWith(CommonNetwork);
 notCommon.extendWith(CommonStrings);
 notCommon.extendWith(CommonLogs);
+notCommon.extendWith(CommonShorts);
 notCommon.extendWith(CommonFunctions);
 notCommon.extendWith(CommonDOM);
 

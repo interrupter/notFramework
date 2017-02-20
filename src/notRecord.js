@@ -190,17 +190,10 @@ class notRecord extends notBase {
 
 	actionUp(index) {
 		if (!this.hasOwnProperty([DEFAULT_ACTION_PREFIX + index])) {
-			this[DEFAULT_ACTION_PREFIX + index] = this.createCommonRequest(index);
-			//notCommon.log('define', DEFAULT_ACTION_PREFIX + index);
+			this[DEFAULT_ACTION_PREFIX + index] = () => this[META_INTERFACE].request(this, index);
+			notCommon.log('define', DEFAULT_ACTION_PREFIX + index);
 		}
 	}
-
-	createCommonRequest(index) {
-		return function(callbackSuccess, callbackError) {
-			this[META_INTERFACE].request(this, index, callbackSuccess, callbackError);
-		}.bind(this);
-	}
-
 	/*
 	-> 'path.to.key', valueOfKey
 	<- ok, with one onChange event triggered

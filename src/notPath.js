@@ -1,5 +1,3 @@
-import notCommon from './notCommon';
-
 /*
 	:property.sub1.func().funcProp
 	 = return funcProp of function result of sub1 property of property of object
@@ -21,7 +19,6 @@ const SUB_PATH_START = '{',
 
 class notPath{
 	constructor(){
-
 		return this;
 	}
 	/*
@@ -29,17 +26,14 @@ class notPath{
 		return ::helperVal
 	*/
 	findNextSubPath(path/* string */){
-		let start = 0,
-			end = path.length,
-			subPath = '',
+		let subPath = '',
 			find = false;
 		for(let i = 0; i < path.length; i++){
 			if (path[i] === SUB_PATH_START){
-				find = true; start = i;
+				find = true;
 				subPath = '';
 			}else{
 				if(path[i] === SUB_PATH_END && find){
-					end = i;
 					if (find) {
 						return subPath;
 					}
@@ -151,6 +145,23 @@ class notPath{
 		}
 	}
 
+	/*
+		small = ["todo"],
+		big = ["todo", "length"]
+		return true;
+
+	*/
+
+	ifFullSubPath(big, small){
+		if (big.length<small.length){return false;}
+		for(let t =0; t < small.length; t++){
+			if(small[t] !== big[t]){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	getValueByPath(object, attrPath){
 		attrPath = this.normilizePath(attrPath);
 		let attrName = attrPath.shift(),
@@ -179,6 +190,11 @@ class notPath{
 		}else{
 			object[attrName] = attrValue;
 		}
+	}
+
+	join(){
+		let args = Array.prototype.slice.call(arguments);
+		return args.join(PATH_SPLIT);
 	}
 }
 

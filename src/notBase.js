@@ -1,10 +1,10 @@
-import notCommon from './notCommon';
+import notCommon from './common';
 import notPath from './notPath';
 
-const 	META_EVENTS = Symbol('events'),
-		META_DATA = Symbol('data'),
-		META_WORKING = Symbol('working'),
-		META_OPTIONS = Symbol('options');
+const META_EVENTS = Symbol('events'),
+	META_DATA = Symbol('data'),
+	META_WORKING = Symbol('working'),
+	META_OPTIONS = Symbol('options');
 
 export default class notBase {
 	constructor() {
@@ -15,33 +15,46 @@ export default class notBase {
 		return this;
 	}
 
-	setCommon(what, args){
-		switch(args.length){
-			case 1:
-			/* set collection */
+	setCommon(what, args) {
+		switch (args.length) {
+		case 1:
+			{
+				/* set collection */
 				what = args[0];
-			break;
-			case 2:
-			/* set collection element */
-				notPath.set(args[0]/* path */, what/* collection */, undefined/* helpers */, args[1]/* value */);
-			break;
+				break;
+			}
+		case 2:
+			{
+				/* set collection element */
+				notPath.set(args[0] /* path */ , what /* collection */ , undefined /* helpers */ , args[1] /* value */ );
+				break;
+			}
 		}
 	}
-	getCommon(what, args){
-		switch(args.length){
+	getCommon(what, args) {
+		switch (args.length) {
 			/* if we want get data by path */
-			case 1: return notPath.get(args[0], what);
-			/* if we want get data by path with default value */
-			case 2: let res = notPath.get(args[0], what);
-				if (res === undefined){
-				/* no data, return default value */
-						return args[1];
-					}else{
-				/* data, return it */
-						return res;
-					};
+		case 1:
+			{
+				return notPath.get(args[0], what);
+			}
+				/* if we want get data by path with default value */
+		case 2:
+			{
+				let res = notPath.get(args[0], what);
+				if (res === undefined) {
+					/* no data, return default value */
+					return args[1];
+				} else {
+					/* data, return it */
+					return res;
+				}
+			}
 			/* return full collection */
-			default: return what;
+		default:
+			{
+				return what;
+			}
 		}
 	}
 
@@ -119,7 +132,7 @@ export default class notBase {
 		}
 		eventName.forEach(name => {
 			if (this[META_EVENTS].hasOwnProperty(name)) {
-				this[META_EVENTS][name].forEach( event => {
+				this[META_EVENTS][name].forEach(event => {
 					if (event.once) {
 						this.off(name, event.callbacks);
 					}
@@ -130,7 +143,7 @@ export default class notBase {
 		return this;
 	}
 
-	off(eventNames /* array of event names */, eventCallbacks /* array of callbacks */) {
+	off(eventNames /* array of event names */ , eventCallbacks /* array of callbacks */ ) {
 		if (!Array.isArray(eventNames)) {
 			eventNames = [eventNames];
 		}
@@ -140,12 +153,12 @@ export default class notBase {
 
 		eventNames.forEach(name => {
 			let targetId = -1;
-			this[META_EVENTS][name].forEach((event, i)=> {
-				if (i === -1 && eventCallbacks === event.callbacks){
+			this[META_EVENTS][name].forEach((event, i) => {
+				if (i === -1 && eventCallbacks === event.callbacks) {
 					targetId = i;
 				}
 			});
-			if (targetId > -1){
+			if (targetId > -1) {
 				this[META_EVENTS][name].splice(targetId, 1);
 			}
 		});

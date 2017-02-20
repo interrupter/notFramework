@@ -1,13 +1,10 @@
-'use strict';
-import  notComponent  from './notComponent';
-const 	META_WORKING = Symbol('working'),
-		META_OPTIONS = Symbol('options');
+import  notComponent  from '../template/notComponent';
 
 export default class notForm extends notComponent{
 	constructor(options){
 		super();
-		this[META_WORKING] = {};
-		this[META_OPTIONS] = {};
+		this.setOptions(options);
+		this.setWorking({});
 		this.on('submit', this.onSubmit);
 		this.on('reset', this.onReset);
 		this.on('cancel', this.onCancel);

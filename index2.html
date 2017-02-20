@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Mocha Tests</title>
+	<link rel="stylesheet" href="node_modules/mocha/mocha.css">
+	<style>
+	.active{
+		background-color: green;
+	}
+	</style>
+</head>
+
+<body>
+	<nt id="testCase1" name="testCase1"><img/></nt>
+	<nt id="testCase2" name="testCase2">
+		<ul>
+			<li>2</li>
+		</ul>
+	</nt>
+	<div id="mocha"></div>
+	<script src="build/notFramework.js"></script>
+	<div id="test"></div>
+	<div id="test1"></div>
+	<div id="test2"></div>
+	<script>
+		let formComponent,
+			helpers = {
+				add: function(params) {
+					params.item.todo.push({
+						title: params.item.newItemTitle,
+						value: params.item.todo.length + 1,
+						active: true
+					});
+				},
+				remove: function(params) {
+					testItemData.todo.splice(testItemData.todo.indexOf(params.item), 1);
+				},
+				toggle: function(params) {
+					console.log('toggle', params);
+					params.item.active= !params.item.active;
+				}
+			},
+			testItemData = {
+				title: 'Title',
+				name: 'Name',
+				active: true,
+				age: 10,
+				newItemTitle: 'New item',
+				todo: [{
+					title: 'todo 1',
+					value: 1,
+					active: true
+				}, {
+					title: 'todo 2',
+					value: 2,
+					active: true
+				}, {
+					title: 'todo 3',
+					value: 3,
+					active: false
+				}],
+				visas: [{
+					id: 1,
+					title: 'USA'
+				}, {
+					id: 2,
+					title: 'Australia'
+				}, {
+					id: 3,
+					title: 'Algeria'
+				}, {
+					id: 4,
+					title: 'Kongo'
+				}]
+			},
+			testItem = new notFramework.notRecord({}, testItemData);
+		let renderForm = function() {
+			formComponent = new notFramework.notComponent({
+				data: testItem,
+				template: {
+					name: 'form'
+				},
+				options: {
+					helpers: helpers,
+					targetEl: document.getElementById('test'),
+					id: 'form'
+				}
+			});
+
+			new notFramework.notComponent({
+				data: testItem,
+				template: {
+					name: 'todoList'
+				},
+				options: {
+					helpers: helpers,
+					targetEl: document.getElementById('test1'),
+					id: 'todoList'
+				}
+			});
+
+			new notFramework.notComponent({
+				data: testItem,
+				template: {
+					name: 'newItemName'
+				},
+				options: {
+					helpers: helpers,
+					targetEl: document.getElementById('test2'),
+					id: 'newItemName'
+				}
+			});
+		};
+		notFramework.notTemplateCache.addLibFromURL('./test/templates/lib.html').then(renderForm).catch((e) => {
+			console.error('no templates lib', e);
+		});
+	</script>
+</body>
+
+</html>

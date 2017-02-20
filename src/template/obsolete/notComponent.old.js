@@ -1,9 +1,8 @@
-'use strict';
 import notBase from './notBase';
 
 const META_PARTS = Symbol('parts');
 
-export default class notComponent extends notBase{
+class notComponent extends notBase{
 
 	constructor(data, options){
 		super();
@@ -123,3 +122,4 @@ export default class notComponent extends notBase{
 	*/
 
 }
+export default notComponent;

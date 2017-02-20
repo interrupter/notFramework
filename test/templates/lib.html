@@ -1,20 +1,81 @@
 <nt name="todo">
 	<div>
-		<nt name="title" data="::">
+		<nt name="title" data="::"></nt>
 		<div>
 			<h3>Список</h3>
 			<ul>
-				<nt name="checkItem" data=":list" helpers="::list" />
+				<nt name="checkItem" data=":list" helpers="::list"></nt>
 			</ul>
 		</div>
 		<div>
 			<input type="text" n-value=":newItem" />
 			<button n-bind-click="::add">+</button>
 		</div>
-		<nt src="./templates/copyrights.html" name="copyrights" />
+		<nt src="./templates/copyrights.html" name="copyrights"></nt>
 	</div>
 </nt>
 
+<nt name="copyrights">
+	<p>Copyrights and trademarks for everyone.</p>
+</nt>
+
 <nt name="checkItem">
-	<li n-bind-click="::toggle" n-change="::restyle" n-content="Item name is \"{:name}\""></li>
+	<li><span n-bind-click="::toggle" n-change="::restyle" n-class-active-if=":active" n-content="Item name is '{:title}'"></span><button n-bind-click="::remove">-</button></li>
+</nt>
+
+<nt name="title">
+	<h2 n-content="Lego {:title}"></h2>
+</nt>
+
+<nt name="form">
+	<div>
+		<nt name="title" data=":"></nt>
+		<div>
+			<h3>Список</h3>
+			<ul>
+				<nt name="checkItem" data=":todo"></nt>
+			</ul>
+		</div>
+		<div>
+			<input type="text" n-value=":newItemTitle" />
+			<button n-bind-click="::add">+</button>
+		</div>
+		<p n-content="{:newItemTitle}"></p>
+		<nt name="copyrights"></nt>
+	</div>
+</nt>
+
+<nt name="formSimple">
+	<div>
+		<div>
+			<h3>Список</h3>
+			<ul>
+				<nt name="checkItem" data=":todo"></nt>
+			</ul>
+		</div>
+		<div>
+			<input type="text" n-value=":newItemTitle" />
+			<button n-bind-click="::add">+</button>
+		</div>
+	</div>
+</nt>
+
+<nt name="formField">
+	<div>
+		<input type="text" n-value=":" />
+		<button n-bind-click="::add">+</button>
+	</div>
+</nt>
+
+<nt name="todoList">
+	<div>
+		<h3>Список</h3>
+		<ul>
+			<nt name="checkItem" data=":todo"></nt>
+		</ul>
+	</div>
+</nt>
+
+<nt name="newItemName">
+	<p n-content="{:newItemTitle}"></p>
 </nt>

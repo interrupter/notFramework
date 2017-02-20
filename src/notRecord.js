@@ -1,23 +1,24 @@
 import notBase from './notBase';
+import notCommon from './common';
 import notPath from './notPath';
 import notRecordInterface from './notRecordInterface';
 
-const META_OPTIONS = Symbol('options'),
-	META_ITEM = Symbol('item'),
-	META_INTERFACE = Symbol('interface'),
+const META_INTERFACE = Symbol('interface'),
 	META_PROXY = Symbol('proxy'),
 	META_CHANGE = Symbol('change'),
+	META_CHANGE_NESTED = Symbol('change.nested'),
 	META_SAL = ['getAttr', 'getAttrs', 'setAttr', 'setAttrs', 'getData', 'setData', 'getJSON', 'on', 'off', 'trigger'],
-	DEFAULT_RECORD_ID_FIELD_NAME = '_id',
 	DEFAULT_ACTION_PREFIX = '$',
 	DEFAULT_PAGE_NUMBER = 1,
 	DEFAULT_PAGE_SIZE = 10;
 
-
-var createHandlers = function(owner) {
+var createPropertyHandlers = function(owner) {
 	return {
 		get: function(target, key, context) {
-			//console.log(`proxy get "${key}"`, this, target, context);
+			//notCommon.log(`proxy get "${key}"`, this, target, context);
+			if (key === 'isProxy'){
+				return true;
+			}
 			let resTarget = target;
 			if (typeof key === 'symbol'){
 				if (this[key]) {
@@ -30,23 +31,90 @@ var createHandlers = function(owner) {
 			}
 			return Reflect.get(resTarget, key, context);
 		}.bind(owner),
+		set: function(target, key, value/*, proxy*/) {
+			//notCommon.log(`proxy set "${key}"`, typeof target[key]);
 
-		set: function(target, key, value, proxy) {
-			//console.log(`proxy set "${key}"`, this, target, context);
 			if (Object.keys(this).indexOf(key) > -1) {
-				throw new Error(`Invalid attempt to private "${key}" property`)
+				throw new Error(`Invalid attempt to private "${key}" property`);
 			} else {
-				let t = Reflect.set(target, key, value);
-				this.trigger('change', proxy, key, value);
+				let valueToReflect = value;
+				if (typeof value === 'object'){
+					valueToReflect = new notProperty(this.getOptions('getRoot'), notPath.join(this.getOptions('path'), key), value);
+				}
+				let t = Reflect.set(target, key,  valueToReflect);
+				this.trigger('change', target, key, valueToReflect);
 				return t;
 			}
 		}.bind(owner),
 	};
 };
 
-export default class notRecord extends notBase {
+class notProperty extends notBase{
+	constructor(getRoot, pathTo, item) {
+		super();
+		if (item.isProxy){
+			//notCommon.error('this is Proxy property');
+			return item;
+		}
+		this.setOptions({
+			getRoot: getRoot,
+			path: pathTo
+		});
+		this[META_PROXY] = new Proxy(item, createPropertyHandlers(this));
+		//notCommon.log('property proxy property created from', item);
+		this.setData(item);
+		this.on('change', this.returnToRoot.bind(this));
+		return this[META_PROXY];
+	}
+
+	returnToRoot(proxy, key, value){
+		let /*path = this.getOptions('path'),*/
+			root = this.getOptions('getRoot')();
+		root.trigger('change.nested', this[META_PROXY], this.getOptions('path'), key, value);
+	}
+}
+
+var createRecordHandlers = function(owner) {
+	return {
+		get: function(target, key, context) {
+			//notCommon.log(`proxy get "${key}"`, this, target, context);
+			if (key === 'isProxy'){
+				return true;
+			}
+			let resTarget = target;
+			if (typeof key === 'symbol'){
+				if (this[key]) {
+					resTarget = this;
+				}
+			}else{
+				if (Object.keys(this).indexOf(key) > -1 || META_SAL.indexOf(key) > -1) {
+					resTarget = this;
+				}
+			}
+			return Reflect.get(resTarget, key, context);
+		}.bind(owner),
+		set: function(target, key, value/*, proxy*/) {
+			//notCommon.log(`record proxy set "${key}"`, this, target);
+			//notCommon.trace();
+			if (Object.keys(this).indexOf(key) > -1) {
+				throw new Error(`Invalid attempt to private "${key}" property`);
+			} else {
+				let t = Reflect.set(target, key, value);
+				this.trigger('change', target, key, value);
+				return t;
+			}
+		}.bind(owner),
+	};
+};
+
+class notRecord extends notBase {
 	constructor(manifest, item) {
 		super();
+		if (item.isProxy){
+			notCommon.error('this is Proxy item');
+			return item;
+		}
+
 		if (item && item.isRecord) {
 			return item;
 		} else {
@@ -62,12 +130,37 @@ export default class notRecord extends notBase {
 			fields: []
 		});
 		this[META_INTERFACE] = new notRecordInterface(manifest);
-		this.setData(item);
+		this.setData(this.initProperties(item));
 		this.interfaceUp();
 		this.isRecord = true;
-		this[META_PROXY] = new Proxy(item, createHandlers(this));
+		this[META_PROXY] = new Proxy(item, createRecordHandlers(this));
+		//notCommon.log('proxy record created from ', item);
 		this.on('change', this[META_CHANGE].bind(this));
+		this.on('change.nested', this[META_CHANGE_NESTED].bind(this));
 		return this[META_PROXY];
+	}
+
+	initProperties(item, path = ''){
+		let keys = Object.keys(item);
+		for(let key of keys){
+			let curPath = path+(path.length>0?'.':'')+key;
+			//notCommon.log('curPath', curPath);
+			if(item.hasOwnProperty(key)){
+				if(typeof item[key] === 'object'){
+					this.initProperties(item[key], curPath);
+					item[key] = new notProperty(this.getRoot.bind(this), curPath, item[key]);
+				}else{
+					//notCommon.log(key, 'is own property, but not object');
+				}
+			}else{
+				//notCommon.log(key, 'is not own property');
+			}
+		}
+		return item;
+	}
+
+	getRoot(){
+		return this;
 	}
 
 	createCollection(manifest, items) {
@@ -87,10 +180,10 @@ export default class notRecord extends notBase {
 		}
 	}
 
-	actionUp(index, actionData) {
+	actionUp(index) {
 		if (!this.hasOwnProperty([DEFAULT_ACTION_PREFIX + index])) {
 			this[DEFAULT_ACTION_PREFIX + index] = this.createCommonRequest(index);
-			console.log('define', DEFAULT_ACTION_PREFIX + index);
+			//notCommon.log('define', DEFAULT_ACTION_PREFIX + index);
 		}
 	}
 
@@ -119,10 +212,10 @@ export default class notRecord extends notBase {
 	<- ok, with bunch of onChange events triggered
 	*/
 	setAttrs(objectPart) {
-		console.log('setAttrs', objectPart, Object.keys(objectPart));
+		//notCommon.log('setAttrs', objectPart, Object.keys(objectPart));
 		if (objectPart && (typeof objectPart === 'object') && Object.keys(objectPart).length > 0){
 			for(let path in objectPart){
-				console.log('setAttrs one to go', path);
+				//notCommon.log('setAttrs one to go', path);
 				this.setAttr(path, objectPart[path]);
 			}
 		}
@@ -134,7 +227,7 @@ export default class notRecord extends notBase {
 
 	*/
 	getAttr(what) {
-		console.log('getAttr', what);
+		//notCommon.log('getAttr', what);
 		return notPath.get(what, this[META_PROXY], {});
 	}
 
@@ -157,14 +250,24 @@ export default class notRecord extends notBase {
 	*/
 
 	[META_CHANGE]() {
-		console.log('try to change', arguments);
+		//notCommon.log('try to change', ...arguments);
+	}
+
+	[META_CHANGE_NESTED]() {
+		//notCommon.log('try to change nested', ...arguments);
+		//notCommon.trace();
+		this.trigger('change', this[META_PROXY], notPath.join(arguments[1],arguments[2]), arguments[3]);
 	}
 
 	setItem(item){
-		this.setData(item);
-		this[META_PROXY] = new Proxy(item, createHandlers(this));
+		this.setData(this.initProperties(item));
+		this[META_PROXY] = new Proxy(item, createRecordHandlers(this));
+		//notCommon.log('proxy created from ', item);
 		this.off('change');
+		this.off('change.nested');
 		this.on('change', this[META_CHANGE].bind(this));
+		this.on('change.nested', this[META_CHANGE_NESTED].bind(this));
+		//notCommon.trace();
 		return this[META_PROXY];
 	}
 
@@ -173,3 +276,5 @@ export default class notRecord extends notBase {
 	}
 
 }
+
+export default notRecord;

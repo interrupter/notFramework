@@ -1,7 +1,7 @@
 /*
 	Common functions
 */
-import notCommon from './notCommon';
+import notCommon from './common';
 /*
 	framework wide parser for data access
 */
@@ -13,7 +13,7 @@ import notBase from './notBase';
 /*
 	smarter image control
 */
-import notImage from './notImage';
+import notImage from './template/notImage';
 /*
 	application main infrastructure setter
 */
@@ -25,14 +25,16 @@ import notController from './notController';
 /*
 	templating and common structures
 */
-import notTemplateProcessors from './notTemplateProcessors'; // registry of processors
-import notTemplateProcessorsLib from './notTemplateProcessorsLib';// default processors
-import notTemplateCache from './notTemplateCache'; // caching all the templates, and cloning for use
-import notTemplate from './notTemplate'; // only parsing and replacing
-import notComponent from './notComponent'; // smarter with bindings for events, actualy proxy
-import notForm from './notForm';
-import notTable from './notTable';
-import notView from './notView';
+
+import notRenderer from './template/notRenderer'; // only parsing and replacing
+import notTemplateCache from './template/notTemplateCache'; // only parsing and replacing
+import notTemplateProcessors from './template/notTemplateProcessors'; // only parsing and replacing
+import notTemplateProcessorsLib from './template/notTemplateProcessorsLib'; // only parsing and replacing
+import notComponent from './template/notComponent'; // smarter with bindings for events, actualy proxy
+
+import notForm from './components/notForm';
+import notTable from './components/notTable';
+import notView from './components/notView';
 
 import notRecordInterface from './notRecordInterface'; //	how to interact with data on server
 import notRecord from './notRecord'; //	wrapper for data with server<->view live interactions
@@ -49,11 +51,11 @@ export {
 	notTemplateProcessors,
 	notTemplateProcessorsLib,
 	notTemplateCache,
-	notTemplate,
+	notRenderer,
 	notComponent,
 	notForm,
 	notTable,
 	notView,
-	notRecordInterface,
-	notRecord
+	notRecord,
+	notRecordInterface
 };

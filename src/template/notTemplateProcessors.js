@@ -1,4 +1,4 @@
-import notBase from './notBase';
+import notBase from '../notBase';
 
 const META_PROCESSORS = Symbol('processors');
 

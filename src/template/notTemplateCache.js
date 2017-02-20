@@ -1,8 +1,7 @@
-import notCommon from './notCommon';
-import notBase from './notBase';
-const META_CACHE = Symbol('cache'),
-	TEMPLATE_TAG = 'nt';
-
+import notCommon from '../common';
+import notBase from '../notBase';
+import OPTS from './options';
+const META_CACHE = Symbol('cache');
 
 class notTemplateCache extends notBase{
 
@@ -17,7 +16,7 @@ class notTemplateCache extends notBase{
 
 	hideTemplates(){
 		let t = document.createElement('style');
-		t.innerHTML = TEMPLATE_TAG + '{display: none;}'
+		t.innerHTML = OPTS.TEMPLATE_TAG + '{display: none;}';
 		document.head.appendChild(t);
 	}
 
@@ -35,8 +34,8 @@ class notTemplateCache extends notBase{
 	loadOne(key, url, callback) {
 
 		var oRequest = new XMLHttpRequest();
-		oRequest.open("GET", url);
-		oRequest.addEventListener("load", function(response) {
+		oRequest.open('GET', url);
+		oRequest.addEventListener('load', function(response) {
 			var div = document.createElement('DIV');
 			div.dataset.notTemplateName = key;
 			div.dataset.notTemplateURL = url;
@@ -87,7 +86,7 @@ class notTemplateCache extends notBase{
 	}
 
 	wrap(key, url, innerHTML){
-		var cont = document.createElement(TEMPLATE_TAG);
+		var cont = document.createElement(OPTS.TEMPLATE_TAG);
 		cont.name = key;
 		cont.src = url;
 		cont.innerHTML = innerHTML;
@@ -98,8 +97,8 @@ class notTemplateCache extends notBase{
 		let cont = document.createElement('div');
 		let result = {};
 		cont.innerHTML = text;
-		let notTemplatesElements = cont.querySelectorAll(TEMPLATE_TAG);
-		for(let el of cont.children){
+		let notTemplatesElements = cont.querySelectorAll(OPTS.TEMPLATE_TAG);
+		for(let el of notTemplatesElements){
 			if (el.parentNode === cont){
 				if (el.attributes.name && el.attributes.name.value){
 					result[el.attributes.name.value] = el;
@@ -127,8 +126,8 @@ class notTemplateCache extends notBase{
 					let templateContEl = that.wrap(key, url, templateInnerHTML);
 					that.setOne(key, templateContEl);
 					resolve(templateContEl);
-				}).catch(function(httpError, response){
-					console.error('error loading template', key, url);
+				}).catch(function(){
+					notCommon.error('error loading template', key, url);
 					reject(...arguments);
 				});
 			}
@@ -139,13 +138,11 @@ class notTemplateCache extends notBase{
 		let that = this;
 		return new Promise(function(resolve, reject) {
 			notCommon.getHTML(url).then(function(templatesHTML){
-
 				let templates = that.parseLib(templatesHTML);
 				that.addLib(templates);
 				resolve(templates);
-
-			}).catch(function(httpError, response){
-				console.error('error loading templates lib', url);
+			}).catch(function(){
+				notCommon.error('error loading templates lib', url);
 				reject(...arguments);
 			});
 		});
@@ -154,7 +151,7 @@ class notTemplateCache extends notBase{
 	addFromDocument(selectorOrElement){
 		let el = (typeof selectorOrElement === 'string')?document.querySelector(selectorOrElement):selectorOrElement;
 		if (el.attributes.name && el.attributes.name.value){
-			if (el.tagName.toLowerCase() === TEMPLATE_TAG.toLowerCase()){
+			if (el.tagName.toLowerCase() === OPTS.TEMPLATE_TAG.toLowerCase()){
 				this.setOne(el.attributes.name.value, el);
 			}
 		}

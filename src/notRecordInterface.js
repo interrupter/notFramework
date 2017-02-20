@@ -1,10 +1,6 @@
-'use strict';
-
+import notCommon from './common';
 import notBase from './notBase';
-
-const 	DEFAULT_RECORD_ID_FIELD_NAME = '_id',
-		DEFAULT_PAGE_NUMBER = 1,
-		DEFAULT_PAGE_SIZE = 10;
+import notRecord from './notRecord';
 
 export default class notInterface extends notBase{
 	constructor(manifest) {
@@ -120,17 +116,15 @@ export default class notInterface extends notBase{
 	}
 
 	request(record, actionName, callbackSuccess, callbackError) {
-		console.log('request', record, actionName, callbackSuccess, callbackError);
+		notCommon.log('request', record, actionName, callbackSuccess, callbackError);
 		let actionData = this.getActionData(actionName),
 			url = this.getURL(record, actionData, actionName);
 		if (actionData){
 			var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance
 			xmlhttp.open(actionData.method, url);
-			xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 			xmlhttp.responseType = 'json';
 			xmlhttp.withCredentials = true;
-			xmlhttp.actionData = actionData;
-			xmlhttp.manifest = manifest;
 			xmlhttp.callbackSuccess = callbackSuccess;
 			xmlhttp.callbackError = callbackError;
 			xmlhttp.onload = this.onLoad;
@@ -146,7 +140,7 @@ export default class notInterface extends notBase{
 			if(('isArray' in this.actionData) && this.actionData.isArray) {
 				data.forEach((item) => {
 					result.push(new notRecord(this.manifest, item));
-				})
+				});
 			} else {
 				result = new notRecord(this.manifest, data);
 			}
@@ -159,7 +153,7 @@ export default class notInterface extends notBase{
 	/*
 	fileUpload(fileUpload) {
 		var xhr = new XMLHttpRequest();
-		//console.log(fileUpload.file);
+		//notCommon.log(fileUpload.file);
 		if (xhr.upload && this.fileAllowed(fileUpload.file)) {
 			// progress bar
 			xhr.upload.addEventListener("progress", function(e) {

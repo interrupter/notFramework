@@ -43,11 +43,11 @@ export default class notInterface extends notBase{
 	}
 
 	getActionsCount() {
-		return this.manifest.actions ? Object.keys(this.manifest.actions).length : 0;
+		return this.getActions() ? Object.keys(this.getActions()).length : 0;
 	}
 
 	getActions() {
-		return this.manifest.actions;
+		return this.manifest && this.manifest.actions?this.manifest.actions : {};
 	}
 
 	setFindBy(key, value) {

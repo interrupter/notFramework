@@ -1,10 +1,15 @@
+/* global routie */
 import notCommon from './common';
 import notRecord from './notRecord';
-import notComponent from './notComponent';
+import notComponent from './template/notComponent';
+import notFormFactory from './components/notFormFactory';
 import notPath from './notPath';
-import notView from './notView';
+import notView from './components/notView';
 import notController from './notController';
 import notBase from './notBase';
+
+const OPT_CONTROLLER_PREFIX = 'nc',
+	OPT_RECORD_PREFIX = 'nr';
 
 export default class notApp extends notBase {
 	constructor(notManifest) {
@@ -19,37 +24,35 @@ export default class notApp extends notBase {
 			currentController: null,
 			forms: {}
 		});
+		this.init();
 		return this;
 	}
 
-	exec() {
+	init() {
 		var url = this.getOptions('interfaceManifestURL'),
-			success = this._setInterfaceManifest.bind(this);
-		$.ajax({
-			dataType: "json",
-			data: '',
-			url: url,
-			success: success
-		});
+			success = this.setInterfaceManifest.bind(this);
+		notCommon.getJSON(url, {})
+			.then(success)
+			.catch(notCommon.report.bind(this));
 	}
 
-	_setInterfaceManifest(data) {
-		this._notOptions.interfaceManifest = data;
-		this._update();
+	setInterfaceManifest(manifest) {
+		this.setOptions('interfaceManifest', manifest);
+		this.update();
 	}
 
-	_getInterfaceManifest() {
-		return this._notOptions.interfaceManifest;
+	getInterfaceManifest() {
+		return this.getOptions('interfaceManifest');
 	}
 
-	_update() {
+	update() {
 		//нужно инициализировать
 		//модели полученными интерфейсами
-		this._updateInterfaces();
+		this.updateInterfaces();
 		//создание объектов автогенерация форм
-		this._initFormBuilders();
+		this.initFormBuilders();
 		//иницилицировать и запустить контроллер инициализации
-		this._initController();
+		this.initController();
 		if (this.allResourcesReady()) {
 			this.startApp();
 		}
@@ -58,94 +61,92 @@ export default class notApp extends notBase {
 	startApp() {
 		//создать контроллеры
 		//роутер и привязать к нему контроллеры
-		this._initRouter();
+		this.initRouter();
 	}
 
-	_bindController(controllerName) {
+	bindController(controllerName) {
 		var ctrl = new notController(this, controllerName);
-		//return function(param){
 		return ctrl.exec.bind(ctrl);
-		//}
 	}
 
-	_initController() {
-		if (typeof(this._notOptions.initController) !== 'undefined') {
-			this._working.initController = new notController(this, this._notOptions.initController);
-			this._working.initController.exec();
+	initController() {
+		if (typeof(this.getOptions('initController')) !== 'undefined') {
+			this.setWorking('initController', new notController(this, this.getOptions('initController')));
+			this.getWorking('initController').exec();
 		}
 	}
 
-	_initRouter() {
-		var routieInput = {},
-			that = this;
-		$.each(this._notOptions.siteManifest, function(route, controllerName) {
-			routieInput[route] = that._bindController(controllerName);
+	initRouter() {
+		var routieInput = {};
+		this.getOptions('siteManifest').forEach((route, controllerName)=>{
+			routieInput[route] = this.bindController(controllerName);
 		});
-		this._working.router = routie(routieInput);
+		this.setWorking('router', routie(routieInput));
 	}
 
-	_getCurrentController() {
-		return this._working.currentController;
+	getCurrentController() {
+		return this.getWorking('currentController');
 	}
 
-	_setCurrentController(ctrl) {
-		this._working.currentController = ctrl;
+	setCurrentController(ctrl) {
+		this.setWorking('currentController', ctrl);
 		return this;
 	}
 
-	_updateInterfaces() {
-		this._clearInterfaces();
-		if (this._notOptions.hasOwnProperty('interfaceManifest')) {
-			$.each(this._notOptions.interfaceManifest, this._initInterface.bind(this));
+	updateInterfaces() {
+		this.clearInterfaces();
+		if (this.getOptions('interfaceManifest')) {
+			this.getOptions('interfaceManifest').forEach(this.initInterface.bind(this));
 		}
 	}
 
-	_getRecordName(name) {
-		return 'nr' + name.capitalizeFirstLetter();
+	getRecordName(name) {
+		return OPT_RECORD_PREFIX + notCommon.capitalizeFirstLetter(name);
 	}
 
-	_getControllerName(name) {
-		return 'nc' + name.capitalizeFirstLetter();
+	getControllerName(name) {
+		return OPT_CONTROLLER_PREFIX + notCommon.capitalizeFirstLetter(name);
 	}
 
-	_initInterface(index, manifest) {
+	initInterface(index, manifest) {
 		//console.log(index, manifest);
-		this._working.interfaces[this._getRecordName(index)] = new notRecord(manifest);
+		this.getWorking('interfaces')[this.getRecordName(index)] = new notRecord(manifest);
 	}
 
 	nr(modelName, data) {
-		var manifest = this._notOptions.interfaceManifest.hasOwnProperty(modelName) ? this._notOptions.interfaceManifest[modelName] : {};
+		var manifest = this.getOptions('interfaceManifest').hasOwnProperty(modelName) ? this.getOptions('interfaceManifest')[modelName] : {};
 		//console.log(modelName, manifest, data);
 		return new notRecord(manifest, data);
 	}
 
-	_getInterfaces() {
-		return this._working.interfaces;
+	getInterfaces() {
+		return this.getWorking('interfaces');
 	}
 
-	_clearInterfaces() {
-		this._working.interfaces = {};
+	clearInterfaces() {
+		this.setWorking('interfaces', {});
+		return this;
 	}
 
-	_initFormBuilders() {
-		this._clearFormBuilders();
-		if (this._notOptions.hasOwnProperty('forms')) {
-			$.each(this._notOptions.forms, this._initFormBuilder.bind(this));
+	initFormBuilders() {
+		this.clearFormBuilders();
+		if (this.getOptions('forms')) {
+			this.getOptions('forms').forEach(this.initFormBuilder.bind(this));
 		}
 	}
 
-	_initFormBuilder(index, manifest) {
-		//console.log('init form builder', index,  manifest);
-		this._working.forms[index] = new notFormFactory(this, manifest);
-		this._working.forms[index].init(this.waitThisResource('form', index));
+	initFormBuilder(index, manifest) {
+		let path = notPath.join('forms', index);
+		this.setWorking(path, new notFormFactory(this, manifest));
+		this.getWorking(path).init(this.waitThisResource('form', index));
 	}
 
-	_getFormBuilders() {
-		return this._working.forms;
+	getFormBuilders() {
+		return this.getWorking('forms');
 	}
 
-	_clearFormBuilders() {
-		this._working.forms = {};
+	clearFormBuilders() {
+		this.setWorking('forms', {});
 	}
 
 	waitThisResource(type, index) {
@@ -175,7 +176,7 @@ export default class notApp extends notBase {
 		return true;
 	}
 
-	getOptions = function() {
-		return this._notOptions.options;
+	getOptions() {
+		return this.getOptions('options');
 	}
 }

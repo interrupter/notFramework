@@ -1,4 +1,5 @@
-import notComponent from '../notBase';
+import notBase from '../notBase';
+import notPath from '../notPath';
 import notComponent from '../template/notComponent';
 
 class notView extends notBase {
@@ -51,7 +52,7 @@ class notView extends notBase {
 		return this.getOptions().hasOwnProperty(name) ? this.getOptions(name) : undefined;
 	}
 
-	getParams = function() {
+	getParams() {
 		return this.getOptions();
 	}
 }

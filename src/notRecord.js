@@ -110,7 +110,7 @@ var createRecordHandlers = function(owner) {
 class notRecord extends notBase {
 	constructor(manifest, item) {
 		super();
-		if (item.isProxy){
+		if (item && item.isProxy){
 			notCommon.error('this is Proxy item');
 			return item;
 		}

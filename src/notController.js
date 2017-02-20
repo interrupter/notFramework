@@ -1,7 +1,8 @@
 import notCommon from './common';
 import notBase from './notBase';
+import notComponent from './template/notComponent';
 
-export default class notController extends notBase {
+class notController extends notBase {
 	constructor(app, controllerName) {
 		super();
 		notCommon.log('start controller');
@@ -10,18 +11,19 @@ export default class notController extends notBase {
 		this.containerSelector = '.page-content';
 		this.viewsPostfix = '.html';
 		this.renderFromURL = true;
-		var that = this;
 		/*
 		    сразу делаем доступными модели notRecord из nc`ControllerName` будут доступны как this.nr`ModelName`
 		*/
-		$.each(this.app._getInterfaces(), function(index, interface) {
-			if (typeof((window[that.ncName])) !== 'undefined')(window[that.ncName]).prototype[index] = interface;
+		this.app.getInterfaces().forEach((index, interfac3) => {
+			if (typeof((window[this.ncName])) !== 'undefined')(window[this.ncName]).prototype[index] = interfac3;
 		});
 		return this;
 	}
 
 	$render(nc /* ncName function this*/ , name /* view name */ , data /* data for notTemplate*/ , helpers /* could be not represented */ , callback) {
-		var view = nc.views.hasOwnProperty(name) ? nc.views[name] : null;
+		var view = nc.views.hasOwnProperty(name) ? nc.views[name] : null,
+			realCallback,
+			realHelpers;
 		if (typeof view === 'undefined' || view === null) return;
 		// если place не указано, что возможно и разумно при не существовании
 		// элемента, но известном идентификаторе
@@ -42,7 +44,7 @@ export default class notController extends notBase {
 		}
 		view.data = data;
 		if (typeof view.helpers !== 'undefined' && view.helpers !== null && Object.keys(view.helpers).length > 0) {
-			view.helpers = extend(view.helpers, realHelpers);
+			view.helpers = notCommon.extend(view.helpers, realHelpers);
 		} else {
 			view.helpers = realHelpers;
 		}
@@ -84,3 +86,5 @@ export default class notController extends notBase {
 		}
 	}
 }
+
+export default notController;

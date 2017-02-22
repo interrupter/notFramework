@@ -31,7 +31,8 @@ var notTemplateProcessorsLib = {
 		}
 	},
 	attr: function(scope, item, helpers){
-		scope.element.setAttribute(scope.params[0], notPath.get(scope.attributeExpression, item, helpers));
+		let result = notPath.get(scope.attributeExpression, item, helpers);
+		scope.element.setAttribute(scope.params[0], result);
 	},
 	name: function(scope, item, helpers) {
 		scope.element.setAttribute('name', notPath.get(scope.attributeExpression, item, helpers));

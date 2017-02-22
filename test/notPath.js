@@ -1,4 +1,5 @@
 const notPath = notFramework.notPath;
+
 describe("notPath", function() {
 	describe("finding sub path", function() {
 		it(":authors.{::index}", function() {
@@ -55,6 +56,22 @@ describe("notPath", function() {
 				},
 				result = 'help';
 			expect(notPath.get(path, item, helpers)).to.equal(result);
+		});
+
+		it(":hi().title", function() {
+			let path = ':hi().title',
+				item = {
+					authors: ['help', 'me', 'awesome!'],
+					hi: function() {
+						return {
+							title: 'title',
+							index: 2
+						}
+					}
+				},
+				helpers = {},
+				result = 'title';
+			expect(notPath.get(path, item, helpers, result)).to.equal(result);
 		});
 
 		it(":authors.{:hi().index}", function() {

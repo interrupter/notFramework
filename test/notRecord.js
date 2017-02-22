@@ -13,6 +13,10 @@ let testItem = {
 				}]
 			}
 		},
+		getLocalData:function(){
+			console.log('this data', this);
+			return this.data;
+		},
 		author: {
 			name: 'Mike'
 		},
@@ -159,6 +163,12 @@ describe("notRecord", function() {
 				let rec = new notRecord(manifest, notCommon.completeAssign({},testItem)),
 					result = [rec.name, rec.low, rec.faulty];
 				expect(rec.getAttrs(['name', 'low', 'faulty'])).to.be.deep.equal(result);
+			});
+
+			it('get simple throu function :getLocalData().path.to.0', function() {
+				let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem)),
+					result = 0;
+				expect(notPath.get(':getLocalData().path.to.0', rec, {})).to.be.equal(result);
 			});
 		});
 

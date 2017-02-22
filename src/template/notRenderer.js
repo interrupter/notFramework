@@ -84,9 +84,9 @@ class notRenderer extends notBase {
 	}
 
 	onChange(proxy, key, value) {
-		notCommon.log(this);
+		/*notCommon.log(this);
 		notCommon.log(this.getBreadCrumps().join(' > '));
-		notCommon.log('updating renderer ', this.getWorking('partId'), ' after changes', key, value);
+		notCommon.log('updating renderer ', this.getWorking('partId'), ' after changes', key, value);*/
 		this.update(key);
 		this.trigger('obsolete');
 	}
@@ -111,8 +111,8 @@ class notRenderer extends notBase {
 				let	componentPath = notPath.normilizePath(item.getOptions('dataPath')),
 					changedPath = notPath.normilizePath(key);
 				ifPart = notPath.ifFullSubPath(changedPath, componentPath);
-				notCommon.log(item.getOptions('name'), ' >-< ', item.getOptions('id'), ' >-< ', componentPath, changedPath);
-				notCommon.log('will be updated', ifPart);
+				/*notCommon.log(item.getOptions('name'), ' >-< ', item.getOptions('id'), ' >-< ', componentPath, changedPath);
+				notCommon.log('will be updated', ifPart);*/
 			}
 
 			if (ifPart) {
@@ -231,7 +231,7 @@ class notRenderer extends notBase {
 	searchForSubTemplates() {
 		this.clearSubTemplates();
 		let subs = this.getWorkingTemplateElement().querySelectorAll(OPTS.TEMPLATE_TAG);
-		notCommon.log('sub templates', subs);
+		//notCommon.log('sub templates', subs);
 		for (let nt of subs) {
 			if (!this.ifSubElementRendered(nt)) {
 				this.renderSub(nt);
@@ -303,7 +303,7 @@ class notRenderer extends notBase {
 	}
 
 	replaceRendered() {
-		notCommon.log('replace stash');
+		//notCommon.log('replace stash');
 		let result = this.getWorkingTemplateElement(),
 			stash = this.getStash(),
 			newStash = [],

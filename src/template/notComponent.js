@@ -210,11 +210,11 @@ class notComponent extends notBase {
 	}
 
 	placeNodes(nodes){
-		notCommon.log('placed part', nodes);
+		//notCommon.log('placed part', nodes);
 	}
 
 	getPlacer(method) {
-		notCommon.log('searching for placer', method);
+		//notCommon.log('searching for placer', method);
 		if (notPlacers.hasOwnProperty(method)) {
 			return notPlacers[method];
 		} else {
@@ -246,7 +246,7 @@ class notComponent extends notBase {
 
 	renderPart(data) {
 		if (!this.getPartByData(data)) {
-			notCommon.log('creating part render');
+			//notCommon.log('creating part render');
 			let renderer = new notRenderer({
 				data: data,
 				template: this.getProtoTemplateElementClone.bind(this),
@@ -256,7 +256,7 @@ class notComponent extends notBase {
 			//renderer.on('obsolete', this.update.bind(this));
 			this.addPart(renderer);
 		}else{
-			notCommon.log('updating part render');
+			//notCommon.log('updating part render');
 			this.updatePart(this.getPartByData(data));
 		}
 	}

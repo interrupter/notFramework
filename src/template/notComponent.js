@@ -52,12 +52,19 @@ class notComponent extends notBase {
 		this.owner = input.owner?input.owner:null;
 		this.initData(input.data ? input.data : {});
 		this.initOptions(input.options ? input.options : {});
+		this.initEvents(input.events ? input.events : []);
 		this.initWorking(input);
 		this.prepareTemplateElement(input.template ? input.template : null);
 	}
 
 	initData(val) {
 		this.setData(val);
+	}
+
+	initEvents(list){
+		for(let t of list){
+			this.on(...t);
+		}
 	}
 
 	initOptions(val) {

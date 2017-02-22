@@ -169,7 +169,7 @@ class notPath{
 		if (isFunction){
 			attrName = attrName.replace(FUNCTION_MARKER, '');
 		}
-		if (typeof object == 'object' && object[attrName]){
+		if ((typeof object === 'object') && typeof object[attrName] !== 'undefined' && object[attrName] !== null){
 			let newObj = isFunction?object[attrName]():object[attrName];
 			if (attrPath.length > 0){
 				return this.getValueByPath(newObj, attrPath);

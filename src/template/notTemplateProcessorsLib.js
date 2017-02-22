@@ -44,7 +44,7 @@ var notTemplateProcessorsLib = {
 	},
 	class: function(scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers);
-		scope.attributeResult = ((typeof res === 'function')?res(scope, item, helpers):res);
+		scope.attributeResult = ((typeof res === 'function')?res({scope, item, helpers}):res);
 		if (scope.attributeResult){
 			scope.element.classList.add(scope.params[0]);
 		}else{

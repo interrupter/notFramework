@@ -164,6 +164,7 @@ class notComponent extends notBase {
 			this.forEachData(this.renderPart.bind(this));
 			this.placeRendered();
 		}
+		this.trigger('afterRender');
 	}
 
 	update(){
@@ -172,6 +173,7 @@ class notComponent extends notBase {
 			this.forEachData(this.renderPart.bind(this));
 			this.placeRendered();
 		}
+		this.trigger('afterUpdate');
 	}
 
 	placeRendered(){

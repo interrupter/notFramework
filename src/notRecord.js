@@ -25,7 +25,7 @@ var createPropertyHandlers = function(owner) {
 					resTarget = this;
 				}
 			}else{
-				if (Object.keys(this).indexOf(key) > -1 || META_SAL.indexOf(key) > -1) {
+				if (Object.keys(target).indexOf(key) > -1 && (Object.keys(this).indexOf(key) > -1 || META_SAL.indexOf(key) > -1)) {
 					resTarget = this;
 				}
 			}

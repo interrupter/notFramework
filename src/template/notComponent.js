@@ -153,6 +153,10 @@ class notComponent extends notBase {
 		this.resetParts();
 	}
 
+	destroy(){
+		this.clearParts();
+	}
+
 	resetParts() {
 		this[META_PARTS] = [];
 	}

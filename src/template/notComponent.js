@@ -146,7 +146,7 @@ class notComponent extends notBase {
 	clearParts() {
 		/* извещаем об удалении элементов */
 		if (this[META_PARTS] && Array.isArray(this[META_PARTS]) && this[META_PARTS].length) {
-			for (let t in this[META_PARTS]) {
+			for (let t of this[META_PARTS]) {
 				if (t.destroy){
 					t.destroy();
 				}

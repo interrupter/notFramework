@@ -157,6 +157,9 @@ class notComponent extends notBase {
 
 	destroy(){
 		this.clearParts();
+		if (this.getOptions('ntEl') && this.getOptions('ntEl').parentNode){
+			this.getOptions('ntEl').parentNode.removeChild(this.getOptions('ntEl'));
+		}
 	}
 
 	resetParts() {

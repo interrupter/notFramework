@@ -134,7 +134,7 @@ var CommonNetwork = {
 			var xhr = new XMLHttpRequest();
 			xhr.open('get', url, true);
 			xhr.setRequestHeader('SessionID', that.getSessionID());
-			xhr.responseType = 'blob';
+			xhr.responseType = 'text/html';
 			xhr.withCredentials = true;
 			xhr.onload = function() {
 				var status = xhr.status;

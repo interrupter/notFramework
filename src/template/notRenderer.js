@@ -232,9 +232,9 @@ class notRenderer extends notBase {
 		this.clearSubTemplates();
 		let subs = this.getWorkingTemplateElement().querySelectorAll(OPTS.TEMPLATE_TAG);
 		//notCommon.log('sub templates', subs);
-		for (let nt of subs) {
-			if (!this.ifSubElementRendered(nt)) {
-				this.renderSub(nt);
+		for (let nt = 0; nt < subs.length; nt++) {
+			if (!this.ifSubElementRendered(subs[nt])) {
+				this.renderSub(subs[nt]);
 			}
 		}
 	}

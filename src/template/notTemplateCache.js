@@ -98,7 +98,8 @@ class notTemplateCache extends notBase{
 		let result = {};
 		cont.innerHTML = text;
 		let notTemplatesElements = cont.querySelectorAll(OPTS.TEMPLATE_TAG);
-		for(let el of notTemplatesElements){
+		for(let elId =0; elId< notTemplatesElements.length; elId++){
+			let el = notTemplatesElements[elId];
 			if (el.parentNode === cont){
 				if (el.attributes.name && el.attributes.name.value){
 					result[el.attributes.name.value] = el;
@@ -141,8 +142,8 @@ class notTemplateCache extends notBase{
 				let templates = that.parseLib(templatesHTML);
 				that.addLib(templates);
 				resolve(templates);
-			}).catch(function(){
-				notCommon.error('error loading templates lib', url);
+			}).catch(function(e){
+				notCommon.error('error loading templates lib', url,e);
 				reject(...arguments);
 			});
 		});

@@ -136,15 +136,15 @@ var CommonNetwork = {
 			xhr.setRequestHeader('SessionID', that.getSessionID());
 			xhr.responseType = 'text';
 			xhr.withCredentials = true;
-			xhr.onload = function() {
+			xhr.onload = ()=>{
 				var status = xhr.status;
-				if (parseInt(status) == 200) {
-					resolve(xhr.response);
+				if (parseInt(status) === 200) {
+					resolve(xhr.responseText);
 				} else {
-					reject(status, xhr.response);
+					reject(status, xhr.responseText);
 				}
 			};
-			let t = () => reject(xhr.status);
+			let t = (e) => reject(e);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
 			xhr.send(JSON.stringify(data));

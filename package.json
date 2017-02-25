@@ -1,6 +1,6 @@
 {
   "name": "not-framework",
-  "version": "2.1.30",
+  "version": "2.1.31",
   "description": "node complimentary part for client side notFramework. + dadata.ru api",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",

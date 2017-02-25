@@ -138,7 +138,7 @@ var CommonNetwork = {
 			xhr.withCredentials = true;
 			xhr.onload = function() {
 				var status = xhr.status;
-				if (status == 200) {
+				if (parseInt(status) == 200) {
 					resolve(xhr.response);
 				} else {
 					reject(status, xhr.response);

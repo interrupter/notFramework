@@ -40,7 +40,7 @@ var notTemplateProcessorsLib = {
 	change: function(/*scope, item, helpers*/){
 
 	},
-	checked: function(scope/*, item, helpers*/) {
+	checked: function(scope, item, helpers) {
 		let result = notPath.get(scope.attributeExpression, item, helpers);
 		result ? scope.element.setAttribute('checked', true) : scope.element.removeAttribute('checked');
 	},

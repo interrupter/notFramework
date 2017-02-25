@@ -51,8 +51,14 @@ var notTemplateProcessorsLib = {
 		scope.attributeResult = ((typeof res === 'function')?res({scope, item, helpers}):res);
 		if (scope.attributeResult){
 			scope.element.classList.add(scope.params[0]);
+			if (scope.params.length>1){
+				scope.element.classList.remove(scope.params[1]);
+			}
 		}else{
 			scope.element.classList.remove(scope.params[0]);
+			if (scope.params.length>1){
+				scope.element.classList.add(scope.params[1]);
+			}
 		}
 	},
 	options: function(scope, item, helpers) {

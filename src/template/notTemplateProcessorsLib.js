@@ -41,7 +41,8 @@ var notTemplateProcessorsLib = {
 
 	},
 	checked: function(scope/*, item, helpers*/) {
-		scope.attributeResult ? scope.element.setAttribute('checked', true) : scope.element.removeAttribute('checked');
+		let result = notPath.get(scope.attributeExpression, item, helpers);
+		result ? scope.element.setAttribute('checked', true) : scope.element.removeAttribute('checked');
 	},
 	class: function(scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers);

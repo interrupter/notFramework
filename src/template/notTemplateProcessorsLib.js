@@ -49,15 +49,30 @@ var notTemplateProcessorsLib = {
 	class: function(scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof res === 'function')?res({scope, item, helpers}):res);
-		if (scope.attributeResult){
-			scope.element.classList.add(scope.params[0]);
-			if (scope.params.length>1){
-				scope.element.classList.remove(scope.params[1]);
+		if (scope.params.length < 3 || isNaN(scope.attributeResult)){
+			if (scope.attributeResult){
+				scope.element.classList.add(scope.params[0]);
+				if (scope.params.length > 1){
+					scope.element.classList.remove(scope.params[1]);
+				}
+			}else{
+				scope.element.classList.remove(scope.params[0]);
+				if (scope.params.length > 1){
+					scope.element.classList.add(scope.params[1]);
+				}
 			}
 		}else{
-			scope.element.classList.remove(scope.params[0]);
-			if (scope.params.length>1){
-				scope.element.classList.add(scope.params[1]);
+			let used = false;
+			for(let i = 0; i < scope.params.length; i++){
+				if ( i === scope.attributeResult){
+					scope.element.classList.add(scope.params[i]);
+					used = true;
+				}else{
+					scope.element.classList.remove(scope.params[i]);
+				}
+			}
+			if(!used){
+				scope.element.classList.add(scope.params[0]);
 			}
 		}
 	},

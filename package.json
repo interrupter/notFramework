@@ -1,6 +1,6 @@
 {
   "name": "not-framework",
-  "version": "2.1.37",
+  "version": "2.1.38",
   "description": "node complimentary part for client side notFramework. + dadata.ru api",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
@@ -15,7 +15,7 @@
     "url": "git+https://github.com/interrupter/not-framework.git"
   },
   "keywords": [
-    "notFramework",
+    "not-framework",
     "node"
   ],
   "author": "interrupter <levoe.milo@mail.ru> (http://github.com/interrupter)",

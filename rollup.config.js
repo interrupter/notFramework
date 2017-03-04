@@ -17,7 +17,7 @@ import cssnano from 'cssnano';
 
 export default {
 	entry: 'src/index.js',
-	dest: 'build/notFramework.js',
+	dest: 'build/not-framework.js',
 	format: 'iife',
 	moduleName: 'notFramework',
 	sourceMap: (process.env.NODE_ENV === 'production' ? false : 'inline'),

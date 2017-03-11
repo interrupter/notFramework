@@ -95,8 +95,13 @@ export default class notApp extends notBase {
 
 	updateInterfaces() {
 		this.clearInterfaces();
-		if (this.getOptions('interfaceManifest')) {
-			this.getOptions('interfaceManifest').forEach(this.initInterface.bind(this));
+		let manifests = this.getOptions('interfaceManifest');
+		if (manifests) {
+			for(let name in manifests){
+				let recordManifest = manifests[name];
+				this.getWorking('interfaces')[name] = (recordData) => new notRecord(recordManifest, recordData);
+				window['nr' + notCommon.capitalizeFirstLetter(name)] = this.getWorking('interfaces')[name];
+			}
 		}
 	}
 
@@ -106,17 +111,6 @@ export default class notApp extends notBase {
 
 	getControllerName(name) {
 		return OPT_CONTROLLER_PREFIX + notCommon.capitalizeFirstLetter(name);
-	}
-
-	initInterface(index, manifest) {
-		//console.log(index, manifest);
-		this.getWorking('interfaces')[this.getRecordName(index)] = new notRecord(manifest);
-	}
-
-	nr(modelName, data) {
-		var manifest = this.getOptions('interfaceManifest').hasOwnProperty(modelName) ? this.getOptions('interfaceManifest')[modelName] : {};
-		//console.log(modelName, manifest, data);
-		return new notRecord(manifest, data);
 	}
 
 	getInterfaces() {

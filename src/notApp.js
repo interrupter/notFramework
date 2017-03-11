@@ -176,7 +176,4 @@ export default class notApp extends notBase {
 		return true;
 	}
 
-	getOptions() {
-		return this.getOptions('options');
-	}
 }

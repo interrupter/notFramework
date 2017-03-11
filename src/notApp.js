@@ -76,9 +76,10 @@ export default class notApp extends notBase {
 
 	initRouter() {
 		var routieInput = {};
-		this.getOptions('siteManifest').forEach((route, controllerName)=>{
+		for(let route in this.getOptions('siteManifest')){
+			let controllerName = this.getOptions('siteManifest')[route];
 			routieInput[route] = this.bindController(controllerName);
-		});
+		}
 		this.setWorking('router', routie(routieInput));
 	}
 
@@ -122,8 +123,11 @@ export default class notApp extends notBase {
 
 	initFormBuilders() {
 		this.clearFormBuilders();
-		if (this.getOptions('forms')) {
-			this.getOptions('forms').forEach(this.initFormBuilder.bind(this));
+		let forms = this.getOptions('forms');
+		if (forms) {
+			for(let t in forms){
+				this.initFormBuilder(t, forms[t]);
+			}
 		}
 	}
 

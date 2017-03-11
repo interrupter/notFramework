@@ -1,10 +1,8 @@
 /* global routie */
 import notCommon from './common';
 import notRecord from './notRecord';
-import notComponent from './template/notComponent';
 import notFormFactory from './components/notFormFactory';
 import notPath from './notPath';
-import notView from './components/notView';
 import notController from './notController';
 import notBase from './notBase';
 

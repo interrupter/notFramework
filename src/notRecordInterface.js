@@ -155,8 +155,7 @@ export default class notInterface extends notBase{
 		}
 	}
 */
-	onLoad(data){
-		let result = [];
+	onLoad(data){		
 		if(this && this.actionData && this.actionData.hasOwnProperty('isArray') && this.actionData.isArray) {
 			for(let t = 0; t < data.length; t++){
 				data[t] = new notRecord(this.manifest, data[t]);

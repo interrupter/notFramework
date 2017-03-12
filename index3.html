@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Mocha Tests</title>
+	<link rel="stylesheet" href="node_modules/mocha/mocha.css">
+	<style>
+		.active {
+			background-color: green;
+		}
+	</style>
+	<script src="build/not-framework.js"></script>
+</head>
+
+<body>
+	<div id="test"></div>
+	<script>
+		let manifest = {
+				'user': {
+					'model': 'user',
+					'url': '/framework/api/:modelName',
+					'actions': {
+						'create': {
+							'method': 'put',
+							'isArray': false,
+							'data': ['record'],
+							'title': 'Create new user',
+							'fields': {
+								//(roleName|default):[fields*]
+								'default': [
+									'login',
+									'email',
+									'password',
+									'birthDate',
+									'sex',
+									'country'
+								],
+								'admin': [
+									'login',
+									'email',
+									'password',
+									'birthDate',
+									'active',
+									'role',
+									'sex',
+									'country'
+								]
+							}
+						}
+					}
+				}
+			},
+			fields = {
+				login: {
+					type: 'textfield',
+					placeholder: 'Логин',
+					label: 'Логин'
+				},
+				email: {
+					type: 'email',
+					placeholder: 'Мыло',
+					label: 'Мыло'
+				},
+				password: {
+					type: 'password',
+					placeholder: 'Password',
+					label: 'Password'
+				},
+				birthDate: {
+					type: 'date',
+					label: 'Дата рождения'
+				},
+				active: {
+					type: 'checkbox',
+					label: 'Активен'
+				},
+				role: {
+					type: 'multiple',
+					label: 'Роль'
+				},
+				sex: {
+					type: 'radiogroup',
+					label: 'Пол'
+				}
+			},
+			itemData = {
+				login: 'interrupter',
+				email: 'alex.repin@mail.ru',
+				password: 'qwertyuiop',
+				birthDate: '1987-09-17',
+				sex: 'male',
+				country: 'russia',
+				status: true,
+				active: false,
+				role: ['user']
+			},
+			record = new notFramework.notRecord(manifest.user, itemData),
+			libs = {
+				country: [{
+						title: 'Russia',
+						value: 'russia'
+					},
+					{
+						title: 'Frankrike',
+						value: 'France'
+					},
+					{
+						title: 'Svenska',
+						value: 'sweeden'
+					},
+				],
+				sex: [{
+						title: 'Male',
+						value: 'male'
+					},
+					{
+						title: 'Female',
+						value: 'female'
+					}
+				],
+				role: [{
+						title: 'User',
+						value: 'user'
+					},
+					{
+						title: 'Root',
+						value: 'root'
+					},
+					{
+						title: 'Admin',
+						value: 'admin'
+					}
+				]
+			};
+
+		let renderForm = function() {
+			let form = new notFramework.notForm({
+				data: record,
+				options: {
+					helpers: {
+						//special field
+						libs: libs,
+					},
+					fields: fields,
+					action: 'create',
+					targetEl: document.getElementById('test')
+				}
+			});
+		};
+		notFramework.notTemplateCache.addLibFromURL('./test/templates/lib.html').then(renderForm).catch((e) => {
+			console.error('no templates lib', e);
+		});
+	</script>
+</body>
+
+</html>

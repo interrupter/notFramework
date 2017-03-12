@@ -79,3 +79,63 @@
 <nt name="newItemName">
 	<p n-content="{:newItemTitle}"></p>
 </nt>
+
+<nt name="form_email">
+	<label><span n-content="{:label}"></span>:<input name=":name" n-value=":value"/></label>
+</nt>
+
+<nt name="form_textfield">
+	<label><span n-content="{:label}"></span>:<input name=":name" n-value=":value"/></label>
+</nt>
+
+<nt name="form_password">
+	<label><span n-content="{:label}"></span>:<input type="password" name=":name" n-value=":value"/></label>
+</nt>
+
+<nt name="form_textarea">
+	<label><span n-content="{:label}"></span>:<textarea name=":name" n-content="{:value}"></textarea></label>
+</nt>
+
+<nt name="form_select">
+	<label><span n-content="{:label}"></span>:
+		<select n-value=":value" n-attr-multiple=":multiple">
+			<nt name="form_select_option" data=":options"></nt>
+		</select>
+	</label>
+</nt>
+
+<nt name="form_select_option">
+	<option n-value=":value" n-content="{:title}"></option>
+</nt>
+
+<nt name="form_checkbox">
+	<div class="checkbox">
+		<label>
+      <input type="checkbox" n-attr-checked=":value"> <span n-content="{:label}"></span>
+    </label>
+	</div>
+</nt>
+
+<nt name="form_submit">
+	<button type="submit" n-content="{:label}"></button>
+</nt>
+
+<nt name="form_wrapper">
+	<div>
+		<h1 n-content="{:title}"></h1>
+		<form action="" role="body"></form>
+	</div>
+</nt>
+
+<nt name="form_radiogroup">
+
+</nt>
+
+<nt name="form_radio">
+	<div class="radio">
+		<label>
+    	<input type="radio" n-attr-name=":name" n-value=":value" n-checked=":isChecked">
+    	<span n-content="{:label}"></span>
+  	</label>
+	</div>
+</nt>

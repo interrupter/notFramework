@@ -14,7 +14,7 @@ if(typeof extend === 'undefined' || extend === null) {
             }
         }
         return extended;
-    };
+    }; 
 }
 
 var notFormFactory = function(app, options) {

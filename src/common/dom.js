@@ -12,6 +12,6 @@ var CommonDOM = {
 		}
 		return list;
 	}
-}
+};
 
 export default CommonDOM;

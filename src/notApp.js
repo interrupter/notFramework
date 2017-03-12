@@ -131,10 +131,10 @@ export default class notApp extends notBase {
 		}
 	}
 
+
 	initFormBuilder(index, manifest) {
 		let path = notPath.join('forms', index);
 		this.setWorking(path, new notFormFactory(this, manifest));
-		this.getWorking(path).init(this.waitThisResource('form', index));
 	}
 
 	getFormBuilders() {

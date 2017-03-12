@@ -7,7 +7,7 @@ const META_INTERFACE = Symbol('interface'),
 	META_PROXY = Symbol('proxy'),
 	META_CHANGE = Symbol('change'),
 	META_CHANGE_NESTED = Symbol('change.nested'),
-	META_SAL = ['getAttr', 'getAttrs', 'setAttr', 'setAttrs', 'getData', 'setData', 'getJSON', 'on', 'off', 'trigger'],
+	META_SAL = ['getAttr', 'getAttrs', 'getManifest', 'setAttr', 'setAttrs', 'getData', 'setData', 'getJSON', 'on', 'off', 'trigger'],
 	DEFAULT_ACTION_PREFIX = '$',
 	DEFAULT_PAGE_NUMBER = 1,
 	DEFAULT_PAGE_SIZE = 10,
@@ -243,6 +243,14 @@ class notRecord extends notBase {
 			}
 		}
 		return result;
+	}
+
+	getManifest() {
+		if (this[META_INTERFACE]){
+			return this[META_INTERFACE].manifest;
+		}else{
+			return {};
+		}
 	}
 
 	/*

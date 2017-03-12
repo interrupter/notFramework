@@ -1,13 +1,10 @@
 import  notComponent  from '../template/notComponent';
 
-export default class notFormFactory extends notComponent{
-	constructor(options){
+class notFormFactory extends notComponent{
+	constructor(app, manifest){
 		super();
-		this.setOptions(options);
-		this.setWorking({});
-		this.on('submit', this.onSubmit);
-		this.on('reset', this.onReset);
-		this.on('cancel', this.onCancel);
+		this.setOptions({});
+		this.setWorking({});		
 		return this;
 	}
 
@@ -52,3 +49,6 @@ export default class notFormFactory extends notComponent{
 
 	}
 }
+
+
+export default notFormFactory;

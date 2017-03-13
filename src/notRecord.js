@@ -7,7 +7,7 @@ const META_INTERFACE = Symbol('interface'),
 	META_PROXY = Symbol('proxy'),
 	META_CHANGE = Symbol('change'),
 	META_CHANGE_NESTED = Symbol('change.nested'),
-	META_SAL = ['getAttr', 'getAttrs', 'getManifest', 'setAttr', 'setAttrs', 'getData', 'setData', 'getJSON', 'on', 'off', 'trigger'],
+	META_SAL = ['getAttr', 'getAttrs', 'isProperty', 'isRecord', 'getManifest', 'setAttr', 'setAttrs', 'getData', 'setData', 'getJSON', 'on', 'off', 'trigger'],
 	DEFAULT_ACTION_PREFIX = '$',
 	DEFAULT_PAGE_NUMBER = 1,
 	DEFAULT_PAGE_SIZE = 10,
@@ -56,7 +56,7 @@ class notProperty extends notBase {
 		if (typeof item === 'undefined' || item === null) {
 			return item;
 		}
-		if (item && item.isProxy) {
+		if (item && (item.isProxy || item.isProperty)) {
 			return item;
 		}
 		this.setOptions({
@@ -65,6 +65,7 @@ class notProperty extends notBase {
 		});
 		this[META_PROXY] = new Proxy(item, createPropertyHandlers(this));
 		this.setData(item);
+		this.isProperty = true;
 		this.on('change', this[META_RETURN_TO_ROOT].bind(this));
 		return this[META_PROXY];
 	}
@@ -101,8 +102,12 @@ var createRecordHandlers = function(owner) {
 			if (Object.keys(this).indexOf(key) > -1) {
 				throw new Error(`Invalid attempt to private "${key}" property`);
 			} else {
-				let t = Reflect.set(target, key, value);
-				this.trigger('change', target, key, value);
+				let valueToReflect = value;
+				if (typeof value === 'object') {
+					valueToReflect = new notProperty(this.getOptions('getRoot'), notPath.join(this.getOptions('path'), key), value);
+				}
+				let t = Reflect.set(target, key, valueToReflect);
+				this.trigger('change', target, key, valueToReflect);
 				return t;
 			}
 		}.bind(owner),
@@ -120,7 +125,7 @@ class notRecord extends notBase {
 			return item;
 		}
 
-		if (item && item.isRecord) {
+		if (item && (item.isRecord || item.isProperty)) {
 			return item;
 		} else {
 			if (Array.isArray(item)) {

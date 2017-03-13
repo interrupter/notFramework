@@ -1,6 +1,7 @@
 import notComponent from '../template/notComponent';
 import notRecord from '../notRecord';
 import notBase from '../notBase';
+import notPath from '../notPath';
 
 const OPT_DEFAULT_FORM_PREFIX = 'form_',
 	OPT_DEFAULT_ROLE_NAME = 'default',
@@ -21,6 +22,7 @@ class notForm extends notBase {
 		});
 		let data = input.data || {};
 		if (!data.isRecord) {
+			console.log('data is not record');
 			data = new notRecord({}, data);
 		}
 		this.setData(data);
@@ -65,7 +67,6 @@ class notForm extends notBase {
 
 	render() {
 		this.renderWrapper();
-		this.renderComponents();
 	}
 
 	getPartTemplateName(formPart){
@@ -91,7 +92,7 @@ class notForm extends notBase {
 				]
 			};
 			console.log(input.template);
-			let wrapper = new notFramework.notComponent(input);
+			let wrapper = new notComponent(input);
 			this.setWorking('wrapper', wrapper);
 		}
 	}
@@ -112,7 +113,7 @@ class notForm extends notBase {
 		}else{
 			for(let t = 0; t < this.getFormFieldsList().length; t++){
 				let fieldName = this.getFormFieldsList()[t];
-				this.addFieldComponent(fieldName, this.getData(fieldName));
+				this.addFieldComponent(fieldName);
 			}
 		}
 	}
@@ -133,32 +134,47 @@ class notForm extends notBase {
 		return def;
 	}
 
-	addFieldComponent(fieldName, value) {
-		let fieldType = this.getFieldsDefinition(fieldName)
+	addFieldComponent(fieldName) {
+		let fieldType = this.getFieldsDefinition(fieldName);
+		console.log(fieldName);
 		let rec = {
 			field: {
 				name: fieldName,
 				title: fieldType.label || fieldType.placeholder,
 				type: fieldType.type,
-				value: value,
 				label: fieldType.label,
-				multiple: fieldType.multiple,
+				array: fieldType.array,
 				default: fieldType.default,
-				placeholder: fieldType.placeholder
+				placeholder: fieldType.placeholder,
+				options: this.getOptions(notPath.join('helpers','libs',fieldName))
 			}
 		};
-		rec.component = new notFramework.notComponent({
-			data: rec.field,
+		rec.component = new notComponent({
+			data: this.getData(),
 			template: {
 				name: this.getPartTemplateName(fieldType.type)
 			},
 			options: {
-				helpers: {},
+				helpers: {
+					isChecked: (params)=>{
+						return params.item.value === this.getData(fieldName)
+					},
+					field: rec.field,
+					data: this.getData(),
+					libs: this.getOptions(notPath.join('helpers','libs'))
+				},
 				targetEl: this.getFormBodyElement(),
-				renderAnd: 'placeLast'
+				renderAnd: 'placeLast',
+				events:[
+					['afterDataChange', this.collectDataFromComponents.bind(this)]
+				]
 			}
 		});
 		this.getWorking('components').push(rec);
+	}
+
+	collectDataFromComponents(params){
+		console.log('collect data from components', params);
 	}
 
 	getFormBodyElement(){

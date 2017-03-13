@@ -32,7 +32,9 @@
 									'email',
 									'password',
 									'birthDate',
+									'active',
 									'sex',
+									'role',
 									'country'
 								],
 								'admin': [
@@ -75,8 +77,13 @@
 					label: 'Активен'
 				},
 				role: {
-					type: 'multiple',
+					type: 'select',
 					label: 'Роль'
+				},
+				country: {
+					type: 'multiple',
+					label: 'Страна',
+					array: true
 				},
 				sex: {
 					type: 'radiogroup',
@@ -133,7 +140,13 @@
 				]
 			};
 
+
 		let renderForm = function() {
+			record.on('change', (proxy, key, value) => {
+				if (key === 'country') {
+					record.login = record.login + '.';
+				}
+			});
 			let form = new notFramework.notForm({
 				data: record,
 				options: {

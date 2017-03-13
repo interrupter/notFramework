@@ -90,7 +90,9 @@ class notPath{
 		}
 	}
 
-
+	unset(path, item, helpers){
+		this.set(path, item, helpers, null);
+	}
 
 	parsePathStep(step, item, helper){
 		let rStep = null;

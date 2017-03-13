@@ -21,7 +21,28 @@ var notTemplateProcessorsLib = {
 	},
 	value: function(scope, item, helpers){
 		let liveEvents = ['change', 'keyup'],
-			onEvent = ()=>notPath.set(scope.attributeExpression, item, helpers, scope.element.value);
+			onEvent = ()=>{
+				//console.log(scope.element.type);
+				if (['checkbox', 'radio', 'option', 'select', 'select-multiple'].indexOf(scope.element.type) > -1){
+					switch (scope.element.type){
+						case 'checkbox':
+							notPath.set(scope.attributeExpression, item, helpers, scope.element.checked);
+							break;
+						case 'radio':{
+							//console.log(helpers.field.name, helpers.data, helpers, scope.element.checked?scope.element.value:null);
+							notPath.set(helpers.field.name, helpers.data, helpers, scope.element.checked?scope.element.value:null);
+						}break;
+						case 'select-multiple':
+							let selected = [].slice.call(scope.element.selectedOptions).map(a => a.value);
+							//console.log('select-multiple', selected);
+							notPath.set(scope.attributeExpression, item, helpers, selected);
+							break;
+					}
+				}else{
+					//console.log(notPath.get(scope.attributeExpression, item, helpers), ' -> ',scope.element.value);
+					notPath.set(scope.attributeExpression, item, helpers, scope.element.value);
+				}
+			};
 		scope.element.setAttribute('value', notPath.get(scope.attributeExpression, item, helpers));
 		if (scope.element.processedValue !== true){
 			for(let t of liveEvents){
@@ -81,39 +102,25 @@ var notTemplateProcessorsLib = {
 			option = null,
 			valueFieldName = 'value',
 			labelFieldName = 'name',
-			subLib = undefined,
-			itemValueFieldName = helpers.hasOwnProperty('fieldName') ? helpers['fieldName'] : 'value';
+			itemValueFieldName = helpers.hasOwnProperty('field')&&helpers.field.hasOwnProperty('name') ?helpers.field.name  : 'value';
 		scope.element.innerHTML = '';
 		if (scope.params.length === 2) {
 			labelFieldName = scope.params[0];
 			valueFieldName = scope.params[1];
 		}
-		if (typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('option')) {
-			labelFieldName = helpers.option.label;
-			valueFieldName = helpers.option.value;
-		}
-		if (scope.params.length > 2) {
-			itemValueFieldName = scope.params[2];
-		}
-		if (scope.params.length > 3 && scope.params[3] === 'different') {
-			subLib = valueFieldName;
-		}
-		if (typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('fieldPlaceHolder') && helpers.hasOwnProperty('fieldPlaceHolderDefault') && helpers.fieldPlaceHolderDefault) {
+		if (typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('default') && helpers.default) {
 			option = document.createElement('option');
 			option.setAttribute('value', '');
-			option.textContent = helpers.fieldPlaceHolder;
+			option.textContent = helpers.placeholder;
 			scope.element.appendChild(option);
 		}
 		if (typeof item !== 'undefined' && item !== null) {
 			var lib = notPath.get(scope.attributeExpression, item, helpers);
-			if (/*different &&*/ subLib && lib.hasOwnProperty(subLib)) {
-				lib = lib[subLib];
-			}
 			for (i = 0; i < lib.length; i++) {
 				option = document.createElement('option');
 				option.setAttribute('value', lib[i][valueFieldName]);
 				option.textContent = lib[i][labelFieldName];
-				if (Array.isArray(item[itemValueFieldName])) {
+				if (helpers.field.array) {
 					if (item[itemValueFieldName].indexOf(lib[i][valueFieldName]) > -1) {
 						option.setAttribute('selected', true);
 					}

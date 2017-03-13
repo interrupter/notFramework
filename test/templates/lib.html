@@ -81,37 +81,41 @@
 </nt>
 
 <nt name="form_email">
-	<label><span n-content="{:label}"></span>:<input name=":name" n-value=":value"/></label>
+	<label><span n-content="{::field.label}"></span>:<input name="::field.name" n-value=":{::field.name}"/></label>
 </nt>
 
 <nt name="form_textfield">
-	<label><span n-content="{:label}"></span>:<input name=":name" n-value=":value"/></label>
+	<label><span n-content="{::field.label}"></span>:<input name="::field.name" n-value=":{::field.name}"/></label>
 </nt>
 
 <nt name="form_password">
-	<label><span n-content="{:label}"></span>:<input type="password" name=":name" n-value=":value"/></label>
+	<label><span n-content="{::field.label}"></span>:<input type="password" name="::field.name" n-value=":{::field.name}"/></label>
 </nt>
 
 <nt name="form_textarea">
-	<label><span n-content="{:label}"></span>:<textarea name=":name" n-content="{:value}"></textarea></label>
+	<label><span n-content="{::field.label}"></span>:<textarea name="::field.name" n-value=":{::field.name}"></textarea></label>
 </nt>
 
 <nt name="form_select">
-	<label><span n-content="{:label}"></span>:
-		<select n-value=":value" n-attr-multiple=":multiple">
-			<nt name="form_select_option" data=":options"></nt>
-		</select>
+	<label><span n-content="{::field.label}"></span>:
+		<select  n-value=":{::field.name}" n-options-title-value="::libs.{::field.name}"></select>
 	</label>
 </nt>
 
-<nt name="form_select_option">
-	<option n-value=":value" n-content="{:title}"></option>
+<nt name="form_multiple">
+	<label><span n-content="{::field.label}"></span>:
+		<select multiple n-value=":{::field.name}" n-options-title-value="::libs.{::field.name}"></select>
+	</label>
+</nt>
+
+<nt name="form_option">
+	<option n-value=":value" n-checked="::isChecked" n-content="{:title}"></option>
 </nt>
 
 <nt name="form_checkbox">
 	<div class="checkbox">
 		<label>
-      <input type="checkbox" n-attr-checked=":value"> <span n-content="{:label}"></span>
+      <input type="checkbox" n-value=":{::field.name}" n-checked=":{::field.name}"> <span n-content="{::field.label}"></span>
     </label>
 	</div>
 </nt>
@@ -122,20 +126,30 @@
 
 <nt name="form_wrapper">
 	<div>
-		<h1 n-content="{:title}"></h1>
+		<h1 n-content="{:label}"></h1>
 		<form action="" role="body"></form>
 	</div>
 </nt>
 
 <nt name="form_radiogroup">
-
+	<div>
+		<h3 n-content="{::field.title}"></h3>
+		<nt name="form_radio" data="::libs.{::field.name}"></nt>
+	</div>
 </nt>
 
 <nt name="form_radio">
 	<div class="radio">
 		<label>
-    	<input type="radio" n-attr-name=":name" n-value=":value" n-checked=":isChecked">
-    	<span n-content="{:label}"></span>
+    	<input type="radio" n-attr-name="::field.name" n-value=":value" n-checked="::isChecked">
+    	<span n-content="{:title}"></span>
   	</label>
 	</div>
+</nt>
+
+<nt name="form_date">
+	<label>
+		<input type="date" n-attr-name="::field.name" n-value=":{::field.name}">
+		<span n-content="{::field.label}"></span>
+	</label>
 </nt>

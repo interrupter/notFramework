@@ -1,0 +1,181 @@
+{
+    "user": {
+        "model": "user",
+        "url": "/api/:modelName",
+        "fields": {
+            "title": {
+                "type": "text",
+                "placeholder": "Название"
+            },
+            "submit": {
+                "type": "submit"
+            },
+            "codeName": {
+                "type": "text",
+                "placeholder": "Кодовое название на английском языке"
+            },
+            "description": {
+                "type": "definitionList",
+                "placeholder": "Описание",
+                "label": "Описание"
+            },
+            "products": {
+                "type": "multi",
+                "label": "Продукты"
+            },
+            "price": {
+                "type": "price",
+                "placeholder": "Стоимость"
+            },
+            "width": {
+                "type": "float",
+                "placeholder": "Ширина"
+            },
+            "image": {
+                "type": "file",
+                "placeholder": "Иконка"
+            },
+            "default": {
+                "type": "checkbox",
+                "placeholder": "По умолчанию",
+                "label": "По умолчанию"
+            },
+            "active": {
+                "type": "checkbox",
+                "placeholder": "В наличии",
+                "label": "В наличии"
+            },
+            "corner": {
+                "type": "file",
+                "placeholder": "Угол (левый верхний)"
+            },
+            "cornerSmall": {
+                "type": "file",
+                "placeholder": "Угол уменьшенный "
+            },
+            "side": {
+                "type": "file",
+                "placeholder": "Сторона (левая)"
+            },
+            "sideSmall": {
+                "type": "file",
+                "placeholder": "Сторона уменьшенная"
+            }
+        },
+        "actions": {
+            "create": {
+                "method": "POST",
+                "isArray": false,
+                "data": ["record"],
+                "auth": true,
+                "admin": true,
+                "formData": true,
+								"title": "Создание нового багета",
+                "fields": {
+										"default": ["title", "codeName", "description", "submit"],
+										"admin": ["title", "codeName", "description", "price", "products", "width", "image", "corner", "cornerSmall", "side", "sideSmall", "active", "default", "submit"]
+               	}
+            },
+            "update": {
+                "method": "POST",
+                "isArray": false,
+                "postFix": "/:record[_id]/update",
+                "data": ["record"],
+                "auth": true,
+                "admin": true,
+                "formData": true,
+                "form": {
+                    "title": "Редактирование записи данных багета",
+                    "scenario": {
+                        "admin": {
+                            "fields": ["title", "codeName", "description", "price", "products", "width", "image", "corner", "cornerSmall", "side", "sideSmall", "active", "default", "submit"]
+                        }
+                    }
+                }
+            },
+            "list": {
+                "method": "GET",
+                "isArray": true,
+                "data": ["pager", "sorter", "filter"],
+                "rules": [{
+                    "auth": true,
+                    "admin": false,
+                    "role": ["firm"]
+                }, {
+                    "auth": true,
+                    "admin": true
+                }]
+            },
+            "listAll": {
+                "method": "GET",
+                "isArray": true,
+                "postFix": "/:actionName",
+                "data": [],
+                "auth": true,
+                "admin": true
+            },
+            "listOptions": {
+                "method": "GET",
+                "isArray": true,
+                "postFix": "/:actionName",
+                "data": [],
+                "rules": [{
+                    "auth": false
+                }, {
+                    "auth": true,
+                    "admin": false
+                }, {
+                    "auth": true,
+                    "admin": true
+                }]
+            },
+            "count": {
+                "method": "GET",
+                "postFix": "/:actionName",
+                "isArray": false,
+                "data": [],
+                "auth": true,
+                "admin": true
+            },
+            "get": {
+                "method": "GET",
+                "isArray": false,
+                "postFix": "/:record[_id]",
+                "data": [],
+                "auth": true,
+                "admin": true
+            },
+            "getById": {
+                "method": "GET",
+                "isArray": false,
+                "postFix": "/:record[bagetID]/:actionName",
+                "data": [],
+                "rules": [{
+                    "auth": true,
+                    "admin": false
+                }, {
+                    "auth": true,
+                    "admin": true
+                }, {
+                    "auth": false,
+                    "admin": false
+                }]
+            },
+            "getRaw": {
+                "method": "GET",
+                "isArray": false,
+                "postFix": "/:record[_id]/:actionName",
+                "data": [],
+                "auth": true,
+                "admin": true
+            },
+            "delete": {
+                "method": "DELETE",
+                "postFix": "/:record[_id]",
+                "isArray": false,
+                "auth": true,
+                "admin": true
+            }
+        }
+    }
+}

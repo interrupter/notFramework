@@ -1,5 +1,6 @@
 import notComponent from '../template/notComponent';
 import notRecord from '../notRecord';
+import notCommon from '../common';
 import notBase from '../notBase';
 import notPath from '../notPath';
 
@@ -22,7 +23,7 @@ class notForm extends notBase {
 		});
 		let data = input.data || {};
 		if (!data.isRecord) {
-			console.log('data is not record');
+
 			data = new notRecord({}, data);
 		}
 		this.setData(data);
@@ -51,7 +52,7 @@ class notForm extends notBase {
 			list = [],
 			role = this.getOptions('role', OPT_DEFAULT_ROLE_NAME);
 		if (actionData) {
-			console.log(actionData);
+
 			if (actionData.fields) {
 				if (actionData.fields.hasOwnProperty(role)) {
 					list = actionData.fields[role];
@@ -91,7 +92,7 @@ class notForm extends notBase {
 					[['afterRender', 'afterUpdate'], this.renderComponents.bind(this)]
 				]
 			};
-			console.log(input.template);
+
 			let wrapper = new notComponent(input);
 			this.setWorking('wrapper', wrapper);
 		}
@@ -105,7 +106,7 @@ class notForm extends notBase {
 	}
 
 	renderComponents() {
-		console.log('manifest', this.getFormFieldsList());
+
 		if (this.getWorking('components') && this.getWorking('components').length){
 			for(let t = 0; t < this.getWorking('components').length; t++){
 				this.getWorking('components')[t].component.update();
@@ -136,7 +137,7 @@ class notForm extends notBase {
 
 	addFieldComponent(fieldName) {
 		let fieldType = this.getFieldsDefinition(fieldName);
-		console.log(fieldName);
+
 		let rec = {
 			field: {
 				name: fieldName,
@@ -157,7 +158,7 @@ class notForm extends notBase {
 			options: {
 				helpers: {
 					isChecked: (params)=>{
-						return params.item.value === this.getData(fieldName)
+						return params.item.value === this.getData(fieldName);
 					},
 					field: rec.field,
 					data: this.getData(),
@@ -174,11 +175,11 @@ class notForm extends notBase {
 	}
 
 	collectDataFromComponents(params){
-		console.log('collect data from components', params);
+		notCommon.log('collect data from components', params);
 	}
 
 	getFormBodyElement(){
-		return this.getOptions('targetEl').querySelector('[role="body"]')
+		return this.getOptions('targetEl').querySelector('[role="body"]');
 	}
 
 	/*

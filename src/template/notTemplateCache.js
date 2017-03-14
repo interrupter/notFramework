@@ -32,7 +32,6 @@ class notTemplateCache extends notBase{
 	}
 
 	loadOne(key, url, callback) {
-
 		var oRequest = new XMLHttpRequest();
 		oRequest.open('GET', url);
 		oRequest.addEventListener('load', function(response) {
@@ -117,35 +116,35 @@ class notTemplateCache extends notBase{
 	}
 
 	addFromURL(key, url) {
-		let that = this;
-		return new Promise(function(resolve, reject) {
-			if (that.get(key)){
-				resolve(that.get(key));
+		return new Promise((resolve, reject)=> {
+			if (this.get(key)){
+				resolve(this.get(key));
 			}else{
 				//that.setLoading(key, url);
-				notCommon.getHTML(url).then(function(templateInnerHTML){
-					let templateContEl = that.wrap(key, url, templateInnerHTML);
-					that.setOne(key, templateContEl);
-					resolve(templateContEl);
-				}).catch(function(){
-					notCommon.error('error loading template', key, url);
-					reject(...arguments);
-				});
+				notCommon.getHTML(url)
+					.then((templateInnerHTML)=>{
+						let templateContEl = this.wrap(key, url, templateInnerHTML);
+						this.setOne(key, templateContEl);
+						resolve(this.get(key));
+					}).catch(()=>{
+						notCommon.error('error loading template', key, url);
+						reject(...arguments);
+					});
 			}
 		});
 	}
 
 	addLibFromURL(url) {
-		let that = this;
-		return new Promise(function(resolve, reject) {
-			notCommon.getHTML(url).then(function(templatesHTML){
-				let templates = that.parseLib(templatesHTML);
-				that.addLib(templates);
-				resolve(templates);
-			}).catch(function(e){
-				notCommon.error('error loading templates lib', url,e);
-				reject(...arguments);
-			});
+		return new Promise((resolve, reject) => {
+			notCommon.getHTML(url)
+				.then((templatesHTML)=>{
+					let templates = this.parseLib(templatesHTML);
+					this.addLib(templates);
+					resolve(templates);
+				}).catch((e)=>{
+					notCommon.error('error loading templates lib', url,e);
+					reject(...arguments);
+				});
 		});
 	}
 

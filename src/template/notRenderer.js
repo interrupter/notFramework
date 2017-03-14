@@ -88,7 +88,7 @@ class notRenderer extends notBase {
 		notCommon.log(this.getBreadCrumps().join(' > '));
 		notCommon.log('updating renderer ', this.getWorking('partId'), ' after changes', key, value);*/
 		this.update(key);
-		this.trigger('obsolete');
+		this.trigger('obsolete',proxy, key, value);
 	}
 
 	render() {

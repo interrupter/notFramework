@@ -119,6 +119,7 @@ var CommonObjects = {
 	},
 
 	registry: {},
+	
 	register: function(key, val) {
 		this.registry[key] = val;
 	},

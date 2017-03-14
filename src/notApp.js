@@ -3,7 +3,6 @@ import notCommon from './common';
 import notRecord from './notRecord';
 import notFormFactory from './components/notFormFactory';
 import notPath from './notPath';
-import notController from './notController';
 import notBase from './notBase';
 
 const OPT_CONTROLLER_PREFIX = 'nc',
@@ -63,14 +62,15 @@ export default class notApp extends notBase {
 	}
 
 	bindController(controllerName) {
-		var ctrl = new notController(this, controllerName);
-		return ctrl.exec.bind(ctrl);
+		return ()=>{
+			new controllerName(this);
+		};
 	}
 
 	initController() {
 		if (typeof(this.getOptions('initController')) !== 'undefined') {
-			this.setWorking('initController', new notController(this, this.getOptions('initController')));
-			this.getWorking('initController').exec();
+			let initController = this.getOptions('initController');
+			this.setWorking('initController', new initController(this));
 		}
 	}
 

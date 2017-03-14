@@ -98,7 +98,7 @@ class notComponent extends notBase {
 		} else if (val.hasOwnProperty('el') && val.el) {
 			this.setProtoTemplateElement(val.el.cloneNode(true));
 		} else if (val.hasOwnProperty('src') && val.src) {
-			notTemplateCache.getFromURL(val.src, val.src)
+			notTemplateCache.addFromURL(val.src, val.src)
 				.then(this.setProtoTemplateElement.bind(this))
 				.catch(notCommon.report);
 		} else if (val.hasOwnProperty('name') && val.name) {
@@ -195,7 +195,9 @@ class notComponent extends notBase {
 	placeRendered(){
 		if (this.getOptions('targetEl')) {
 			let placer = this.getPlacer(this.getOptions('renderAnd'));
+			placer.before(this.getOptions('targetEl'));
 			this.forEachData(this.placePart.bind(this));
+			placer.after(this.getOptions('targetEl'));
 		} else {
 			notCommon.error('no target element');
 		}
@@ -215,7 +217,6 @@ class notComponent extends notBase {
 			targetEl = this.getWorking('lastPlacedNode');
 		}
 		placer.main(targetEl, nodes);
-
 		lastNode = targetEl;
 		for(let t of nodes){
 			if (t.nodeType === 1){
@@ -225,10 +226,6 @@ class notComponent extends notBase {
 			}
 		}
 		this.setWorking('lastPlacedNode', lastNode);
-	}
-
-	placeNodes(nodes){
-		//notCommon.log('placed part', nodes);
 	}
 
 	getPlacer(method) {

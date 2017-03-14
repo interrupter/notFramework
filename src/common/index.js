@@ -5,6 +5,7 @@ import CommonObjects from './objects.js';
 import CommonStrings from './strings.js';
 import CommonFunctions from './functions.js';
 import CommonDOM from './dom.js';
+import CommonApp from './app.js';
 
 /*
 	список того что нужно подключить как общие
@@ -17,5 +18,6 @@ notCommon.extendWith(CommonLogs);
 notCommon.extendWith(CommonShorts);
 notCommon.extendWith(CommonFunctions);
 notCommon.extendWith(CommonDOM);
+notCommon.extendWith(CommonApp);
 
 export default notCommon;

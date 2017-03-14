@@ -1,6 +1,7 @@
 const notComponent = notFramework.notComponent,
 	procLib = notFramework.notTemplateProcessorsLib,
 	cache = notFramework.notTemplateCache;
+	
 let templateEls = {
 		title: null,
 		copyrights: null,
@@ -14,6 +15,8 @@ let templateEls = {
 		title: 'Item title',
 		title2: 'Item title',
 		class: 'active',
+		status: true,
+		status2:false,
 		list: [{
 			title: '1',
 			value: 1,
@@ -313,7 +316,7 @@ describe("notTemplate", function() {
 	describe("Checked processor", function() {
 		beforeEach(function() {
 			templateEls.checked = document.createElement('nt');
-			templateEls.checked.innerHTML = '<input type="checked" value="1" name=""/>';
+			templateEls.checked.innerHTML = '<input type="checked" n-value=":status" n-checked=":status"/>';
 			targetCont = document.createElement('div');
 			item = new notRecord({}, notCommon.completeAssign({}, itemData));
 		});
@@ -326,10 +329,13 @@ describe("notTemplate", function() {
 					helpers: helpers,
 					targetEl: targetCont,
 					renderAnd: 'place'
-				}
+				},
+				events:[['afterRender', ()=>{
+					expect(targetCont.querySelector('input')).to.be.not.null;
+					expect(targetCont.querySelector('input').checked).to.be.not.null;
+				}]]
 			});
-			expect(targetCont.querySelector('input')).to.be.not.null;
-			expect(targetCont.querySelector('input').classList.contains('active')).to.be.true;
+
 		});
 
 		it("Record live", function() {
@@ -340,47 +346,14 @@ describe("notTemplate", function() {
 					helpers: helpers,
 					targetEl: targetCont,
 					renderAnd: 'place'
-				}
+				},
+				events:[['afterRender', ()=>{
+					expect(targetCont.querySelector('input')).to.be.not.null;
+					expect(targetCont.querySelector('input').checked).to.be.true;
+					item.status = false;
+					expect(targetCont.querySelector('input').checked).to.be.false;
+				}]]
 			});
-			expect(targetCont.querySelector('input')).to.be.not.null;
-			expect(targetCont.querySelector('input').attributes.value.value).to.be.equal('Item title');
-			item.title2 = 'active2';
-			expect(targetCont.querySelector('input').attributes.value.value).to.be.true;
-		});
-
-		it("Record nested property live", function() {
-			let item21 = new notRecord({}, notCommon.completeAssign({}, {
-				title: 'Item title',
-				title2: 'Item title',
-				list: [{
-					title: '1',
-					value: 1,
-					active: true
-				}, {
-					title: '3',
-					value: 3,
-					active: true
-				}, {
-					title: '2',
-					value: 2,
-					active: true
-				}]
-			})),
-				t = new notComponent({
-				data: item21,
-				template: {el: templateEls.title2},
-				options: {
-					helpers: helpers,
-					targetEl: targetCont,
-					renderAnd: 'place'
-				}
-			});
-			expect(targetCont.querySelector('h2')).to.be.not.null;
-			expect(targetCont.querySelector('h2').attributes.value.value).to.be.equal('1');
-			t.on('rendered', function(el){
-				expect(targetCont.querySelector('h2').attributes.value.value).to.be.equal('2');
-			}, true);
-			item21.list[0].title = '2';
 		});
 	});
 

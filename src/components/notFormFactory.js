@@ -1,10 +1,10 @@
-import  notComponent  from '../template/notComponent';
+import  notBase  from '../notBase';
 
-class notFormFactory extends notComponent{
+class notFormFactory extends notBase{
 	constructor(app, manifest){
 		super();
 		this.setOptions({});
-		this.setWorking({});		
+		this.setWorking({});
 		return this;
 	}
 

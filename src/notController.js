@@ -1,90 +1,155 @@
 import notCommon from './common';
 import notBase from './notBase';
 import notComponent from './template/notComponent';
+import notPath from './notPath';
+
+const OPT_DEFAULT_CONTAINER_SELECTOR = '.page-content',
+	OPT_DEFAULT_VIEWS_POSTFIX = '.html',
+	OPT_DEFAULT_VIEW_NAME = 'default',
+	OPT_DEFAULT_RENDER_FROM_URL = true,
+	OPT_DEFAULT_PLURAL_NAME = 'Models',
+	OPT_DEFAULT_SINGLE_NAME = 'Model',
+	OPT_DEFAULT_MODULE_NAME = 'main',
+	OPT_DEFAULT_RENDER_AND = 'place';
 
 class notController extends notBase {
-	constructor(app, controllerName) {
+	constructor(app) {
 		super();
 		notCommon.log('start controller');
 		this.app = app;
-		this.ncName = 'nc' + (controllerName.capitalizeFirstLetter());
-		this.containerSelector = '.page-content';
-		this.viewsPostfix = '.html';
-		this.renderFromURL = true;
+		this.setWorking({
+			ready: false,
+			views: {},
+			viewName: OPT_DEFAULT_VIEW_NAME,
+			helpers: {}
+		});
+		this.setData({});
+		this.setOptions({
+			moduleName: OPT_DEFAULT_MODULE_NAME,
+			containerSelector: OPT_DEFAULT_CONTAINER_SELECTOR,
+			prefix: this.app.getOptions('paths.module'),
+			postfix: OPT_DEFAULT_VIEWS_POSTFIX,
+			renderFromURL: OPT_DEFAULT_RENDER_FROM_URL,
+			pluralName: OPT_DEFAULT_PLURAL_NAME,
+			singleName: OPT_DEFAULT_SINGLE_NAME
+		});
+		this.on('ready', this.initRender.bind(this));
 		/*
 		    сразу делаем доступными модели notRecord из nc`ControllerName` будут доступны как this.nr`ModelName`
 		*/
-		this.app.getInterfaces().forEach((index, interfac3) => {
-			if (typeof((window[this.ncName])) !== 'undefined')(window[this.ncName]).prototype[index] = interfac3;
-		});
+		let interfaces = this.app.getInterfaces();
+		this.make = {};
+		for (let t = 0; t < interfaces.length; t++) {
+			this.make[t] = interfaces[t];
+		}
 		return this;
 	}
 
-	$render(nc /* ncName function this*/ , name /* view name */ , data /* data for notTemplate*/ , helpers /* could be not represented */ , callback) {
-		var view = nc.views.hasOwnProperty(name) ? nc.views[name] : null,
-			realCallback,
-			realHelpers;
-		if (typeof view === 'undefined' || view === null) return;
-		// если place не указано, что возможно и разумно при не существовании
-		// элемента, но известном идентификаторе
-		if (((typeof view.place === 'undefined') || (view.place === null)) && (typeof view.placeId !== 'undefined' && view.placeId !== null && view.placeId.length > 0)) {
-			view.place = document.getElementById(view.placeId);
-		}
-		//если 4 аргумента значит, helpers  пропустили
-		switch (arguments.length) {
-			//переназначаем со сдвигом
-			case 4:
-				realCallback = helpers;
-				realHelpers = {};
-				break;
-				//переназначаем напрямую
-			default:
-				realHelpers = helpers;
-				realCallback = callback;
-		}
-		view.data = data;
-		if (typeof view.helpers !== 'undefined' && view.helpers !== null && Object.keys(view.helpers).length > 0) {
-			view.helpers = notCommon.extend(view.helpers, realHelpers);
-		} else {
-			view.helpers = realHelpers;
-		}
-		//если нужно загружать шаблоны
-		if (nc.renderFromURL) {
-			//и адрес не указан
-			if (typeof view.templateURL === 'undefined' || view.templateURL == null || view.templateURL.length == 0) {
-				//генерируем адрес по шаблону
-				view.templateURL = (view.common ? nc.commonViewsPrefix : nc.viewsPrefix) + ((typeof view.name !== 'undefined' && view.name !== null && view.name.length > 0) ? view.name : name) + nc.viewsPostfix;
-			}
-		} else {
-			//а если есть название шаблона, то
-			if (view.hasOwnProperty('templateName')) {
-				//...
-				view.templateName = nc.viewsPrefix + view.templateName + nc.viewsPostfix;
-			}
-		}
-		(new notComponent(view)).execAndPut(view.place, realCallback);
+	initRender(){
+		this.render(this.getWorking('viewName'), this.getData(), this.getWorking('helpers'));
 	}
 
-	exec(params) {
-		//console.log('exec', this, Object.keys(this.__proto__));
-		if (typeof((window[this.ncName])) !== 'undefined') {
-			//ищем имена разделяемых функций
-			var sharedList = Object.keys(this.__proto__).filter(function(key) {
-				return (key.indexOf('$') === 0);
-			});
-			//закидываем их в новую функцию
-			if (sharedList.length > 0) {
-				for (var k in sharedList) {
-					window[this.ncName].prototype[sharedList[k]] = this.__proto__[sharedList[k]];
+	render(viewName ='default' /* view name */, data = {} /* data for notTemplate*/ , helpers = {}/* could be not represented */) {
+		return new Promise((resolve, reject)=>{
+			var view = this.getView(viewName);
+
+			if (typeof view === 'undefined' || view === null) {
+				reject('No view found', viewName);
+			}else{
+				view = notCommon.extend({}, view);
+				// если place не указано, что возможно и разумно при не существовании
+				// элемента, но известном идентификаторе
+				if (((typeof view.targetEl === 'undefined') || (view.targetEl === null)) && (typeof view.targetQuery !== 'undefined' && view.targetQuery !== null && view.targetQuery.length > 0)) {
+					view.targetEl = document.querySelector(view.targetQuery);
 				}
+				view.data = data;
+				if (typeof view.helpers !== 'undefined' && view.helpers !== null && Object.keys(view.helpers).length > 0) {
+					view.helpers = notCommon.extend(view.helpers, helpers);
+				} else {
+					view.helpers = helpers;
+				}
+				//если нужно загружать шаблоны
+				if (this.getOptions('renderFromURL')) {
+					//и адрес не указан
+					if (typeof view.templateURL === 'undefined' || view.templateURL == null || view.templateURL.length == 0) {
+						let prefix = (view.common ? this.app.getOptions('paths.common'): this.getModulePrefix()),
+							name = ((typeof view.name !== 'undefined' && view.name !== null && view.name.length > 0) ? view.name : viewName),
+							postfix = this.getOptions('postfix');
+						//генерируем адрес по шаблону
+						view.templateURL =  [prefix, name].join('/') + postfix;
+					}
+				} else {
+					//а если есть название шаблона, то
+					if (view.hasOwnProperty('templateName')) {
+						//...
+						view.templateName = this.getOptions('prefix') + view.templateName + this.getOptions('postfix');
+					}
+				}
+				this.setWorking('component', new notComponent({
+					data,
+					template:{
+						name: view.templateName,
+						src: view.templateURL,
+					},
+					events:[['afterRender', resolve]],
+					options:{
+						targetEl: view.targetEl,
+						helpers,
+						renderAnd: OPT_DEFAULT_RENDER_AND || view.renderAnd
+					}
+				}));
 			}
-			new(window[this.ncName])(this.app, params);
-			//console.log(new(window[this.ncName])(this.app, params));
-			//console.log('after new controller');
-		} else {
 
-		}
+		});
 	}
+
+	getApp() {
+		return this.app;
+	}
+
+	setModel(model) {
+		this.setWorking('model', model);
+		return this;
+	}
+
+	getModel() {
+		return this.setWorking('model');
+	}
+
+	setReady(val = true) {
+		this.setWorking('ready', val);
+		val ? this.trigger('ready') : this.trigger('busy');
+	}
+
+	setView(name, view){
+		this.setWorking(notPath.join('views', name), view);
+		return this;
+	}
+
+	setViews(views){
+		for(let t in views){
+			this.setWorking(notPath.join('views', t), views[t]);
+		}
+		return this;
+	}
+
+	getView(name = 'default'){
+		return this.getWorking(notPath.join('views', name));
+	}
+
+	setModuleName(val) {
+		this.setOptions('moduleName', val);
+		return this;
+	}
+
+	getModuleName() {
+		return this.getOptions('moduleName');
+	}
+
+	getModulePrefix(){
+		return [this.app.getOptions('paths.modules'), this.getModuleName()].join('/');
+	}
+
 }
 
 export default notController;

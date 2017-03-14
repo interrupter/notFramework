@@ -38,11 +38,10 @@ var CommonNetwork = {
 		});
 	},
 	getJSON: function(url, data) {
-		let that = this;
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 			var xhr = new XMLHttpRequest();
 			xhr.open('get', url, true);
-			xhr.setRequestHeader('SessionID', that.getSessionID());
+			xhr.setRequestHeader('SessionID', this.getSessionID());
 			xhr.responseType = 'json';
 			xhr.withCredentials = true;
 			xhr.onload = function() {
@@ -60,11 +59,10 @@ var CommonNetwork = {
 		});
 	},
 	postJSON: function(url, data) {
-		let that = this;
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 			var xhr = new XMLHttpRequest(); // new HttpRequest instance
 			xhr.open('POST', url);
-			xhr.setRequestHeader('SessionID', that.getSessionID());
+			xhr.setRequestHeader('SessionID', this.getSessionID());
 			xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 			xhr.responseType = 'json';
 			xhr.withCredentials = true;
@@ -83,11 +81,10 @@ var CommonNetwork = {
 		});
 	},
 	putJSON: function(url, data) {
-		let that = this;
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 			var xhr = new XMLHttpRequest(); // new HttpRequest instance
 			xhr.open('PUT', url);
-			xhr.setRequestHeader('SessionID', that.getSessionID());
+			xhr.setRequestHeader('SessionID', this.getSessionID());
 			xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 			xhr.responseType = 'json';
 			xhr.withCredentials = true;
@@ -106,11 +103,10 @@ var CommonNetwork = {
 		});
 	},
 	deleteJSON: function(url, data) {
-		let that = this;
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 			var xhr = new XMLHttpRequest(); // new HttpRequest instance
 			xhr.open('DELETE', url);
-			xhr.setRequestHeader('SessionID', that.getSessionID());
+			xhr.setRequestHeader('SessionID', this.getSessionID());
 			xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 			xhr.responseType = 'json';
 			xhr.withCredentials = true;
@@ -129,11 +125,10 @@ var CommonNetwork = {
 		});
 	},
 	getHTML: function(url, data) {
-		let that = this;
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 			var xhr = new XMLHttpRequest();
 			xhr.open('get', url, true);
-			xhr.setRequestHeader('SessionID', that.getSessionID());
+			xhr.setRequestHeader('SessionID', this.getSessionID());
 			xhr.responseType = 'text';
 			xhr.withCredentials = true;
 			xhr.onload = ()=>{

@@ -8,12 +8,11 @@ const replace = {
 
 	},
 	afterEach: function(targetEl/*, rendered*/) {
-		console.log(targetEl.nodeName);
 		if (targetEl.nodeName !== 'NT'){
 			targetEl.parentNode.removeChild(targetEl);
 		}
 	},
-	after: function(targetEl/*, rendered*/) {
+	after: function(/*targetEl, rendered*/) {
 
 	}
 };

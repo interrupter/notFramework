@@ -1,6 +1,7 @@
 class ncMain extends notFramework.notController {
 	constructor(app, params) {
 		super(app);
+		console.log('ncMain', ...arguments);
 		this.setModuleName('main');
 		this.setData(new notFramework.notRecord({}, {
 			time: 0
@@ -27,7 +28,7 @@ class ncMain extends notFramework.notController {
 	preload() {
 		this.setReady(false);
 		return new Promise((resolve, reject) => {
-			setTimeout(resolve, 5000);
+			setTimeout(resolve, 2000);
 		});
 	}
 

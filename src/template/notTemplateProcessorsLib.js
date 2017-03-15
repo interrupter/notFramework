@@ -1,98 +1,121 @@
 import notPath from '../notPath.js';
+import notRouter from '../notRouter';
 
 var notTemplateProcessorsLib = {
-	content:function(scope, item, helpers){
+	content: function(scope, item, helpers) {
 		scope.attributeResult = notPath.parseSubs(scope.attributeExpression, item, helpers);
-		if (scope.params.indexOf('capitalize') > -1){
+		if (scope.params.indexOf('capitalize') > -1) {
 			scope.attributeResult = scope.attributeResult.toUpperCase();
 		}
 		scope.element.textContent = scope.attributeResult;
 	},
-	bind: function(scope, item, helpers){
-		scope.element.addEventListener(scope.params[0], (e)=>{
+	bind: function(scope, item, helpers) {
+		scope.element.addEventListener(scope.params[0], (e) => {
 			e.stopImmediatePropagation();
 			e.preventDefault();
-			if (scope.attributeResult){
-				return scope.attributeResult({scope, item, helpers, e});
-			}else{
+			if (scope.attributeResult) {
+				return scope.attributeResult({
+					scope,
+					item,
+					helpers,
+					e
+				});
+			} else {
 				return true;
 			}
 		});
 	},
-	value: function(scope, item, helpers){
+	value: function(scope, item, helpers) {
 		let liveEvents = ['change', 'keyup'],
-			onEvent = ()=>{
-				//console.log(scope.element.type);
-				if (['checkbox', 'radio', 'option', 'select', 'select-multiple'].indexOf(scope.element.type) > -1){
-					switch (scope.element.type){
-						case 'checkbox':
+			onEvent = () => {
+				if (['checkbox', 'radio', 'select-multiple'].indexOf(scope.element.type) > -1) {
+					switch (scope.element.type) {
+					case 'checkbox':
+						{
 							notPath.set(scope.attributeExpression, item, helpers, scope.element.checked);
-							break;
-						case 'radio':{
+						}
+						break;
+					case 'radio':
+						{
 							//console.log(helpers.field.name, helpers.data, helpers, scope.element.checked?scope.element.value:null);
-							notPath.set(helpers.field.name, helpers.data, helpers, scope.element.checked?scope.element.value:null);
-						}break;
-						case 'select-multiple':
+							notPath.set(helpers.field.name, helpers.data, helpers, scope.element.checked ? scope.element.value : null);
+						}
+						break;
+					case 'select-multiple':
+						{
 							let selected = [].slice.call(scope.element.selectedOptions).map(a => a.value);
 							//console.log('select-multiple', selected);
 							notPath.set(scope.attributeExpression, item, helpers, selected);
-							break;
+						}
+						break;
 					}
-				}else{
+				} else {
 					//console.log(notPath.get(scope.attributeExpression, item, helpers), ' -> ',scope.element.value);
 					notPath.set(scope.attributeExpression, item, helpers, scope.element.value);
 				}
 			};
 		scope.element.setAttribute('value', notPath.get(scope.attributeExpression, item, helpers));
-		if (scope.element.processedValue !== true){
-			for(let t of liveEvents){
+		if (scope.element.processedValue !== true) {
+			for (let t of liveEvents) {
 				scope.element.addEventListener(t, onEvent);
 			}
 			scope.element.processedValue = true;
 		}
 	},
-	attr: function(scope, item, helpers){
+	attr: function(scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers);
-		scope.attributeResult = ((typeof res === 'function')?res({scope, item, helpers}):res);
+		scope.attributeResult = ((typeof res === 'function') ? res({
+			scope,
+			item,
+			helpers
+		}) : res);
 		scope.element.setAttribute(scope.params[0], scope.attributeResult);
 	},
 	name: function(scope, item, helpers) {
 		scope.element.setAttribute('name', notPath.get(scope.attributeExpression, item, helpers));
 	},
-	change: function(/*scope, item, helpers*/){
+	change: function( /*scope, item, helpers*/ ) {
 
 	},
 	checked: function(scope, item, helpers) {
 		let result = notPath.get(scope.attributeExpression, item, helpers);
-		scope.attributeResult = ((typeof result === 'function')?result({scope, item, helpers}):result);
+		scope.attributeResult = ((typeof result === 'function') ? result({
+			scope,
+			item,
+			helpers
+		}) : result);
 		scope.attributeResult ? scope.element.setAttribute('checked', true) : scope.element.removeAttribute('checked');
 	},
 	class: function(scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers);
-		scope.attributeResult = ((typeof res === 'function')?res({scope, item, helpers}):res);
-		if (scope.params.length < 3 || isNaN(scope.attributeResult)){
-			if (scope.attributeResult){
+		scope.attributeResult = ((typeof res === 'function') ? res({
+			scope,
+			item,
+			helpers
+		}) : res);
+		if (scope.params.length < 3 || isNaN(scope.attributeResult)) {
+			if (scope.attributeResult) {
 				scope.element.classList.add(scope.params[0]);
-				if (scope.params.length > 1){
+				if (scope.params.length > 1) {
 					scope.element.classList.remove(scope.params[1]);
 				}
-			}else{
+			} else {
 				scope.element.classList.remove(scope.params[0]);
-				if (scope.params.length > 1){
+				if (scope.params.length > 1) {
 					scope.element.classList.add(scope.params[1]);
 				}
 			}
-		}else{
+		} else {
 			let used = false;
-			for(let i = 0; i < scope.params.length; i++){
-				if ( i === scope.attributeResult){
+			for (let i = 0; i < scope.params.length; i++) {
+				if (i === scope.attributeResult) {
 					scope.element.classList.add(scope.params[i]);
 					used = true;
-				}else{
+				} else {
 					scope.element.classList.remove(scope.params[i]);
 				}
 			}
-			if(!used){
+			if (!used) {
 				scope.element.classList.add(scope.params[0]);
 			}
 		}
@@ -102,7 +125,7 @@ var notTemplateProcessorsLib = {
 			option = null,
 			valueFieldName = 'value',
 			labelFieldName = 'name',
-			itemValueFieldName = helpers.hasOwnProperty('field')&&helpers.field.hasOwnProperty('name') ?helpers.field.name  : 'value';
+			itemValueFieldName = helpers.hasOwnProperty('field') && helpers.field.hasOwnProperty('name') ? helpers.field.name : 'value';
 		scope.element.innerHTML = '';
 		if (scope.params.length === 2) {
 			labelFieldName = scope.params[0];
@@ -131,6 +154,18 @@ var notTemplateProcessorsLib = {
 				}
 				scope.element.appendChild(option);
 			}
+		}
+	},
+	href:function(scope, item, helpers){
+		if (!scope.element.notRouterInitialized){
+			scope.attributeResult = notPath.parseSubs(scope.attributeExpression, item, helpers);
+			scope.element.setAttribute('href', notRouter.getFullRoute(scope.attributeResult));
+			scope.element.addEventListener('click', (e)=>{
+				e.preventDefault();
+				notRouter.navigate(notPath.parseSubs(scope.attributeExpression, item, helpers));
+				return false;
+			});
+			scope.element.notRouterInitialized = true;
 		}
 	}
 };

@@ -1,6 +1,6 @@
 import notBase from '../notBase';
-import notPath from '../notPath';
-import notComponent from '../template/notComponent';
+//import notPath from '../notPath';
+//import notComponent from '../template/notComponent';
 
 class notView extends notBase {
 	constructor(input) {

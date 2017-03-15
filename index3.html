@@ -33,8 +33,11 @@
 									'birthDate',
 									'active',
 									'sex',
+									'about',
 									'role',
-									'country'
+									'country',
+									'submit',
+									'cancel'
 								],
 								'admin': [
 									'login',
@@ -56,6 +59,22 @@
 					type: 'textfield',
 					placeholder: 'Логин',
 					label: 'Логин'
+				},
+				about: {
+					type: 'textarea',
+					placeholder: 'About',
+					label: 'About'
+				},
+				cancel: {
+					type: 'cancel',
+					placeholder: 'Cancel',
+					label: 'Cancel'
+				},
+
+				submit: {
+					type: 'submit',
+					placeholder: 'Отправить',
+					label: 'Отправить'
 				},
 				email: {
 					type: 'email',
@@ -152,6 +171,21 @@
 					helpers: {
 						//special field
 						libs: libs,
+						someOtherMethod: (params)=>{
+							params.e.preventDefault();
+							alert('JoyReactor');
+							return false;
+						},
+						cancel: (params)=>{
+							params.e.preventDefault();
+							alert('Cancel');
+							return false;
+						},
+						submit: (params)=>{
+							params.e.preventDefault();
+							alert('All hail tyan');
+							return false;
+						}
 					},
 					fields: fields,
 					action: 'create',

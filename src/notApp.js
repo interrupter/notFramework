@@ -1,9 +1,9 @@
-/* global routie */
 import notCommon from './common';
 import notRecord from './notRecord';
 import notFormFactory from './components/notFormFactory';
 import notPath from './notPath';
 import notBase from './notBase';
+import notRouter from './notRouter';
 
 const OPT_CONTROLLER_PREFIX = 'nc',
 	OPT_RECORD_PREFIX = 'nr';
@@ -26,11 +26,25 @@ export default class notApp extends notBase {
 	}
 
 	init() {
-		var url = this.getOptions('interfaceManifestURL'),
-			success = this.setInterfaceManifest.bind(this);
+		var url = this.getOptions('manifestURL');
 		notCommon.getJSON(url, {})
-			.then(success)
+			.then(this.setInterfaceManifest.bind(this))
 			.catch(notCommon.report.bind(this));
+	}
+
+	initRouter(){
+		this.setWorking('router', notRouter);
+		this.getWorking('router').setRoot(this.getOptions('router.root'));
+		var routieInput = {};
+		for(let t = 0; t < this.getOptions('router.manifest').length; t++){
+			let routeBlock = this.getOptions('router.manifest')[t],
+				paths = routeBlock.paths,
+				controller = routeBlock.controller;
+			for(let i = 0; i < paths.length; i++){
+				routieInput[paths[i]] = this.bindController(controller);	
+			}
+		}
+		this.getWorking('router').addList(routieInput).listen().navigate(this.getOptions('router.index'));
 	}
 
 	setInterfaceManifest(manifest) {
@@ -62,8 +76,9 @@ export default class notApp extends notBase {
 	}
 
 	bindController(controllerName) {
-		return ()=>{
-			new controllerName(this);
+		let app = this;
+		return function(){
+			new controllerName(app, arguments);
 		};
 	}
 
@@ -74,14 +89,7 @@ export default class notApp extends notBase {
 		}
 	}
 
-	initRouter() {
-		var routieInput = {};
-		for(let route in this.getOptions('siteManifest')){
-			let controllerName = this.getOptions('siteManifest')[route];
-			routieInput[route] = this.bindController(controllerName);
-		}
-		this.setWorking('router', routie(routieInput));
-	}
+
 
 	getCurrentController() {
 		return this.getWorking('currentController');

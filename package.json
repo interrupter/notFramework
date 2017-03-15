@@ -1,6 +1,6 @@
 {
   "name": "not-framework",
-  "version": "2.1.45",
+  "version": "2.1.46",
   "description": "node complimentary part for client side notFramework. + dadata.ru api",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
@@ -23,9 +23,7 @@
   "bugs": {
     "url": "https://github.com/interrupter/not-node/issues"
   },
-  "dependencies": {
-		"routie":"*"
-  },
+  "dependencies": {},
   "devDependencies": {
 		"babel-polyfill": "^6.13.0",
     "babel-preset-es2015-rollup": "^1.2.0",

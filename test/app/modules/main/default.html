@@ -1,1 +1,9 @@
-<p>Рендер из файла, по URL. Число обновляется каждую секунду <span n-content="{:time}"></span></p>
+<p>Рендер из файла, по URL. Число обновляется каждую секунду <span n-content="{:time}"></span><br/>
+	<ul>
+		<li><a n-href="/main">main</a></li>
+		<li><a n-href="/main/hello_kitty">kitty</a></li>
+		<li><a n-href="/user">user</a> / <a n-href="/user/create">create</a> / <a n-href="/user/123123/edit">edit</a>/ <a n-href="/user/123123/delete">delete</a></li>
+		<li><a n-href="/post">post</a></li>
+		<li><a n-href="/country">country</a></li>
+	</ul>
+</p>

@@ -7,7 +7,7 @@ class ncInit extends notFramework.notController {
 	}
 
 	rebuildContainer() {
-		document.getElementById("test").innerHTML = '<h1>Контроллер инициализации отработал, через 5 секунд подрубиться main контроллер, загрузит и отрендерит шаблон с простой связкой с данными</h1>';
+		document.getElementById("test").innerHTML = '<h1>Контроллер инициализации отработал, через 2 секунд подрубиться main контроллер, загрузит и отрендерит шаблон с простой связкой с данными</h1>';
 	}
 }
 

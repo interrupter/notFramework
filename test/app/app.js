@@ -5,14 +5,29 @@ import ncCountry from './modules/country';
 
 let appOptions = {
 	//url from which will take interfaceManifest json file
-	interfaceManifestURL: '/framework/test/app/manifest.json',
-	//routes for client-side
-	siteManifest: {
-		//routie route desription: controller name, real controller is function preffixed with 'nc', ncMain, ncPublication
-		'': ncMain,
-		'user/:param?': ncUser,
-		'post/:param?': ncPost,
-		'country/:param?': ncCountry,
+	manifestURL: '/framework/test/app/manifest.json',
+	router:{
+		root:'/framework/test/app/',
+		//routes for client-side
+		manifest: [
+			{
+				paths: ['main/(\.*)\/', 'main'],
+				controller: ncMain
+			},
+			{
+				paths: ['user/(\.*)\/(\.*)\/', 'user/(\.*)\/'],
+				controller: ncUser
+			},
+			{
+				paths: ['post'],
+				controller: ncPost
+			},
+			{
+				paths: ['country'],
+				controller: ncCountry
+			}
+		],
+		index: 'main/hello_kitty'
 	},
 	//base controller, executed on every site page before any other controller
 	initController: ncInit,

@@ -150,20 +150,21 @@ class notForm extends notBase {
 				options: this.getOptions(notPath.join('helpers','libs',fieldName))
 			}
 		};
+		let helpers = notCommon.extend({
+			isChecked: (params)=>{
+				return params.item.value === this.getData(fieldName);
+			},
+			field: rec.field,
+			data: this.getData()
+
+		}, this.getOptions('helpers'));
 		rec.component = new notComponent({
 			data: this.getData(),
 			template: {
 				name: this.getPartTemplateName(fieldType.type)
 			},
 			options: {
-				helpers: {
-					isChecked: (params)=>{
-						return params.item.value === this.getData(fieldName);
-					},
-					field: rec.field,
-					data: this.getData(),
-					libs: this.getOptions(notPath.join('helpers','libs'))
-				},
+				helpers,
 				targetEl: this.getFormBodyElement(),
 				renderAnd: 'placeLast',
 				events:[

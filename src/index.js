@@ -6,6 +6,7 @@ import notCommon from './common';
 	framework wide parser for data access
 */
 import notPath from './notPath';
+import notRouter from './notRouter';
 
 import notAPI from './api';
 /*
@@ -57,6 +58,7 @@ export {
 	notRenderer,
 	notComponent,
 	notForm,
+	notRouter,
 	notTable,
 	notView,
 	notRecord,

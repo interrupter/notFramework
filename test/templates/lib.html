@@ -93,7 +93,9 @@
 </nt>
 
 <nt name="form_textarea">
-	<label><span n-content="{::field.label}"></span>:<textarea name="::field.name" n-value=":{::field.name}"></textarea></label>
+	<label><span n-content="{::field.label}"></span>:<textarea name="::field.name" n-value=":{::field.name}"></textarea>
+	<button n-bind-click="::someOtherMethod">Some Custom Method</button>
+	</label>
 </nt>
 
 <nt name="form_select">
@@ -152,4 +154,12 @@
 		<input type="date" n-attr-name="::field.name" n-value=":{::field.name}">
 		<span n-content="{::field.label}"></span>
 	</label>
+</nt>
+
+<nt name="form_cancel">
+	<button n-bind-click="::cancel" n-content="{::field.label}"></button>
+</nt>
+
+<nt name="form_submit">
+	<button n-bind-click="::submit" n-content="{::field.label}"></button>
 </nt>

@@ -1,7 +1,7 @@
 import  notBase  from '../notBase';
 
 class notFormFactory extends notBase{
-	constructor(app, manifest){
+	constructor(){
 		super();
 		this.setOptions({});
 		this.setWorking({});

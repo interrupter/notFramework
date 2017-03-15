@@ -145,8 +145,17 @@ var CommonNetwork = {
 			xhr.send(JSON.stringify(data));
 		});
 	},
-	getSessionID: function() {
-		return '';
+	getSessionID: function(name = 'SessionID') {
+		return this.getCookie(name);
 	},
+	getCookie:(name) => {
+  		let value = "; " + document.cookie,
+  			parts = value.split("; " + name + "=");
+  		if (parts.length == 2) {
+			return parts.pop().split(";").shift();
+		}else{
+			return null
+		}
+	}
 };
 export default CommonNetwork;

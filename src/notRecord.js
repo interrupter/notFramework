@@ -81,7 +81,7 @@ var createRecordHandlers = function(owner) {
 	return {
 		get: function(target, key, context) {
 			//notCommon.log(`proxy get "${key}"`, this, target, context);
-			if (key === 'isProxy') {
+			if (key === 'isProxy' || key === 'isRecord') {
 				return true;
 			}
 			let resTarget = target;

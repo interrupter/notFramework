@@ -2,6 +2,8 @@ import notCommon from './common';
 import notBase from './notBase';
 import notRecord from './notRecord.js';
 
+const OPT_DEFAULT_INDEX_FIELD_NAME_PRIORITY = ['_id', 'id', 'ID'];
+
 export default class notInterface extends notBase{
 	constructor(manifest) {
 		super();
@@ -40,6 +42,21 @@ export default class notInterface extends notBase{
 	getURL(record, actionData, actionName) {
 		var line = this.parseLine(this.manifest.url, record, actionName) + ((actionData.hasOwnProperty('postFix')) ? this.parseLine(actionData.postFix, record, actionName) : '');
 		return line;
+	}
+
+	getID(record, actionData, actionName) {
+		let resultId,
+			list = OPT_DEFAULT_INDEX_FIELD_NAME_PRIORITY;
+		if (actionData.hasOwnProperty('index') && actionData.index){
+			list = [actionData.index].concat(OPT_DEFAULT_INDEX_FIELD_NAME_PRIORITY);
+		}
+		for(let t of list){
+			if(record.hasOwnProperty(t)){
+				resultId = record[t];
+				break;
+			}
+		}
+		return resultId;
 	}
 
 	getActionsCount() {
@@ -118,8 +135,9 @@ export default class notInterface extends notBase{
 	//return Promise
 	request(record, actionName) {
 		let actionData = this.getActionData(actionName),
+			id = this.getID(record, actionData, actionName),
 			url = this.getURL(record, actionData, actionName);
-		return notCommon.getAPI().queeRequest(actionData.method, url, JSON.stringify(record.getData()), this.onLoad.bind({actionData, manifest: this.manifest}));
+		return notCommon.getAPI().queeRequest(actionData.method, url, id ,JSON.stringify(record.getData()), this.onLoad.bind({actionData, manifest: this.manifest}));
 	}
 /*
 	_request_Obsolete_(record, actionName) {
@@ -155,7 +173,7 @@ export default class notInterface extends notBase{
 		}
 	}
 */
-	onLoad(data){		
+	onLoad(data){
 		if(this && this.actionData && this.actionData.hasOwnProperty('isArray') && this.actionData.isArray) {
 			for(let t = 0; t < data.length; t++){
 				data[t] = new notRecord(this.manifest, data[t]);

@@ -1,43 +1,19 @@
 import notCommon from './common';
 import notPath from './notPath';
 
-const META_METHOD_INIT = Symbol('init'),
-	META_EVENTS = Symbol('events'),
+const META_EVENTS = Symbol('events'),
 	META_DATA = Symbol('data'),
 	META_WORKING = Symbol('working'),
 	META_OPTIONS = Symbol('options');
 
-export default class notBase {
-	constructor(input) {
+
+class notObject{
+	constructor() {
 		this[META_EVENTS] = {};
 		this[META_DATA] = {};
 		this[META_WORKING] = {};
 		this[META_OPTIONS] = {};
-		this[META_METHOD_INIT](input);
 		return this;
-	}
-
-	[META_METHOD_INIT](input){
-		if (!input){
-			input = {};
-		}
-		if(input.hasOwnProperty('events')){
-			for(let t of input.events){
-				this.on(...t);
-			}
-		}
-
-		if(input.hasOwnProperty('data')){
-			this.setData(input.data);
-		}
-
-		if(input.hasOwnProperty('working')){
-			this.setWorking(input.working);
-		}
-
-		if(input.hasOwnProperty('options')){
-			this.setOptions(input.options);
-		}
 	}
 
 	setCommon(what, args) {
@@ -190,3 +166,5 @@ export default class notBase {
 		return this;
 	}
 }
+
+export default notObject;

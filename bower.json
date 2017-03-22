@@ -1,7 +1,7 @@
 {
   "name": "not-framework",
   "main": "not-framework.js",
-  "version": "2.1.47",
+  "version": "2.1.48",
   "homepage": "https://github.com/interrupter/notFramework",
   "authors": [
     "interrupter"
@@ -35,5 +35,9 @@
   ],
     "dependencies":{
         "jquery":"*"
+    },
+		"devDependencies":{
+        "faker":"*",
+				"bootstrap":"*"
     }
 }

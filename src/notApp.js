@@ -1,6 +1,6 @@
 import notCommon from './common';
+import notTemplateCache from './template/notTemplateCache';
 import notRecord from './notRecord';
-import notFormFactory from './components/notFormFactory';
 import notPath from './notPath';
 import notBase from './notBase';
 import notRouter from './notRouter';
@@ -9,20 +9,45 @@ const OPT_CONTROLLER_PREFIX = 'nc',
 	OPT_RECORD_PREFIX = 'nr';
 
 export default class notApp extends notBase {
-	constructor(notManifest) {
-		super();
+	constructor(options) {
+		super({options});
 		notCommon.log('start app');
-		this.setOptions(notManifest);
+		notCommon.register('app', this);
 		this.resources = {};
 		this.setWorking({
 			interfaces: {},
 			controllers: {},
 			initController: null,
-			currentController: null,
-			forms: {}
+			currentController: null
 		});
-		this.init();
+		this.preInit();
 		return this;
+	}
+
+	preInit(){
+		if (this.getOptions('templates')){
+			let prom = null;
+			for(let t in this.getOptions('templates')){
+				if (t && this.getOptions('templates').hasOwnProperty(t)){
+					let url = this.getOptions('templates')[t];
+					if(prom){
+						prom.then(notTemplateCache.addLibFromURL.bind(notTemplateCache, url));
+					}else{
+						prom = notTemplateCache.addLibFromURL(url);
+					}
+				}
+			}
+			if (prom){
+				prom.then(this.init.bind(this))
+					.catch((e) => {
+						console.error('no templates lib', e);
+					});
+			}else{
+				this.init();
+			}
+		}else{
+			this.init();
+		}
 	}
 
 	init() {
@@ -41,7 +66,7 @@ export default class notApp extends notBase {
 				paths = routeBlock.paths,
 				controller = routeBlock.controller;
 			for(let i = 0; i < paths.length; i++){
-				routieInput[paths[i]] = this.bindController(controller);	
+				routieInput[paths[i]] = this.bindController(controller);
 			}
 		}
 		this.getWorking('router').addList(routieInput).listen().navigate(this.getOptions('router.index'));
@@ -60,8 +85,6 @@ export default class notApp extends notBase {
 		//нужно инициализировать
 		//модели полученными интерфейсами
 		this.updateInterfaces();
-		//создание объектов автогенерация форм
-		this.initFormBuilders();
 		//иницилицировать и запустить контроллер инициализации
 		this.initController();
 		if (this.allResourcesReady()) {
@@ -88,8 +111,6 @@ export default class notApp extends notBase {
 			this.setWorking('initController', new initController(this));
 		}
 	}
-
-
 
 	getCurrentController() {
 		return this.getWorking('currentController');
@@ -127,30 +148,6 @@ export default class notApp extends notBase {
 	clearInterfaces() {
 		this.setWorking('interfaces', {});
 		return this;
-	}
-
-	initFormBuilders() {
-		this.clearFormBuilders();
-		let forms = this.getOptions('forms');
-		if (forms) {
-			for(let t in forms){
-				this.initFormBuilder(t, forms[t]);
-			}
-		}
-	}
-
-
-	initFormBuilder(index, manifest) {
-		let path = notPath.join('forms', index);
-		this.setWorking(path, new notFormFactory(this, manifest));
-	}
-
-	getFormBuilders() {
-		return this.getWorking('forms');
-	}
-
-	clearFormBuilders() {
-		this.setWorking('forms', {});
 	}
 
 	waitThisResource(type, index) {

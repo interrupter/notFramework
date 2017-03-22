@@ -32,7 +32,7 @@ const META_PARTS = Symbol('parts');
 */
 class notComponent extends notBase {
 	constructor(input) {
-		super();
+		super(input);
 		this.resetParts();
 		this.on('ready', this.render.bind(this));
 		this.init(input);
@@ -50,9 +50,7 @@ class notComponent extends notBase {
 	init(input) {
 		this.input = input;
 		this.owner = input.owner?input.owner:null;
-		this.initData(input.data ? input.data : {});
 		this.initOptions(input.options ? input.options : {});
-		this.initEvents(input.events ? input.events : []);
 		this.initWorking(input);
 		this.prepareTemplateElement(input.template ? input.template : null);
 	}

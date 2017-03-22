@@ -9,7 +9,8 @@ const OPT_DEFAULT_FORM_PREFIX = 'form_',
 	OPT_DEFAULT_FORM_TITLE = 'Form default title',
 	OPT_DEFAULT_FIELD_DEFINITION = {
 
-	};
+	},
+	OPT_DEFAULT_FIELD_DEFINITION_SOURCES_PRIORITY_LIST = ['options', 'manifest', 'app'];
 
 class notForm extends notBase {
 	constructor(input) {
@@ -21,12 +22,9 @@ class notForm extends notBase {
 		this.setWorking({
 			components: []
 		});
-		let data = input.data || {};
-		if (!data.isRecord) {
-
-			data = new notRecord({}, data);
+		if (!this.getData().isRecord) {
+			this.setData(new notRecord({}, this.getData()));
 		}
-		this.setData(data);
 		this.on('submit', this.onSubmit.bind(this));
 		this.on('reset', this.onReset.bind(this));
 		this.on('cancel', this.onCancel.bind(this));
@@ -127,17 +125,36 @@ class notForm extends notBase {
 		}
 	}
 
+	getFieldsLibs(){
+		let result = {
+			options: {},
+			manifest: {},
+			app: {},
+		};
+		if (this.getOptions('fields')) {
+			result.options = this.getOptions('fields');
+		}
+		if (notCommon.getApp() && notCommon.getApp().getOptions('fields')){
+			result.app = notCommon.getApp().getOptions('fields');
+		}
+		if (this.getData().isRecord && this.getData().getManifest()){
+			result.manifest = this.getData().getManifest().fields;
+		}
+	}
+
 	getFieldsDefinition(fieldName) {
-		let def = OPT_DEFAULT_FIELD_DEFINITION;
-		if (this.getOptions('fields') && this.getOptions('fields').hasOwnProperty(fieldName)) {
-			def = this.getOptions('fields')[fieldName];
+		let def = OPT_DEFAULT_FIELD_DEFINITION,
+			fieldsLibs = this.getFieldsLibs();
+		for(let t in OPT_DEFAULT_FIELD_DEFINITION_SOURCES_PRIORITY_LIST){
+			if (fieldsLibs[t].hasOwnProperty(fieldName)){
+				return fieldsLibs[t][fieldName];
+			}
 		}
 		return def;
 	}
 
 	addFieldComponent(fieldName) {
 		let fieldType = this.getFieldsDefinition(fieldName);
-
 		let rec = {
 			field: {
 				name: fieldName,

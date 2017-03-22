@@ -12,7 +12,8 @@ class ncUser extends notFramework.notController {
 				targetEl: document.querySelector('#test'),
 				//смотрим здесь
 				targetQuery: '#test'
-			}
+			},
+			
 		});
 		return this;
 	}

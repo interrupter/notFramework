@@ -10,7 +10,7 @@ const OPT_DEFAULT_CONTAINER_SELECTOR = '.page-content',
 	OPT_DEFAULT_PLURAL_NAME = 'Models',
 	OPT_DEFAULT_SINGLE_NAME = 'Model',
 	OPT_DEFAULT_MODULE_NAME = 'main',
-	OPT_DEFAULT_RENDER_AND = 'place';
+	OPT_DEFAULT_RENDER_AND = 'replace';
 
 class notController extends notBase {
 	constructor(app) {

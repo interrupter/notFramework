@@ -21,6 +21,7 @@ export default class notApp extends notBase {
 			initController: null,
 			currentController: null
 		});
+		this.preInitRouter();
 		this.initManager();
 		this.initAPI();
 		this.initTemplates();
@@ -73,9 +74,12 @@ export default class notApp extends notBase {
 			.catch(notCommon.report.bind(this));
 	}
 
-	initRouter(){
+	preInitRouter(){
 		this.setWorking('router', notRouter);
 		this.getWorking('router').setRoot(this.getOptions('router.root'));
+	}
+
+	initRouter(){
 		var routieInput = {};
 		for(let t = 0; t < this.getOptions('router.manifest').length; t++){
 			let routeBlock = this.getOptions('router.manifest')[t],

@@ -57,7 +57,7 @@ var CommonNetwork = {
 			let t = () => reject(xhr.status);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(JSON.stringify(data));
+			xhr.send(data);
 		});
 	},
 	postJSON: function(url, data) {
@@ -79,7 +79,7 @@ var CommonNetwork = {
 			let t = () => reject(xhr.status);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(JSON.stringify(data));
+			xhr.send(data);
 		});
 	},
 	putJSON: function(url, data) {
@@ -101,7 +101,7 @@ var CommonNetwork = {
 			let t = () => reject(xhr.status);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(JSON.stringify(data));
+			xhr.send(data);
 		});
 	},
 	deleteJSON: function(url, data) {
@@ -123,7 +123,7 @@ var CommonNetwork = {
 			let t = () => reject(xhr.status);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(JSON.stringify(data));
+			xhr.send(data);
 		});
 	},
 	getHTML: function(url, data) {
@@ -144,7 +144,7 @@ var CommonNetwork = {
 			let t = (e) => reject(e);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(JSON.stringify(data));
+			xhr.send(data);
 		});
 	},
 	getSessionID: function(name = 'SessionID') {

@@ -2,7 +2,7 @@ var CommonApp = {
 	startApp: (starter)=>{
 		document.addEventListener('DOMContentLoaded', starter);
 	},
-	getApp: ()=>{
+	getApp: function(){
 		this.get('app');
 	}
 };

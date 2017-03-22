@@ -81,19 +81,19 @@
 </nt>
 
 <nt name="form_email">
-	<label><span n-content="{::field.label}"></span>:<input name="::field.name" n-value=":{::field.name}"/></label>
+	<label><span n-content="{::field.label}"></span>:<input n-name="::field.name" n-value=":{::field.name}"/></label>
 </nt>
 
 <nt name="form_textfield">
-	<label><span n-content="{::field.label}"></span>:<input name="::field.name" n-value=":{::field.name}"/></label>
+	<label><span n-content="{::field.label}"></span>:<input n-name="::field.name" n-value=":{::field.name}"/></label>
 </nt>
 
 <nt name="form_password">
-	<label><span n-content="{::field.label}"></span>:<input type="password" name="::field.name" n-value=":{::field.name}"/></label>
+	<label><span n-content="{::field.label}"></span>:<input type="password" n-name="::field.name" n-value=":{::field.name}"/></label>
 </nt>
 
 <nt name="form_textarea">
-	<label><span n-content="{::field.label}"></span>:<textarea name="::field.name" n-value=":{::field.name}"></textarea>
+	<label><span n-content="{::field.label}"></span>:<textarea n-name="::field.name" n-value=":{::field.name}"></textarea>
 	<button n-bind-click="::someOtherMethod">Some Custom Method</button>
 	</label>
 </nt>
@@ -143,7 +143,7 @@
 <nt name="form_radio">
 	<div class="radio">
 		<label>
-    	<input type="radio" n-attr-name="::field.name" n-value=":value" n-checked="::isChecked">
+    	<input type="radio" n-name="::field.name" n-value=":value" n-checked="::isChecked">
     	<span n-content="{:title}"></span>
   	</label>
 	</div>
@@ -151,7 +151,7 @@
 
 <nt name="form_date">
 	<label>
-		<input type="date" n-attr-name="::field.name" n-value=":{::field.name}">
+		<input type="date" n-name="::field.name" n-value=":{::field.name}">
 		<span n-content="{::field.label}"></span>
 	</label>
 </nt>

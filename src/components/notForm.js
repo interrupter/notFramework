@@ -180,7 +180,7 @@ class notForm extends notBase {
 			},
 			options: {
 				helpers,
-				targetEl: this.getFormBodyElement(),
+				targetEl: this.getFormTargetElement(fieldType.target),
 				renderAnd: 'placeLast',
 				events:[
 					['afterDataChange', this.collectDataFromComponents.bind(this)]
@@ -194,8 +194,18 @@ class notForm extends notBase {
 		notCommon.log('collect data from components', params);
 	}
 
-	getFormBodyElement(){
-		return this.getOptions('targetEl').querySelector('[role="body"]');
+	getFormTargetElement(target = 'body'){
+		if (!target){target = 'body';}
+		let res = this.getOptions('targetEl').querySelector('[role="' + target + '"]');
+		if (!res && target!=='body'){
+			target = 'body';
+			res = this.getOptions('targetEl').querySelector('[role="' + target + '"]');
+		}
+		if(!res && target=='body'){
+			return this.getOptions('targetEl');
+		}else{
+			return res;
+		}
 	}
 
 	/*

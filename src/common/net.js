@@ -42,6 +42,7 @@ var CommonNetwork = {
 			var xhr = new XMLHttpRequest();
 			xhr.open('get', url, true);
 			xhr.setRequestHeader('SessionID', this.getSessionID());
+			xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 			xhr.responseType = 'json';
 			xhr.withCredentials = true;
 			xhr.onload = function() {

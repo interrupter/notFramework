@@ -63,7 +63,7 @@ var CommonNetwork = {
 			var xhr = new XMLHttpRequest(); // new HttpRequest instance
 			xhr.open('POST', url);
 			xhr.setRequestHeader('SessionID', this.getSessionID());
-			xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+			xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 			xhr.responseType = 'json';
 			xhr.withCredentials = true;
 			xhr.onload = function() {
@@ -85,7 +85,7 @@ var CommonNetwork = {
 			var xhr = new XMLHttpRequest(); // new HttpRequest instance
 			xhr.open('PUT', url);
 			xhr.setRequestHeader('SessionID', this.getSessionID());
-			xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+			xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 			xhr.responseType = 'json';
 			xhr.withCredentials = true;
 			xhr.onload = function() {
@@ -107,7 +107,7 @@ var CommonNetwork = {
 			var xhr = new XMLHttpRequest(); // new HttpRequest instance
 			xhr.open('DELETE', url);
 			xhr.setRequestHeader('SessionID', this.getSessionID());
-			xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+			xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 			xhr.responseType = 'json';
 			xhr.withCredentials = true;
 			xhr.onload = function() {

@@ -14,14 +14,11 @@ const OPT_DEFAULT_FORM_PREFIX = 'form_',
 
 class notForm extends notBase {
 	constructor(input) {
-		super();
-		this.setOptions(input.options || {});
+		super(input);
 		if (!this.getOptions('prefix')) {
 			this.setOptions('prefix', OPT_DEFAULT_FORM_PREFIX);
 		}
-		this.setWorking({
-			components: []
-		});
+		this.setWorking('components', []);
 		if (!this.getData().isRecord) {
 			this.setData(new notRecord({}, this.getData()));
 		}

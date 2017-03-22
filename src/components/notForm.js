@@ -137,6 +137,7 @@ class notForm extends notBase {
 		if (this.getData().isRecord && this.getData().getManifest()){
 			result.manifest = this.getData().getManifest().fields;
 		}
+		return result;
 	}
 
 	getFieldsDefinition(fieldName) {

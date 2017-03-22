@@ -3,7 +3,7 @@ var CommonApp = {
 		document.addEventListener('DOMContentLoaded', starter);
 	},
 	getApp: function(){
-		this.get('app');
+		return this.get('app');
 	}
 };
 

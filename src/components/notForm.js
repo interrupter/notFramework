@@ -143,8 +143,8 @@ class notForm extends notBase {
 	getFieldsDefinition(fieldName) {
 		let def = OPT_DEFAULT_FIELD_DEFINITION,
 			fieldsLibs = this.getFieldsLibs();
-		for(let t in OPT_DEFAULT_FIELD_DEFINITION_SOURCES_PRIORITY_LIST){
-			if (fieldsLibs[t].hasOwnProperty(fieldName)){
+		for(let t of OPT_DEFAULT_FIELD_DEFINITION_SOURCES_PRIORITY_LIST){
+			if (fieldsLibs.hasOwnProperty(t) && fieldsLibs[t].hasOwnProperty(fieldName)){
 				return fieldsLibs[t][fieldName];
 			}
 		}

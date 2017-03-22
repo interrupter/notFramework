@@ -84,10 +84,10 @@ class notForm extends notBase {
 					id: this.getOptions('id')
 				},
 				events:[
+					['afterRender', this.bindFormEvents.bind(this)],
 					[['afterRender', 'afterUpdate'], this.renderComponents.bind(this)]
 				]
 			};
-
 			let wrapper = new notComponent(input);
 			this.setWorking('wrapper', wrapper);
 		}
@@ -213,7 +213,7 @@ class notForm extends notBase {
 	*/
 
 	collectData() {
-
+		let data = this.collectDataFromComponents.bind(this)
 	}
 
 	/*
@@ -228,10 +228,6 @@ class notForm extends notBase {
 
 	}
 
-	onCancel() {
-
-	}
-
 	getFields() {
 
 	}
@@ -242,6 +238,14 @@ class notForm extends notBase {
 
 	removeField() {
 
+	}
+
+	bindFormEvents(){
+		let form = this.getOptions('targetEl').querySelector('form');
+		if(form){
+			form.addEventListener('submit', this.onSubmit.bind(this));
+			form.addEventListener('reset', this.onReset.bind(this));
+		}
 	}
 }
 

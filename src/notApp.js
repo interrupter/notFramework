@@ -4,6 +4,7 @@ import notRecord from './notRecord';
 import notPath from './notPath';
 import notBase from './notBase';
 import notRouter from './notRouter';
+import notAPI from './api';
 
 const OPT_CONTROLLER_PREFIX = 'nc',
 	OPT_RECORD_PREFIX = 'nr';
@@ -20,11 +21,26 @@ export default class notApp extends notBase {
 			initController: null,
 			currentController: null
 		});
-		this.preInit();
+		this.initManager();
+		this.initAPI();
+		this.initTemplates();
 		return this;
 	}
 
-	preInit(){
+	initManager(){
+		notCommon.setManager(
+			{
+				setAPI(v){ this.api = v;},
+				getAPI(){return this.api;},
+			}
+		);
+	}
+
+	initAPI(){
+		notCommon.getManager().setAPI(new notAPI({}));
+	}
+
+	initTemplates(){
 		if (this.getOptions('templates')){
 			let prom = null;
 			for(let t in this.getOptions('templates')){
@@ -38,19 +54,19 @@ export default class notApp extends notBase {
 				}
 			}
 			if (prom){
-				prom.then(this.init.bind(this))
+				prom.then(this.initManifest.bind(this))
 					.catch((e) => {
 						console.error('no templates lib', e);
 					});
 			}else{
-				this.init();
+				this.initManifest();
 			}
 		}else{
-			this.init();
+			this.initManifest();
 		}
 	}
 
-	init() {
+	initManifest() {
 		var url = this.getOptions('manifestURL');
 		notCommon.getJSON(url, {})
 			.then(this.setInterfaceManifest.bind(this))

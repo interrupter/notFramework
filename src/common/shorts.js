@@ -1,14 +1,14 @@
-const MAP_MANAGER = Symbol('MAP_MANAGER');
+const MANAGER = Symbol('MANAGER');
 
 var CommonShorts = {
 	getAPI: function() {
 		return this.getManager().getAPI();
 	},
 	setManager: function(v) {
-		this[MAP_MANAGER] = v;
+		this[MANAGER] = v;
 	},
 	getManager: function() {
-		return this[MAP_MANAGER];
+		return this[MANAGER];
 	},
 };
 

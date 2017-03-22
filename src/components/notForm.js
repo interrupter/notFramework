@@ -224,6 +224,10 @@ class notForm extends notBase {
 
 	}
 
+	onCancel() {
+
+	}
+
 	onReset() {
 
 	}

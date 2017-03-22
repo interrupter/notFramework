@@ -35,7 +35,7 @@ var CommonNetwork = {
 			let t = () => reject(xhr.status);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(JSON.stringify(data));
+			xhr.send(data);
 		});
 	},
 	getJSON: function(url, data) {

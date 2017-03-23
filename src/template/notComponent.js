@@ -83,7 +83,7 @@ class notComponent extends notBase {
 		let placer = this.getPlacer(this.getOptions('renderAnd')),
 			targetQuery = this.getOptions('targetQuery');
 		if (targetQuery){
-			target = document.querySelector(targetQuery);
+			let target = document.querySelector(targetQuery);
 			if (target){
 				this.setOptions('targetEl', target)
 			}

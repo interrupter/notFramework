@@ -260,7 +260,7 @@ class notTable extends notBase {
 				});
 			}
 			if (field.hasOwnProperty('preprocessor')) {
-				preprocessed = field.proccessor(val, item, index);
+				preprocessed = field.preproccessor(val, item, index);
 			}
 			if (field.hasOwnProperty('component')) {
 				new notComponent({

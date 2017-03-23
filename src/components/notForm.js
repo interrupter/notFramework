@@ -81,6 +81,7 @@ class notForm extends notBase {
 				options: {
 					helpers: this.getOptions('helpers'),
 					targetEl: this.getOptions('targetEl'),
+					targetQuery: this.getOptions('targetQuery'),
 					id: this.getOptions('id')
 				},
 				events:[

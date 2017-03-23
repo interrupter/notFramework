@@ -81,14 +81,18 @@ class notComponent extends notBase {
 		markEl.setAttribute('nt-rendered', true);
 		this.setOptions('ntEl', markEl);
 		let placer = this.getPlacer(this.getOptions('renderAnd')),
-			target = this.getOptions('targetEl');
-		if (!target && this.getOptions('targetQuery')){
-			target = document.querySelector(this.getOptions('targetQuery'));
+			targetQuery = this.getOptions('targetQuery');
+		if (targetQuery){
+			target = document.querySelector(targetQuery);
+			if (target){
+				this.setOptions('targetEl', target)
+			}
 		}
-		if (!target){
-			throw new Exception('No target to place rendered');
+
+		if (!this.getOptions('targetEl')){
+			throw 'No target to place rendered';
 		}else{
-			placer.main(target, [markEl]);
+			placer.main(this.getOptions('targetEl'), [markEl]);
 		}
 
 	}

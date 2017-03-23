@@ -24,6 +24,7 @@ class notTable extends notBase {
 					name: 'table_wrapper'
 				},
 				options: {
+					renderAnd: this.getOptions('renderAnd'),
 					targetEl: this.getOptions('targetEl'),
 					helpers: this.getOptions('helpers')
 				},

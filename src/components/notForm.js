@@ -214,7 +214,24 @@ class notForm extends notBase {
 	*/
 
 	collectData() {
-		let data = this.collectDataFromComponents.bind(this)
+		let data = this.collectDataFromComponents.bind(this);		
+	}
+
+	bindFormEvents(){
+		let targetQuery = this.getOptions('targetQuery');
+		if(targetQuery){
+			let target = document.querySelector(targetQuery);
+			if(target){
+				this.setOptions('targetEl', target);
+			}
+		}
+		if (this.getOptions('targetEl')){
+			let	form = this.getOptions('targetEl').querySelector('form');
+			if(form){
+				form.addEventListener('submit', this.onSubmit.bind(this));
+				form.addEventListener('reset', this.onReset.bind(this));
+			}
+		}
 	}
 
 	/*
@@ -245,13 +262,7 @@ class notForm extends notBase {
 
 	}
 
-	bindFormEvents(){
-		let form = this.getOptions('targetEl').querySelector('form');
-		if(form){
-			form.addEventListener('submit', this.onSubmit.bind(this));
-			form.addEventListener('reset', this.onReset.bind(this));
-		}
-	}
+
 }
 
 export default notForm;

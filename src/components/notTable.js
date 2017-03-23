@@ -3,7 +3,8 @@ import notComponent from '../template/notComponent';
 import notPath from '../notPath';
 
 const OPT_DEFAULT_PAGE_SIZE = 20,
-	OPT_DEFAULT_PAGE_NUMBER = 10;
+	OPT_DEFAULT_PAGE_NUMBER = 10,
+	OPT_FIELD_NAME_PRE_PROC = 'preprocessor';
 
 class notTable extends notBase {
 	constructor(input) {
@@ -259,8 +260,8 @@ class notTable extends notBase {
 					this.updateData();
 				});
 			}
-			if (field.hasOwnProperty('preprocessor')) {
-				preprocessed = field.preproccessor(val, item, index);
+			if (field.hasOwnProperty(OPT_FIELD_NAME_PRE_PROC)) {
+				preprocessed = field[OPT_FIELD_NAME_PRE_PROC](val, item, index);
 			}
 			if (field.hasOwnProperty('component')) {
 				new notComponent({

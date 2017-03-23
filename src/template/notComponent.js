@@ -81,7 +81,7 @@ class notComponent extends notBase {
 		markEl.setAttribute('nt-rendered', true);
 		this.setOptions('ntEl', markEl);
 		let placer = this.getPlacer(this.getOptions('renderAnd')),
-			target = targetEl;
+			target = this.getOptions('targetEl');
 		if (!target && this.getOptions('targetQuery')){
 			target = document.querySelector(this.getOptions('targetQuery'));
 		}

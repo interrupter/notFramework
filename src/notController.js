@@ -30,8 +30,10 @@ class notController extends notBase {
 			prefix: this.app.getOptions('paths.module'),
 			postfix: OPT_DEFAULT_VIEWS_POSTFIX,
 			renderFromURL: OPT_DEFAULT_RENDER_FROM_URL,
-			pluralName: OPT_DEFAULT_PLURAL_NAME,
-			singleName: OPT_DEFAULT_SINGLE_NAME
+			names:{
+				plural:OPT_DEFAULT_PLURAL_NAME,
+				single: OPT_DEFAULT_SINGLE_NAME
+			}
 		});
 		this.on('ready', this.initRender.bind(this));
 		/*
@@ -61,6 +63,8 @@ class notController extends notBase {
 				// элемента, но известном идентификаторе
 				if (((typeof view.targetEl === 'undefined') || (view.targetEl === null)) && (typeof view.targetQuery !== 'undefined' && view.targetQuery !== null && view.targetQuery.length > 0)) {
 					view.targetEl = document.querySelector(view.targetQuery);
+				}else{
+					view.targetEl = document.querySelector(this.getOptions('containerSelector'));
 				}
 				view.data = data;
 				if (typeof view.helpers !== 'undefined' && view.helpers !== null && Object.keys(view.helpers).length > 0) {

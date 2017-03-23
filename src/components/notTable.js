@@ -236,7 +236,6 @@ class notTable extends notBase {
 		}
 	}
 
-
 	loadNext() {
 		this.getWorking('pager').pageNumber++;
 		this.updateData();
@@ -248,8 +247,9 @@ class notTable extends notBase {
 		for (var i = 0; i < fields.length; i++) {
 			let newTd = document.createElement('TD'),
 				field = fields[i],
+				preprocessed = null,
 				val = notPath.get(field.path, item, this.getOptions('helpers'));
-			if (field.hasOwnProperty('editable')) {
+			if (field.hasOwnProperty('editable') && !field.hasOwnProperty('component')) {
 				newTd.setAttribute('contentEditable', true);
 				newTd.dataset.path = field.path;
 				newTd.dataset.itemId = item[this.getOptions('itemIdField')];
@@ -259,10 +259,21 @@ class notTable extends notBase {
 					this.updateData();
 				});
 			}
-			if (field.hasOwnProperty('proccessor')) {
-				newTd.innerHTML = field.proccessor(val, item, index);
+			if (field.hasOwnProperty('preprocessor')) {
+				preprocessed = field.proccessor(val, item, index);
+			}
+			if (field.hasOwnProperty('component')) {
+				new notComponent({
+					data: field.component.data || preprocessed || {val, item, index},
+					template: field.component.template,
+					options: {
+						targetEl: newTd,
+						helpers: this.getOptions('helpers')
+					},
+					events: field.events
+				});
 			} else {
-				newTd.innerHTML = val;
+				newTd.innerHTML = preprocessed || val;
 			}
 			if (field.hasOwnProperty('events') && field.events) {
 				for (var j in field.events) {

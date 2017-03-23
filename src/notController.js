@@ -41,8 +41,10 @@ class notController extends notBase {
 		*/
 		let interfaces = this.app.getInterfaces();
 		this.make = {};
-		for (let t = 0; t < interfaces.length; t++) {
-			this.make[t] = interfaces[t];
+		for (let t in interfaces) {
+			if (interfaces.hasOwnProperty(t)){
+				this.make[t] = interfaces[t];
+			}
 		}
 		return this;
 	}

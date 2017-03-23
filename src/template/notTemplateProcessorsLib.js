@@ -56,6 +56,9 @@ var notTemplateProcessorsLib = {
 			};
 		scope.element.setAttribute('value', notPath.get(scope.attributeExpression, item, helpers));
 		if (scope.element.processedValue !== true) {
+			if(scope.element.type === 'textarea'){
+				scope.element.innerHTML = notPath.get(scope.attributeExpression, item, helpers);
+			}
 			for (let t of liveEvents) {
 				scope.element.addEventListener(t, onEvent);
 			}

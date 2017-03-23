@@ -7,13 +7,12 @@ const replace = {
 		}
 
 	},
-	afterEach: function(targetEl/*, rendered*/) {
+	afterEach: function(/*targetEl, rendered*/) {},
+	after: function(targetEl/*, rendered*/) {
+		console.log('should remove node', targetEl);
 		if (targetEl.nodeName !== 'NT'){
 			targetEl.parentNode.removeChild(targetEl);
 		}
-	},
-	after: function(/*targetEl, rendered*/) {
-
 	}
 };
 

@@ -270,7 +270,7 @@ class notTable extends notBase {
 						targetEl: newTd,
 						helpers: this.getOptions('helpers')
 					},
-					events: field.events
+					events: field.component.events || []
 				});
 			} else {
 				newTd.innerHTML = preprocessed || val;

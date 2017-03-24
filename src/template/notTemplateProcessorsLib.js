@@ -134,6 +134,11 @@ var notTemplateProcessorsLib = {
 			labelFieldName = scope.params[0];
 			valueFieldName = scope.params[1];
 		}
+		if (scope.params.length === 3) {
+			labelFieldName = scope.params[0];
+			valueFieldName = scope.params[1];
+			itemValueFieldName = scope.params[2];
+		}
 		if (typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('default') && helpers.default) {
 			option = document.createElement('option');
 			option.setAttribute('value', '');

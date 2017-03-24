@@ -16,6 +16,37 @@ var CommonNetwork = {
 			}
 		}
 	},
+	postFile(upload /* object(file, onProgress, url)*/){
+		return new Promise((resolve, reject) => {
+			var xhr = new XMLHttpRequest();
+			if (xhr.upload) {
+				// progress bar
+				if (upload.onProgress){
+					xhr.upload.addEventListener("progress", upload.onProgress, false);
+				}
+				// file received/failed
+				xhr.responseType = 'json';
+				xhr.onreadystatechange = function(/*e*/) {
+					if (xhr.readyState == 4) {
+						if (xhr.status == 200) {
+							resolve(xhr.response);
+						} else {
+							reject(xhr.status, xhr.response);
+						}
+					}
+				};
+				// start upload
+				xhr.withCredentials = true;
+				xhr.open("POST", upload.url, true);
+				xhr.setRequestHeader("SessionID", this.getSessionID());
+				xhr.setRequestHeader("Content-Type", upload.file.type);
+				xhr.setRequestHeader("X_FILENAME", encodeURIComponent(upload.file.name));
+				xhr.send(upload.file);
+			}else{
+				reject();
+			}
+		});
+	},
 	requestJSON: function(method, url, data){
 		return new Promise((resolve, reject) => {
 			var xhr = new XMLHttpRequest();

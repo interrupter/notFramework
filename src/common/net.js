@@ -16,7 +16,7 @@ var CommonNetwork = {
 			}
 		}
 	},
-	postFile(upload /* object(file, onProgress, url)*/){
+	putFile(upload /* object(file, onProgress, url)*/){
 		return new Promise((resolve, reject) => {
 			var xhr = new XMLHttpRequest();
 			if (xhr.upload) {
@@ -37,7 +37,7 @@ var CommonNetwork = {
 				};
 				// start upload
 				xhr.withCredentials = true;
-				xhr.open("POST", upload.url, true);
+				xhr.open("PUT", upload.url, true);
 				xhr.setRequestHeader("SessionID", this.getSessionID());
 				xhr.setRequestHeader("Content-Type", upload.file.type);
 				xhr.setRequestHeader("X_FILENAME", encodeURIComponent(upload.file.name));

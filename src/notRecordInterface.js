@@ -126,7 +126,7 @@ export default class notInterface extends notBase {
 		if ((actionData.hasOwnProperty('data')) && Array.isArray(actionData.data)) {
 			for (let i = 0; i < actionData.data.length; i++) {
 				let dataProviderName = 'get' + notCommon.capitalizeFirstLetter(actionData.data[i]);
-				if (this.hasOwnProperty(dataProviderName) && typeof this[dataProviderName] === 'function') {
+				if (this[dataProviderName] && typeof this[dataProviderName] === 'function') {
 					requestData = notCommon.extend(requestData, this[dataProviderName]());
 				}
 			}

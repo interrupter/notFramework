@@ -10,6 +10,7 @@ const OPT_DEFAULT_PAGE_SIZE = 20,
 class notTable extends notBase {
 	constructor(input) {
 		super(input);
+		this.setWorking('filteredData', []);
 		this.resetPager();
 		this.resetFilter();
 		this.render();
@@ -176,7 +177,10 @@ class notTable extends notBase {
 				return;
 			}
 			//load from server
-			let query = this.getOptions('interface')({}).setFilter(this.getFilter()).setSorter(this.getSorter()).setPager(this.getPager().pageSize, this.getPager().pageNumber);
+			let query = this.getOptions('interface')({})
+				.setFilter(this.getFilter())
+				.setSorter(this.getSorter())
+				.setPager(this.getPager().pageSize, this.getPager().pageNumber);
 			this.setUpdating();
 			query.$list()
 				.then((data) => {
@@ -313,6 +317,7 @@ class notTable extends notBase {
 			return;
 		}
 		this.clearBody();
+		this.filteredData();
 		var thisPageStarts = 0,
 			nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1);
 		for (var i = thisPageStarts; i < Math.min(nextPageEnds, this.getWorking('filteredData').length); i++) {
@@ -330,13 +335,21 @@ class notTable extends notBase {
 		tableBody.innerHTML = '';
 	}
 
+	checkFiltered(){
+		if (!Array.isArray(this.getWorking('filteredData'))){
+			this.setWorking('filteredData',[]);
+		}
+	}
+
 	renderBody() {
 		if (!this.getOptions('onePager')) {
 			this.clearBody();
 		}
+		this.filteredData();
 		var thisPageStarts = this.getPager().pageSize * (this.getPager().pageNumber),
 			nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1),
 			tbody = this.findBody();
+
 		for (var i = thisPageStarts; i < Math.min(nextPageEnds, this.getWorking('filteredData').length); i++) {
 			tbody.appendChild(this.renderRow(this.getWorking('filteredData')[i]));
 		}

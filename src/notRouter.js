@@ -159,4 +159,4 @@ class notRouter extends notBase {
 	}
 }
 
-export default notRouter;
+export default new notRouter();

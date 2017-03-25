@@ -11,6 +11,9 @@ class notTable extends notBase {
 	constructor(input) {
 		super(input);
 		this.setWorking('filteredData', []);
+		if(!this.getData() || !Array.isArray(this.getData('rows'))){
+			this.setData({rows:[]});
+		}
 		this.resetPager();
 		this.resetFilter();
 		this.render();
@@ -194,11 +197,14 @@ class notTable extends notBase {
 				})
 				.catch((e) => {
 					notCommon.error(e);
+					this.setUpdated();
 				});
 		} else {
 			//local magic
+			this.setUpdating();
 			this.proccessData();
 			this.refreshBody();
+			this.setUpdated();
 		}
 	}
 

@@ -182,7 +182,7 @@ class notTable extends notBase {
 	}
 
 	setUpdated() {
-		this.getWorking('updating', false);
+		this.setWorking('updating', false);
 	}
 
 	ifUpdating() {

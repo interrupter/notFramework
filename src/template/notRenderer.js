@@ -329,7 +329,7 @@ class notRenderer extends notBase {
 		this.getStash().push(node);
 	}
 
-	isData(data) {
+	isData(data = {}) {
 		return this.getData() === data;
 	}
 }

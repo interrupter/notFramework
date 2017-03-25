@@ -10,6 +10,7 @@ class notTable extends notBase {
 	constructor(input) {
 		super(input);
 		this.resetPager();
+		this.resetFilter();
 		this.render();
 		return this;
 	}
@@ -102,6 +103,7 @@ class notTable extends notBase {
 	}
 
 	setSorter(hash) {
+		console.log('setSorter', hash);
 		this.setWorking('sorter', hash);
 		this.invalidateData();
 		this.updateData();
@@ -127,6 +129,11 @@ class notTable extends notBase {
 	setFilter(hash) {
 		this.setWorking('filter', hash);
 		this.invalidateData();
+		this.updateData();
+	}
+
+	resetFilter() {
+		this.setFilter({});
 		this.updateData();
 	}
 

@@ -9,16 +9,21 @@
 			background-color: green;
 		}
 	</style>
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="build/not-framework.js"></script>
 	<script src="bower_components/faker/build/build/faker.js" type = "text/javascript"></script>
+	<script src="test/libs/jquery-scrollspy/scrollspy.js" type = "text/javascript"></script>
 </head>
 
 <body>
 	<div id="test"></div>
+	<footer id="footer">
+		make some noise
+	</footer>
 	<script>
 		let data = [];
 
-		for(let t = 0; t < 100; t++){
+		for(let t = 0; t < 1000; t++){
 			data.push({
 				id: faker.random.number(),
 				name: faker.name.firstName(),
@@ -28,8 +33,12 @@
 			});
 		}
 
+		let loadNext= function(){
+			window.table.loadNext();
+		}
+
 		let renderForm = function() {
-			let table = new notFramework.notTable({
+			window.table = new notFramework.notTable({
 				data: {rows: data},
 				options: {
 					procRow:(trow, titem)=>{
@@ -86,6 +95,8 @@
 		notFramework.notTemplateCache.addLibFromURL('./test/templates/lib.html').then(renderForm).catch((e) => {
 			console.error('no templates lib', e);
 		});
+		$('footer').on('scrollSpy:enter', loadNext);
+		$('footer').scrollSpy();
 	</script>
 </body>
 

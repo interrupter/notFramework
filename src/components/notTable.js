@@ -5,6 +5,8 @@ import notPath from '../notPath';
 
 const OPT_DEFAULT_PAGE_SIZE = 20,
 	OPT_DEFAULT_PAGE_NUMBER = 0,
+	OPT_DEFAULT_SORT_DIRECTION = 1,
+	OPT_DEFAULT_SORT_FIELD = '_id',
 	OPT_FIELD_NAME_PRE_PROC = 'preprocessor';
 
 class notTable extends notBase {
@@ -16,6 +18,7 @@ class notTable extends notBase {
 		}
 		this.resetPager();
 		this.resetFilter();
+		this.resetSorter();
 		this.render();
 		return this;
 	}
@@ -59,25 +62,34 @@ class notTable extends notBase {
 		for (var i = 0; i < fields.length; i++) {
 			var newTh = document.createElement('TH');
 			newTh.innerHTML = fields[i].title;
-			newTh.dataset.dataFieldName = fields[i].path;
-			newTh.dataset.sortingDirection = 0;
 			if (fields[i].hasOwnProperty('sortable') && fields[i].sortable) {
-				this.attachSortingHandlers(newTh);
+				this.attachSortingHandlers(newTh, fields[i].path);
 			}
 			tableHeader.appendChild(newTh);
 		}
 	}
 
-	attachSortingHandlers(headCell) {
+	attachSortingHandlers(headCell, fieldName) {
 		headCell.addEventListener('click', (e) => {
 			e.preventDefault();
-			this.changeSortingOptions(e.currentTarget);
+			this.changeSortingOptions(headCell, fieldName);
 			return false;
 		});
 		headCell.style.cursor = 'pointer';
 	}
 
-	changeSortingOptions(el) {
+	changeSortingOptions(el, fieldName) {
+		if (fieldName === this.getSorter().sortByField){
+			this.setSorter({
+				sortByField: fieldName,
+				sortDirection: -1 * this.getSorter().sortDirection,
+			});
+		}else{
+			this.setSorter({
+				sortByField: fieldName,
+				sortDirection: OPT_DEFAULT_SORT_DIRECTION,
+			});
+		}
 		if (parseInt(el.dataset.sortingDirection) === 0) {
 			el.dataset.sortingDirection = 1;
 		} else {
@@ -101,10 +113,6 @@ class notTable extends notBase {
 			el.classList.add('sorting_desc');
 			el.setAttribute('aria-sort', 'descending');
 		}
-		this.setSorter({
-			sortDirection: el.dataset.sortingDirection,
-			sortByField: el.dataset.dataFieldName
-		});
 	}
 
 	setSorter(hash) {
@@ -112,6 +120,13 @@ class notTable extends notBase {
 		this.setWorking('sorter', hash);
 		this.invalidateData();
 		this.updateData();
+	}
+
+	resetSorter(){
+		this.setSorter({
+			sortByField: OPT_DEFAULT_SORT_FIELD,
+			sortDirection: OPT_DEFAULT_SORT_DIRECTION,
+		});
 	}
 
 	getSorter() {
@@ -220,10 +235,16 @@ class notTable extends notBase {
 		var thatSorter = this.getSorter();
 		if (typeof thatSorter !== 'undefined' && thatSorter !== null) {
 			this.getWorking('filteredData').sort((item1, item2) => {
-				if (isNaN(notPath.get(thatSorter.sortByField, item1, {}))) {
-					return notPath.get(thatSorter.sortByField, item1, {}).localeCompare(notPath.get(thatSorter.sortByField,item2,{})) * -thatSorter.sortDirection;
+				let t1 = notPath.get(thatSorter.sortByField, item1, {}),
+					t2 = notPath.get(thatSorter.sortByField,item2,{});
+				if (isNaN(t1)) {
+					if (typeof t1 !== 'undefined' && typeof t2 !== 'undefined' && t1.localeCompare){
+						return t1.localeCompare() * - thatSorter.sortDirection;
+					}else{
+						return 0;
+					}
 				} else {
-					return ((notPath.get(thatSorter.sortByField, item1, {}) < notPath.get(thatSorter.sortByField, item2, {})) ? 1 : -1) * thatSorter.sortDirection;
+					return ((t1 < t2) ? 1 : -1) * thatSorter.sortDirection;
 				}
 			});
 		}

@@ -134,13 +134,22 @@ export default class notInterface extends notBase {
 		return requestData;
 	}
 
+	encodeRequest(data){
+		let p = '?';
+		for(let t in data){
+			p += encodeURIComponent(t)+'='+encodeURIComponent(data[t])+'&';
+		}
+		return p;
+	}
+
 	//return Promise
 	request(record, actionName) {
 		let actionData = this.getActionData(actionName),
-			requestData = this.collectRequestData(actionData),
+			requestParams = this.collectRequestData(actionData),
+			requestParamsEncoded = this.encodeRequest(requestParams),
 			id = this.getID(record, actionData, actionName),
 			url = this.getURL(record, actionData, actionName);
-		return notCommon.getAPI().queeRequest(actionData.method, url, id, JSON.stringify(notCommon.extend(requestData, record.getData())))
+		return notCommon.getAPI().queeRequest(actionData.method, url + requestParamsEncoded, id, JSON.stringify(record.getData()))
 			.then((data) => {
 				return this.afterSuccessRequest(data, actionData);
 			})

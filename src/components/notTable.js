@@ -4,7 +4,7 @@ import notComponent from '../template/notComponent';
 import notPath from '../notPath';
 
 const OPT_DEFAULT_PAGE_SIZE = 20,
-	OPT_DEFAULT_PAGE_NUMBER = 10,
+	OPT_DEFAULT_PAGE_NUMBER = 0,
 	OPT_FIELD_NAME_PRE_PROC = 'preprocessor';
 
 class notTable extends notBase {
@@ -150,8 +150,8 @@ class notTable extends notBase {
 
 	resetPager() {
 		this.setWorking('pager', {
-			pageSize: this.getOptions('pageSize') ? this.getOptions('pageSize') : OPT_DEFAULT_PAGE_SIZE,
-			pageNumber: this.getOptions('pageNumber') ? this.getOptions('pageNumber') : OPT_DEFAULT_PAGE_NUMBER,
+			pageSize: isNaN(this.getOptions('pageSize')) ? OPT_DEFAULT_PAGE_SIZE:this.getOptions('pageSize'),
+			pageNumber: isNaN(this.getOptions('pageNumber')) ? OPT_DEFAULT_PAGE_NUMBER:this.getOptions('pageNumber'),
 		});
 	}
 

@@ -90,11 +90,6 @@ class notTable extends notBase {
 				sortDirection: OPT_DEFAULT_SORT_DIRECTION,
 			});
 		}
-		if (parseInt(el.dataset.sortingDirection) === 0) {
-			el.dataset.sortingDirection = 1;
-		} else {
-			el.dataset.sortingDirection = parseInt(el.dataset.sortingDirection) * -1;
-		}
 		if (el.parentNode) {
 			for (var i = 0; i < el.parentNode.children.length; i++) {
 				if (el.parentNode.children[i] === el) {
@@ -102,9 +97,10 @@ class notTable extends notBase {
 				}
 				el.parentNode.children[i].classList.remove('sorting_asc');
 				el.parentNode.children[i].classList.remove('sorting_desc');
+				el.parentNode.children[i].setAttribute('aria-sort', 'none');
 			}
 		}
-		if (parseInt(el.dataset.sortingDirection) > 0) {
+		if (this.getSorter().sortDirection > 0) {
 			el.classList.remove('sorting_desc');
 			el.classList.add('sorting_asc');
 			el.setAttribute('aria-sort', 'ascending');

@@ -317,7 +317,7 @@ class notTable extends notBase {
 			return;
 		}
 		this.clearBody();
-		this.filteredData();
+		this.checkFiltered();
 		var thisPageStarts = 0,
 			nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1);
 		for (var i = thisPageStarts; i < Math.min(nextPageEnds, this.getWorking('filteredData').length); i++) {
@@ -345,7 +345,7 @@ class notTable extends notBase {
 		if (!this.getOptions('onePager')) {
 			this.clearBody();
 		}
-		this.filteredData();
+		this.checkFiltered();
 		var thisPageStarts = this.getPager().pageSize * (this.getPager().pageNumber),
 			nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1),
 			tbody = this.findBody();

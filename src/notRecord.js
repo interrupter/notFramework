@@ -7,10 +7,38 @@ const META_INTERFACE = Symbol('interface'),
 	META_PROXY = Symbol('proxy'),
 	META_CHANGE = Symbol('change'),
 	META_CHANGE_NESTED = Symbol('change.nested'),
-	META_SAL = ['getAttr', 'getAttrs', 'isProperty', 'isRecord', 'getManifest', 'setAttr', 'setAttrs', 'getData', 'setData', 'getJSON', 'on', 'off', 'trigger'],
+	META_SAL = [
+		'getAttr',
+		'getAttrs',
+		'isProperty',
+		'isRecord',
+		'getManifest',
+		'setAttr',
+		'setAttrs',
+		'getData',
+		'setData',
+		'getJSON',
+		'on',
+		'off',
+		'trigger'
+	],
+	META_MAP_TO_INTERFACE = [
+		'getActionsCount',
+		'getActions',
+		'setFindBy',
+		'resetFilter',
+		'setFilter',
+		'getFilter',
+		'setSorter',
+		'getSorter',
+		'resetSorter',
+		'setPageNumber',
+		'setPageSize',
+		'setPager',
+		'resetPager',
+		'getPager'
+	],
 	DEFAULT_ACTION_PREFIX = '$',
-	DEFAULT_PAGE_NUMBER = 1,
-	DEFAULT_PAGE_SIZE = 10,
 	META_RETURN_TO_ROOT = Symbol('returnToRoot');
 
 var createPropertyHandlers = function(owner) {
@@ -90,7 +118,7 @@ var createRecordHandlers = function(owner) {
 					resTarget = this;
 				}
 			} else {
-				if (Object.keys(this).indexOf(key) > -1 || META_SAL.indexOf(key) > -1) {
+				if (Object.keys(this).indexOf(key) > -1 || META_SAL.indexOf(key) > -1 || META_MAP_TO_INTERFACE.indexOf(key) > -1) {
 					resTarget = this;
 				}
 			}
@@ -132,13 +160,7 @@ class notRecord extends notBase {
 				return this.createCollection(manifest, item);
 			}
 		}
-		this.setOptions({
-			filter: {},
-			sorter: {},
-			pageNumber: DEFAULT_PAGE_NUMBER,
-			pageSize: DEFAULT_PAGE_SIZE,
-			fields: []
-		});
+		this.setOptions({});
 		this[META_INTERFACE] = new notRecordInterface(manifest);
 		this.setData(this.initProperties(item));
 		this.interfaceUp();
@@ -191,6 +213,8 @@ class notRecord extends notBase {
 			}
 		}
 	}
+
+
 
 	actionUp(index) {
 		if (!this.hasOwnProperty([DEFAULT_ACTION_PREFIX + index])) {
@@ -251,9 +275,9 @@ class notRecord extends notBase {
 	}
 
 	getManifest() {
-		if (this[META_INTERFACE]){
+		if (this[META_INTERFACE]) {
 			return this[META_INTERFACE].manifest;
-		}else{
+		} else {
 			return {};
 		}
 	}
@@ -284,8 +308,60 @@ class notRecord extends notBase {
 		return this[META_PROXY];
 	}
 
-	getJSON() {
+	setFindBy() {
+		this[META_INTERFACE].setFindBy(...arguments);
+		return this;
+	}
 
+	setFilter() {
+		this[META_INTERFACE].setFilter(...arguments);
+		return this;
+	}
+
+	resetFilter() {
+		this[META_INTERFACE].resetFilter(...arguments);
+		return this;
+	}
+
+	getFilter() {
+		return this[META_INTERFACE].getFilter(...arguments);
+	}
+
+	setSorter() {
+		this[META_INTERFACE].setSorter(...arguments);
+		return this;
+	}
+
+	getSorter() {
+		return this[META_INTERFACE].getSorter(...arguments);
+	}
+
+	setPageNumber() {
+		this[META_INTERFACE].setPageNumber(...arguments);
+		return this;
+	}
+
+	setPageSize() {
+		this[META_INTERFACE].setPageSize(...arguments);
+		return this;
+	}
+
+	setPager() {
+		this[META_INTERFACE].setPager(...arguments);
+		return this;
+	}
+
+	resetPager() {
+		this[META_INTERFACE].resetPager(...arguments);
+		return this;
+	}
+
+	getPager() {
+		return this[META_INTERFACE].getPager(...arguments);
+	}
+
+	getModelName() {
+		return this[META_INTERFACE].getModelName(...arguments);		
 	}
 
 }

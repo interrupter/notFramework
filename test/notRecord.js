@@ -109,6 +109,27 @@ describe("notRecord", function() {
 				});
 		});
 
+		it("query filter set/get", function() {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
+			rec.setFilter({ letMe:'speak'});
+			expect(rec.getFilter()).to.have.key('letMe');
+		});
+
+		it("query pager set/get", function() {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
+			rec.setPager(1,2);
+			expect(rec.getPager()).to.have.keys('pageSize', 'pageNumber');
+			expect(rec.getPager().pageSize).to.be.equal(1);
+			expect(rec.getPager().pageNumber).to.be.equal(2);
+		});
+
+		it("query pager reset/get", function() {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
+			rec.setPager();
+			expect(rec.getPager()).to.have.keys('pageSize', 'pageNumber');
+			expect(rec.getPager().pageSize).to.be.equal(10);
+			expect(rec.getPager().pageNumber).to.be.equal(1);
+		});
 	});
 
 	describe("proxy", function() {

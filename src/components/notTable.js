@@ -1,4 +1,5 @@
 import notBase from '../notBase';
+import notCommon from '../common';
 import notComponent from '../template/notComponent';
 import notPath from '../notPath';
 
@@ -103,7 +104,7 @@ class notTable extends notBase {
 	}
 
 	setSorter(hash) {
-		console.log('setSorter', hash);
+		//console.log('setSorter', hash);
 		this.setWorking('sorter', hash);
 		this.invalidateData();
 		this.updateData();
@@ -179,14 +180,14 @@ class notTable extends notBase {
 			this.setUpdating();
 			query.$list()
 				.then((data) => {
-					console.log('$list for table', data);
+					//console.log('$list for table', data);
 					this.getData('rows').concat(data);
 					this.proccessData();
 					this.refreshBody();
 					this.setUpdated();
 				})
 				.catch((e) => {
-					console.error(e);
+					notCommon.error(e);
 				});
 		} else {
 			//local magic
@@ -263,7 +264,7 @@ class notTable extends notBase {
 				newTd.dataset.path = field.path;
 				newTd.dataset.itemId = item[this.getOptions('itemIdField')];
 				newTd.dataset.value = val;
-				newTd.addEventListener('blur', (e)=>{
+				newTd.addEventListener('blur', ()=>{
 					notPath.set(field.path, item, this.getOptions('helpers'), newTd.textContent);
 					this.updateData();
 				});
@@ -342,16 +343,15 @@ class notTable extends notBase {
 	}
 
 	testDataItem(item){
-	    var strValue = this.getFilterSearch().toLowerCase();
-	    for(var k in item){
-	        var toComp = item[k].toString().toLowerCase();
-	        if (toComp.indexOf(strValue)>-1){
-	            return true;
-	        }
-	    }
-	    return false;
+		var strValue = this.getFilterSearch().toLowerCase();
+		for(var k in item){
+			var toComp = item[k].toString().toLowerCase();
+			if (toComp.indexOf(strValue)>-1){
+				return true;
+			}
+		}
+		return false;
 	}
-
 }
 
 export default notTable;

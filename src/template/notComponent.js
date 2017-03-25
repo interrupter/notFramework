@@ -85,7 +85,7 @@ class notComponent extends notBase {
 		if (targetQuery){
 			let target = document.querySelector(targetQuery);
 			if (target){
-				this.setOptions('targetEl', target)
+				this.setOptions('targetEl', target);
 			}
 		}
 

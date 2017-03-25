@@ -1,7 +1,6 @@
 import notCommon from './common';
 import notTemplateCache from './template/notTemplateCache';
 import notRecord from './notRecord';
-import notPath from './notPath';
 import notBase from './notBase';
 import notRouter from './notRouter';
 import notAPI from './api';
@@ -57,7 +56,7 @@ export default class notApp extends notBase {
 			if (prom){
 				prom.then(this.initManifest.bind(this))
 					.catch((e) => {
-						console.error('no templates lib', e);
+						notCommon.report('no templates lib', e);
 					});
 			}else{
 				this.initManifest();

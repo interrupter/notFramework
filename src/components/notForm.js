@@ -214,7 +214,7 @@ class notForm extends notBase {
 	*/
 
 	collectData() {
-		let data = this.collectDataFromComponents.bind(this);		
+		//let data = this.collectDataFromComponents.bind(this);		
 	}
 
 	bindFormEvents(){

@@ -55,6 +55,7 @@ export default class notBase {
 				break;
 			}
 		}
+		return this;
 	}
 	getCommon(what, args) {
 		switch (args.length) {
@@ -97,6 +98,7 @@ export default class notBase {
 			this.setCommon(this.getData(), arguments);
 		}
 		this.trigger('change');
+		return this;
 	}
 
 	getData() {
@@ -109,6 +111,7 @@ export default class notBase {
 		} else {
 			this.setCommon(this.getOptions(), arguments);
 		}
+		return this;
 	}
 
 	getOptions() {
@@ -121,6 +124,7 @@ export default class notBase {
 		} else {
 			this.setCommon(this.getWorking(), arguments);
 		}
+		return this;
 	}
 
 	getWorking() {

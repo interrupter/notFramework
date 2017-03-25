@@ -8,8 +8,7 @@ const replace = {
 
 	},
 	afterEach: function(/*targetEl, rendered*/) {},
-	after: function(targetEl/*, rendered*/) {
-		console.log('should remove node', targetEl);
+	after: function(targetEl/*, rendered*/) {		
 		if (targetEl.nodeName !== 'NT'){
 			targetEl.parentNode.removeChild(targetEl);
 		}

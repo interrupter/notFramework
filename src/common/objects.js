@@ -75,21 +75,21 @@ var CommonObjects = {
 		for (p in a) {
 			if (a[p]) {
 				switch (typeof(a[p])) {
-					case 'object':
+				case 'object':
 					{
 						if (!this.equal(a[p], b[p])) {
 							return false;
 						}
 						break;
 					}
-					case 'function':
+				case 'function':
 					{
 						if (typeof(b[p]) == 'undefined' ||
 							(p != 'equals' && a[p].toString() != b[p].toString()))
 							return false;
 						break;
 					}
-					default:
+				default:
 					{
 						if (a[p] != b[p]) {
 							return false;
@@ -119,7 +119,7 @@ var CommonObjects = {
 	},
 
 	registry: {},
-	
+
 	register: function(key, val) {
 		this.registry[key] = val;
 	},

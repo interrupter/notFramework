@@ -107,7 +107,7 @@ class notRouter extends notBase {
 	}
 
 	hrefClick(){
-		console.log(...arguments);
+		//console.log(...arguments);
 	}
 
 	getRoot(){
@@ -141,15 +141,15 @@ class notRouter extends notBase {
 		path = path ? path : '';
 		switch (this.getWorking('mode')){
 			case OPT_MODE_HISTORY: {
-				console.log('push state', this.getFullRoute(path));
+				//console.log('push state', this.getFullRoute(path));
 				history.pushState(null, null, this.getFullRoute(path));
+				break;
 			}
-			break;
 			case OPT_MODE_HASH: {
 				window.location.href.match(/#(.*)$/);
 				window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
+				break;
 			}
-			break;
 		}
 		return this;
 	}

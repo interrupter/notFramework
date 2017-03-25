@@ -185,7 +185,9 @@ class notTable extends notBase {
 			query.$list()
 				.then((data) => {
 					//console.log('$list for table', data);
-					this.getData('rows').concat(data);
+					this.setData({
+						rows: this.getData('rows').concat(data)
+					});
 					this.proccessData();
 					this.refreshBody();
 					this.setUpdated();

@@ -75,7 +75,7 @@ export default class notApp extends notBase {
 	}
 
 	preInitRouter(){
-		this.setWorking('router', notRouter);
+		this.setWorking('router', new notRouter());
 		this.getWorking('router').setRoot(this.getOptions('router.root'));
 	}
 
@@ -89,7 +89,7 @@ export default class notApp extends notBase {
 				routieInput[paths[i]] = this.bindController(controller);
 			}
 		}
-		this.getWorking('router').addList(routieInput).listen().navigate(this.getOptions('router.index'));
+		this.getWorking('router').addList(routieInput).listen();//.navigate(this.getOptions('router.index'));
 	}
 
 	setInterfaceManifest(manifest) {

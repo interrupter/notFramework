@@ -110,8 +110,12 @@ class notRouter extends notBase {
 		console.log(...arguments);
 	}
 
+	getRoot(){
+		return '';
+	}
+
 	listen(loopInterval = OPT_DEFAULT_CHECK_INTERVAL) {
-		this.setWorking('current', this.getFragment());
+		this.setWorking('current', 'notInitialized');
 		clearInterval(this.getWorking('interval'));
 		this.setWorking('interval', setInterval(this.checkLocation.bind(this), loopInterval));
 		window.addEventListener('popstate', this.hrefClick.bind(this));
@@ -123,7 +127,7 @@ class notRouter extends notBase {
 		for (var i = 0; i < this.getWorking('routes').length; i++) {
 			let path = this.getWorking('root') + this.getWorking('routes')[i].re;
 			let fullRE =  this.clearSlashes(decodeURI(path));
-			var match = fragment.match(fullRE);			
+			var match = fragment.match(fullRE);
 			if (match) {
 				match.shift();
 				this.getWorking('routes')[i].handler.apply(this.host || {}, match);
@@ -155,4 +159,4 @@ class notRouter extends notBase {
 	}
 }
 
-export default new notRouter();
+export default notRouter;

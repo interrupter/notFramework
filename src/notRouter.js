@@ -182,11 +182,11 @@ class notRouter extends notBase {
 
 	initRerouting(el, link){
 		if (!el.notRouterInitialized){
-			let fillLink = this.getFullRoute(link);
-			el.setAttribute('href', fillLink);
+			let fullLink = this.getFullRoute(link);
+			el.setAttribute('href', fullLink);
 			el.addEventListener('click', (e)=>{
 				e.preventDefault();
-				this.navigate(fillLink);
+				this.navigate(fullLink);
 				return false;
 			});
 			el.notRouterInitialized = true;

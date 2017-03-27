@@ -186,7 +186,7 @@ class notRouter extends notBase {
 			el.setAttribute('href', fullLink);
 			el.addEventListener('click', (e)=>{
 				e.preventDefault();
-				this.navigate(fullLink);
+				this.navigate(link);
 				return false;
 			});
 			el.notRouterInitialized = true;

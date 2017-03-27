@@ -76,6 +76,7 @@ export default class notApp extends notBase {
 	preInitRouter(){
 		this.setWorking('router', notRouter);
 		this.getWorking('router').setRoot(this.getOptions('router.root'));
+		notRouter.reRouteExisted();
 	}
 
 	initRouter(){

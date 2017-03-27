@@ -13,7 +13,7 @@ class ncUser extends notFramework.notController {
 				//смотрим здесь
 				targetQuery: '#test'
 			},
-			
+
 		});
 		return this;
 	}

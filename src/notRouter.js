@@ -157,6 +157,43 @@ class notRouter extends notBase {
 	getFullRoute(path = ''){
 		return this.getWorking('root') + this.clearSlashes(path);
 	}
+
+	getAllLinks(){
+		var allElements = document.body.querySelectorAll('a');
+		var list = [];
+		for (var j = 0; j < allElements.length; j++) {
+			for (var i = 0, atts = allElements[j].attributes, n = atts.length; i < n; i++) {
+				if (atts[i].nodeName.indexOf('n-href') === 0) {
+					list.push(allElements[j]);
+					break;
+				}
+			}
+		}
+		return list;
+	}
+
+	reRouteExisted(){
+		let list = this.getAllLinks();
+		for(let t = 0; t < list.length; t++){
+			this.initRerouting(list[t], list[t].getAttribute('n-href'));
+		}
+		return this;
+	}
+
+	initRerouting(el, link){
+		if (!el.notRouterInitialized){
+			let fillLink = this.getFullRoute(link);
+			el.setAttribute('href', fillLink);
+			el.addEventListener('click', (e)=>{
+				e.preventDefault();
+				this.navigate(fillLink);
+				return false;
+			});
+			el.notRouterInitialized = true;
+		}
+		return this;
+	}
+
 }
 
 export default new notRouter();

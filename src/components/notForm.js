@@ -102,7 +102,6 @@ class notForm extends notBase {
 	}
 
 	renderComponents() {
-
 		if (this.getWorking('components') && this.getWorking('components').length){
 			for(let t = 0; t < this.getWorking('components').length; t++){
 				this.getWorking('components')[t].component.update();
@@ -214,7 +213,7 @@ class notForm extends notBase {
 	*/
 
 	collectData() {
-		//let data = this.collectDataFromComponents.bind(this);		
+		//let data = this.collectDataFromComponents.bind(this);
 	}
 
 	bindFormEvents(){
@@ -230,6 +229,14 @@ class notForm extends notBase {
 			if(form){
 				form.addEventListener('submit', this.onSubmit.bind(this));
 				form.addEventListener('reset', this.onReset.bind(this));
+			}
+		}
+	}
+
+	updateField(fieldName){
+		for(let t = 0; t < this.getWorking('components').length; t++){
+			if (this.getWorking('components')[t].field.name === fieldName){
+				this.getWorking('components')[t].component.update();
 			}
 		}
 	}

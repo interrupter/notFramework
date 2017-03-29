@@ -37,7 +37,7 @@ import notComponent from './template/notComponent'; // smarter with bindings for
 
 import notForm from './components/notForm';
 import notTable from './components/notTable';
-import notView from './components/notView';
+import notDetails from './components/notDetails';
 
 import notRecordInterface from './notRecordInterface'; //	how to interact with data on server
 import notRecord from './notRecord'; //	wrapper for data with server<->view live interactions
@@ -60,7 +60,7 @@ export {
 	notForm,
 	notRouter,
 	notTable,
-	notView,
+	notDetails,
 	notRecord,
 	notRecordInterface
 };

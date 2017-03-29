@@ -46,7 +46,7 @@ class notController extends notBase {
 			if (interfaces.hasOwnProperty(t)){
 				this.make[t] = interfaces[t];
 			}
-		}
+		}		
 		return this;
 	}
 
@@ -180,6 +180,9 @@ class notController extends notBase {
 						notCommon.report(err);
 						reject();
 					});
+			}
+			if(this.getWorking('loading').length === 0){
+				resolve();
 			}
 		});
 	}

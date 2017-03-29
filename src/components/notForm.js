@@ -7,9 +7,7 @@ import notPath from '../notPath';
 const OPT_DEFAULT_FORM_PREFIX = 'form_',
 	OPT_DEFAULT_ROLE_NAME = 'default',
 	OPT_DEFAULT_FORM_TITLE = 'Form default title',
-	OPT_DEFAULT_FIELD_DEFINITION = {
-
-	},
+	OPT_DEFAULT_FIELD_DEFINITION = {},
 	OPT_DEFAULT_FIELD_DEFINITION_SOURCES_PRIORITY_LIST = ['options', 'manifest', 'app'];
 
 class notForm extends notBase {
@@ -243,7 +241,7 @@ class notForm extends notBase {
 
 	update(){
 		for(let t = 0; t < this.getWorking('components').length; t++){
-			this.getWorking('components')[t].component.update();			
+			this.getWorking('components')[t].component.update();
 		}
 	}
 

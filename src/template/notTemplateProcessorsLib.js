@@ -152,9 +152,11 @@ var notTemplateProcessorsLib = {
 				option.setAttribute('value', lib[i][valueFieldName]);
 				option.textContent = lib[i][labelFieldName];
 				if (helpers.field.array) {
-					if (item[itemValueFieldName].indexOf(lib[i][valueFieldName]) > -1) {
-						option.setAttribute('selected', true);
-					}
+					if (item[itemValueFieldName] && Array.isArray(item[itemValueFieldName])){
+						if (item[itemValueFieldName].indexOf(lib[i][valueFieldName]) > -1) {
+							option.setAttribute('selected', true);
+						}
+					}					
 				} else {
 					if (item[itemValueFieldName] === lib[i][valueFieldName]) {
 						option.setAttribute('selected', true);

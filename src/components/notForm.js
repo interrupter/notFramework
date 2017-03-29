@@ -241,6 +241,12 @@ class notForm extends notBase {
 		}
 	}
 
+	update(){
+		for(let t = 0; t < this.getWorking('components').length; t++){
+			this.getWorking('components')[t].component.update();			
+		}
+	}
+
 	/*
 		Event handlers
 	*/

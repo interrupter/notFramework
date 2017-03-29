@@ -46,7 +46,7 @@ class notController extends notBase {
 			if (interfaces.hasOwnProperty(t)){
 				this.make[t] = interfaces[t];
 			}
-		}		
+		}
 		return this;
 	}
 
@@ -157,9 +157,8 @@ class notController extends notBase {
 		return [this.app.getOptions('paths.modules'), this.getModuleName()].join('/');
 	}
 
-	preloadLib(){
+	preloadLib(list = {}){
 		return new Promise((resolve, reject)=>{
-			let list = this.getOptions('lib');
 			this.setWorking('loading', []);
 			for(let t in list){
 				this.getWorking('loading').push(list[t]);

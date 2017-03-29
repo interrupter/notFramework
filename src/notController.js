@@ -159,29 +159,33 @@ class notController extends notBase {
 
 	preloadLib(list = {}){
 		return new Promise((resolve, reject)=>{
-			this.setWorking('loading', []);
-			for(let t in list){
-				this.getWorking('loading').push(list[t]);
-				this.make[list[t]]({}).$listAll()
-					.then((data)=>{
-						if (!Array.isArray(this.getOptions('libs'))){
-							this.setOptions('libs', {});
-						}
-						this.getOptions('libs')[t] = data;
-						if(this.getWorking('loading').indexOf(list[t]) > -1){
-							this.getWorking('loading').splice(this.getWorking('loading').indexOf(list[t]), 1);
-						}
-						if(this.getWorking('loading').length === 0){
-							resolve();
-						}
-					})
-					.catch((err)=>{
-						notCommon.report(err);
-						reject();
-					});
-			}
-			if(this.getWorking('loading').length === 0){
+			if(typeof list !== 'object'){
 				resolve();
+			}else{
+				this.setWorking('loading', []);
+				for(let t in list){
+					this.getWorking('loading').push(list[t]);
+					this.make[list[t]]({}).$listAll()
+						.then((data)=>{
+							if (!Array.isArray(this.getOptions('libs'))){
+								this.setOptions('libs', {});
+							}
+							this.getOptions('libs')[t] = data;
+							if(this.getWorking('loading').indexOf(list[t]) > -1){
+								this.getWorking('loading').splice(this.getWorking('loading').indexOf(list[t]), 1);
+							}
+							if(this.getWorking('loading').length === 0){
+								resolve();
+							}
+						})
+						.catch((err)=>{
+							notCommon.report(err);
+							reject();
+						});
+				}
+				if(this.getWorking('loading').length === 0){
+					resolve();
+				}
 			}
 		});
 	}

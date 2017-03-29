@@ -20,6 +20,7 @@ class notController extends notBase {
 		this.setWorking({
 			ready: false,
 			views: {},
+			libs:{},
 			viewName: OPT_DEFAULT_VIEW_NAME,
 			helpers: {}
 		});
@@ -154,6 +155,33 @@ class notController extends notBase {
 
 	getModulePrefix(){
 		return [this.app.getOptions('paths.modules'), this.getModuleName()].join('/');
+	}
+
+	preloadLib(){
+		return new Promise((resolve, reject)=>{
+			let list = this.getOptions('lib');
+			this.setWorking('loading', []);
+			for(let t in list){
+				this.getWorking('loading').push(list[t]);
+				this.make[list[t]]({}).$listAll()
+					.then((data)=>{
+						if (!Array.isArray(this.getOptions('libs'))){
+							this.setOptions('libs', {});
+						}
+						this.getOptions('libs')[t] = data;
+						if(this.getWorking('loading').indexOf(list[t]) > -1){
+							this.getWorking('loading').splice(this.getWorking('loading').indexOf(list[t]), 1);
+						}
+						if(this.getWorking('loading').length === 0){
+							resolve();
+						}
+					})
+					.catch((err)=>{
+						notCommon.report(err);
+						reject();
+					});
+			}
+		});
 	}
 
 }

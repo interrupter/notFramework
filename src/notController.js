@@ -190,6 +190,63 @@ class notController extends notBase {
 		});
 	}
 
+	queeUpload(name, list){
+		//hash (fieldName=>filesList)
+		if(!this.getWorking('uploadQuee')){
+			this.setWorking('uploadQuee', {});
+		}
+		this.getWorking('uploadQuee')[name] = list;
+	}
+
+	execUploads(item){
+		let list = this.getWorking('uploadQuee');
+		return new Promise((resolve, reject)=>{
+			if(typeof list !== 'object'){
+				resolve(item);
+			}else{
+				this.setWorking('uploading', {});
+				for(let t in list){
+					let fieldFiles = list[t];
+					if (fieldFiles.length > 1){
+						item[t] = [];
+					}else{
+						item[t] = '';
+					}
+					for(let f = 0; f < fieldFiles.length; f++){
+						if(!this.getWorking('uploading').hasOwnProperty(t)){
+							this.getWorking('uploading')[t] = 0;
+						}
+						this.getWorking('uploading')[t]++;
+						this.app.getWorking('uploader')
+							.upload(fieldFiles[f])
+							.then((savedFile) => {
+								console.log('file uploaded', t,f, savedFile);
+								this.getWorking('uploading')[t]--;
+								if(this.getWorking('uploading')[t] === 0){
+									delete this.getWorking('uploading')[t];
+								}
+								if(Array.isArray(item[f])){
+									item[t].push(savedFile.hash);
+								}else{
+									item[t] = savedFile.hash;
+								}
+								if(Object.keys(this.getWorking('uploading')).length === 0){
+									resolve(item);
+								}
+							})
+							.catch((err)=>{
+								notFramework.notCommon.report(err);
+								reject();
+							})
+					}
+				}
+				if(Object.keys(this.getWorking('uploading')).length === 0){
+					resolve(item);
+				}
+			}
+		});
+	}
+
 }
 
 export default notController;

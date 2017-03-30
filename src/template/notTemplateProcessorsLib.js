@@ -66,7 +66,7 @@ var notTemplateProcessorsLib = {
 		}
 	},
 	attr: function(scope, item, helpers) {
-		let res = notPath.get(scope.attributeExpression, item, helpers);
+		let res = notPath.get(scope.attributeExpression, item, helpers) || notPath.parseSubs(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof res === 'function') ? res({
 			scope,
 			item,
@@ -156,7 +156,7 @@ var notTemplateProcessorsLib = {
 						if (item[itemValueFieldName].indexOf(lib[i][valueFieldName]) > -1) {
 							option.setAttribute('selected', true);
 						}
-					}					
+					}
 				} else {
 					if (item[itemValueFieldName] === lib[i][valueFieldName]) {
 						option.setAttribute('selected', true);

@@ -56,7 +56,7 @@ class notPath{
 	parseSubs(path, item, helpers){
 		let subPath, subPathParsed, i = 0;
 		while(subPath = this.findNextSubPath(path)){
-			subPathParsed = this.getValueByPath( subPath.indexOf(PATH_START_HELPERS)>-1?helpers:item, subPath);
+			subPathParsed = this.getValueByPath(subPath.indexOf(PATH_START_HELPERS)>-1?helpers:item, subPath, item, helpers);
 			path = this.replaceSubPath(path, subPath, subPathParsed);
 			i++;
 			if (i > MAX_DEEP){
@@ -72,13 +72,13 @@ class notPath{
 			case PATH_START_HELPERS: return helpers;
 		}
 		path = this.parseSubs(path, item, helpers);
-		return this.getValueByPath(path.indexOf(PATH_START_HELPERS)>-1?helpers:item, path);
+		return this.getValueByPath(path.indexOf(PATH_START_HELPERS)>-1?helpers:item, path, item, helpers);
 	}
 
 	set(path, item, helpers, attrValue){
 		let subPath, subPathParsed, i = 0;
 		while(subPath = this.findNextSubPath(path)){
-			subPathParsed = this.getValueByPath( subPath.indexOf(PATH_START_HELPERS)>-1?helpers:item, subPath);
+			subPathParsed = this.getValueByPath( subPath.indexOf(PATH_START_HELPERS)>-1?helpers:item, subPath, item, helpers);
 			path = this.replaceSubPath(path, subPath, subPathParsed);
 			if (i > MAX_DEEP){
 				break;
@@ -164,7 +164,7 @@ class notPath{
 		return true;
 	}
 
-	getValueByPath(object, attrPath){
+	getValueByPath(object, attrPath, item, helpers){
 		attrPath = this.normilizePath(attrPath);
 		let attrName = attrPath.shift(),
 			isFunction = attrName.indexOf(FUNCTION_MARKER)>-1;
@@ -172,9 +172,9 @@ class notPath{
 			attrName = attrName.replace(FUNCTION_MARKER, '');
 		}
 		if ((typeof object === 'object') && typeof object[attrName] !== 'undefined' && object[attrName] !== null){
-			let newObj = isFunction?object[attrName]():object[attrName];
+			let newObj = isFunction?object[attrName]({item, helpers}):object[attrName];
 			if (attrPath.length > 0){
-				return this.getValueByPath(newObj, attrPath);
+				return this.getValueByPath(newObj, attrPath, item, helpers);
 			}else{
 				return newObj;
 			}

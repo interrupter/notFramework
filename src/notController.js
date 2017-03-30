@@ -167,7 +167,7 @@ class notController extends notBase {
 					this.getWorking('loading').push(list[t]);
 					this.make[list[t]]({}).$listAll()
 						.then((data)=>{
-							if (!Array.isArray(this.getOptions('libs'))){
+							if (!this.getOptions('libs')){
 								this.setOptions('libs', {});
 							}
 							this.getOptions('libs')[t] = data;

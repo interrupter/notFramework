@@ -218,8 +218,7 @@ class notRecord extends notBase {
 
 	actionUp(index) {
 		if (!this.hasOwnProperty([DEFAULT_ACTION_PREFIX + index])) {
-			this[DEFAULT_ACTION_PREFIX + index] = () => this[META_INTERFACE].request(this, index);
-			//notCommon.log('define', DEFAULT_ACTION_PREFIX + index);
+			this[DEFAULT_ACTION_PREFIX + index] = () => this[META_INTERFACE].request(this, index);			
 		}
 	}
 	/*

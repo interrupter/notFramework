@@ -152,9 +152,6 @@ export default class notInterface extends notBase {
 		return notCommon.getAPI().queeRequest(actionData.method, url + requestParamsEncoded, id, JSON.stringify(record.getData()))
 			.then((data) => {
 				return this.afterSuccessRequest(data, actionData);
-			})
-			.catch((e) => {
-				notCommon.report(e);
 			});
 	}
 

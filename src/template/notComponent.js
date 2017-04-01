@@ -172,6 +172,7 @@ class notComponent extends notBase {
 			this.getOptions('ntEl').parentNode.removeChild(this.getOptions('ntEl'));
 		}
 		this.dead = true;
+		this.offAll();
 	}
 
 	resetParts() {
@@ -186,7 +187,7 @@ class notComponent extends notBase {
 		this[META_PARTS].push(template);
 	}
 
-	render() {		
+	render() {
 		this.clearParts();
 		if (this.getProtoTemplateElement()) {
 			this.forEachData(this.renderPart.bind(this));

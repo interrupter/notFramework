@@ -102,7 +102,7 @@ class notController extends notBase {
 					options:{
 						targetEl: view.targetEl,
 						helpers,
-						renderAnd: OPT_DEFAULT_RENDER_AND || view.renderAnd
+						renderAnd: view.renderAnd || OPT_DEFAULT_RENDER_AND
 					}
 				}));
 			}

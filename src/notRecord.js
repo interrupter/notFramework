@@ -179,7 +179,7 @@ class notRecord extends notBase {
 				let curPath = path + (path.length > 0 ? '.' : '') + key;
 				//notCommon.log('curPath', curPath);
 				if (item.hasOwnProperty(key)) {
-					if (typeof item[key] === 'object') {
+					if (typeof item[key] === 'object' && item[key] !== null) {
 						this.initProperties(item[key], curPath);
 						item[key] = new notProperty(this.getRoot.bind(this), curPath, item[key]);
 					} else {
@@ -361,7 +361,7 @@ class notRecord extends notBase {
 	}
 
 	getModelName() {
-		return this[META_INTERFACE].getModelName(...arguments);		
+		return this[META_INTERFACE].getModelName(...arguments);
 	}
 
 }

@@ -237,7 +237,7 @@ class notController extends notBase {
 							.catch((err)=>{
 								notFramework.notCommon.report(err);
 								reject();
-							})
+							});
 					}
 				}
 				if(Object.keys(this.getWorking('uploading')).length === 0){

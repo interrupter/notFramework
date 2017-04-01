@@ -193,4 +193,13 @@ export default class notBase {
 		});
 		return this;
 	}
+
+	offAll(){
+		let events = Object.keys(this[META_EVENTS]);
+		for(let t =0; t< events.length; t++){
+			if(this[META_EVENTS].hasOwnProperty(events[t])){
+				delete this[META_EVENTS][events[t]];
+			}
+		}
+	}
 }

@@ -31,7 +31,7 @@ var CommonNetwork = {
 						if (xhr.status == 200) {
 							resolve(xhr.response);
 						} else {
-							reject(xhr.status, xhr.response);
+							reject(xhr.response);
 						}
 					}
 				};
@@ -60,7 +60,7 @@ var CommonNetwork = {
 				if (status == 200) {
 					resolve(xhr.response);
 				} else {
-					reject(status, xhr.response);
+					reject(xhr.response);
 				}
 			};
 			let t = () => reject(xhr.status);
@@ -82,7 +82,7 @@ var CommonNetwork = {
 				if (status == 200) {
 					resolve(xhr.response);
 				} else {
-					reject(status, xhr.response);
+					reject( xhr.response);
 				}
 			};
 			let t = () => reject(xhr.status);
@@ -104,7 +104,7 @@ var CommonNetwork = {
 				if (status == 200) {
 					resolve(xhr.response);
 				} else {
-					reject(status, xhr.response);
+					reject( xhr.response);
 				}
 			};
 			let t = () => reject(xhr.status);
@@ -126,7 +126,7 @@ var CommonNetwork = {
 				if (status == 200) {
 					resolve(xhr.response);
 				} else {
-					reject(status, xhr.response);
+					reject( xhr.response);
 				}
 			};
 			let t = () => reject(xhr.status);
@@ -148,7 +148,7 @@ var CommonNetwork = {
 				if (status == 200) {
 					resolve(xhr.response);
 				} else {
-					reject(status, xhr.response);
+					reject( xhr.response);
 				}
 			};
 			let t = () => reject(xhr.status);
@@ -169,7 +169,7 @@ var CommonNetwork = {
 				if (parseInt(status) === 200) {
 					resolve(xhr.responseText);
 				} else {
-					reject(status, xhr.responseText);
+					reject( xhr.responseText);
 				}
 			};
 			let t = (e) => reject(e);

@@ -178,5 +178,6 @@ var notTemplateProcessorsLib = {
 			scope.element.notRouterInitialized = true;
 		}
 	}
+
 };
 export default notTemplateProcessorsLib;

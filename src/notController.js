@@ -247,6 +247,10 @@ class notController extends notBase {
 		});
 	}
 
+	onAfterRender(){
+		this.trigger('afterRender');
+	}
+
 }
 
 export default notController;

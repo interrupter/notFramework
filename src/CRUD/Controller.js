@@ -43,27 +43,32 @@ class CRUDController extends notController {
 	}
 
 	runCreate(params = []){
-		this.view = new CRUDCreate(this, params);
+		this.view = new CRUDCreate(this, params)
+			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 
 	runList(params = []){
-		this.view = new CRUDList(this, params);
+		this.view = new CRUDList(this, params)
+			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 
 	runDetails(params = []){
-		this.view = new CRUDDetails(this, params);
+		this.view = new CRUDDetails(this, params)
+			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 
 	runDelete(params = []){
-		this.view = new CRUDDelete(this, params);
+		this.view = new CRUDDelete(this, params)
+			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 
 	runUpdate(params = []){
-		this.view = new CRUDUpdate(this, params);
+		this.view = new CRUDUpdate(this, params)
+			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 

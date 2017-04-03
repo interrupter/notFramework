@@ -6,6 +6,11 @@ var CommonLogs = {
 			window[LOG].error(...arguments);
 		}
 	},
+	log: function() {
+		if(!this.get('production')){
+			window[LOG].log(...arguments);
+		}
+	},
 	report: function() {
 		if(!this.get('production')){
 			window[LOG].error(...arguments);

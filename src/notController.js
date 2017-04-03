@@ -220,7 +220,7 @@ class notController extends notBase {
 						this.app.getWorking('uploader')
 							.upload(fieldFiles[f])
 							.then((savedFile) => {
-								console.log('file uploaded', t,f, savedFile);
+								notCommon.log('file uploaded', t,f, savedFile);
 								this.getWorking('uploading')[t]--;
 								if(this.getWorking('uploading')[t] === 0){
 									delete this.getWorking('uploading')[t];
@@ -235,8 +235,8 @@ class notController extends notBase {
 								}
 							})
 							.catch((err)=>{
-								notFramework.notCommon.report(err);
-								reject();
+								notCommon.report(err);
+								reject(err);
 							});
 					}
 				}

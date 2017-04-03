@@ -22,9 +22,12 @@ import notImage from './template/notImage';
 */
 import notApp from './notApp';
 /*
-	daddy for user controllers
+	user controllers
 */
 import notController from './notController';
+
+import {CRUDController,CRUDCreate,CRUDDelete,CRUDDetails,CRUDList,CRUDUpdate} from './CRUD';
+
 /*
 	templating and common structures
 */
@@ -52,6 +55,12 @@ export {
 	notApp,
 	notAPI,
 	notController,
+	CRUDController,
+	CRUDCreate,
+	CRUDDelete,
+	CRUDDetails,
+	CRUDList,
+	CRUDUpdate,
 	notTemplateProcessors,
 	notTemplateProcessorsLib,
 	notTemplateCache,

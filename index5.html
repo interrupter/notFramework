@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Mocha Tests</title>
+	<link rel="stylesheet" href="node_modules/mocha/mocha.css">
+	<style>
+	.active{
+		background-color: green;
+	}
+	</style>
+</head>
+
+<body>
+	<script src="build/not-framework.js"></script>
+	<h3>place</h3>
+	<div><span>test</span><span id="test">you should not see this</span><span></span></div>
+	<h3>placeAfter</h3>
+	<div><span id="test1">after this element</span><span>but not after this</span></div>
+	<h3>placeBefore</h3>
+	<div><span>right under here</span><span id="test2">right above</span><span>test2</span><span>test2</span></div>
+	<h3>placeFirst</h3>
+	<div id="test3"><span>right above</span><span>test3</span><span>test3</span><span>test3</span></div>
+	<h3>placeLast</h3>
+	<div id="test4"><span>test4</span><span>test4</span><span>test4</span><span>right after</span></div>
+	<h3>replace</h3>
+	<div><span id="test5">test5 that you should not see</span></div>
+	<script>
+		let formComponent;
+		let renderForm = function() {
+
+			new notFramework.notComponent({
+				data: {},
+				template: {
+					name: 'copyrights'
+				},
+				options: {
+					renderAnd: 'place',
+					targetEl: document.getElementById('test'),
+					id: 'test'
+				}
+			});
+
+			new notFramework.notComponent({
+				data: {},
+				template: {
+					name: 'copyrights'
+				},
+				options: {
+					renderAnd: 'placeAfter',
+					targetEl: document.getElementById('test1'),
+					id: 'test1'
+				}
+			});
+
+			new notFramework.notComponent({
+				data: {},
+				template: {
+					name: 'copyrights'
+				},
+				options: {
+					renderAnd: 'placeBefore',
+					targetEl: document.getElementById('test2'),
+					id: 'test2'
+				}
+			});
+
+			new notFramework.notComponent({
+				data: {},
+				template: {
+					name: 'copyrights'
+				},
+				options: {
+					renderAnd: 'placeFirst',
+					targetEl: document.getElementById('test3'),
+					id: 'test3'
+				}
+			});
+
+			new notFramework.notComponent({
+				data: {},
+				template: {
+					name: 'copyrights'
+				},
+				options: {
+					renderAnd: 'placeLast',
+					targetEl: document.getElementById('test4'),
+					id: 'test4'
+				}
+			});
+
+			new notFramework.notComponent({
+				data: {},
+				template: {
+					name: 'copyrights'
+				},
+				options: {
+					renderAnd: 'replace',
+					targetEl: document.getElementById('test5'),
+					id: 'test4'
+				}
+			});
+		};
+		notFramework.notTemplateCache.addLibFromURL('./test/templates/lib.html').then(renderForm).catch((e) => {
+			console.error('no templates lib', e);
+		});
+	</script>
+</body>
+
+</html>

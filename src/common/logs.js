@@ -1,19 +1,21 @@
+//dirty hack to remove no-console warning of eslint
+const LOG = 'console';
 var CommonLogs = {
-	debug: function() {
-		console.log(...arguments);
-	},
-	log: function() {
-		console.log(...arguments);
-	},
 	error: function() {
-		console.error(...arguments);
+		if(!this.get('production')){
+			window[LOG].error(...arguments);
+		}
 	},
 	report: function() {
-		console.error(...arguments);
+		if(!this.get('production')){
+			window[LOG].error(...arguments);
+		}
 	},
 	trace: function() {
-		console.trace(...arguments);
-	},
+		if(!this.get('production')){
+			window[LOG].trace(...arguments);
+		}
+	}
 };
 
 export default CommonLogs;

@@ -2,7 +2,8 @@ import notController from '../notController.js';
 import notForm from '../components/notForm.js';
 import notCommon from '../common';
 
-const OPT_UPDATE_LOAD_ACTION = '$getRaw',
+const OPT_DEFAULT_LOAD_ACTION = 'getRaw',
+	OPT_DEFAULT_ACTION = 'update',
 	OPT_DEFAULT_VIEW = 'edit';
 
 class CRUDUpdate extends notController {
@@ -33,7 +34,7 @@ class CRUDUpdate extends notController {
 	loadItem() {
 		return this.make[this.parent.getModuleName()]({
 			'_id': this.getOptions('params.0')
-		})[OPT_UPDATE_LOAD_ACTION]();
+		})['$'+(this.parent.getOptions('views.update.loadAction') || OPT_DEFAULT_LOAD_ACTION)]();
 	}
 
 	renderWrapper() {
@@ -46,7 +47,7 @@ class CRUDUpdate extends notController {
 				this.form = new notForm({
 					data: this.getData(),
 					options: {
-						action: this.parent.getOptions('views.update.action'),
+						action: this.parent.getOptions('views.update.action') || OPT_DEFAULT_ACTION,
 						targetQuery: this.parent.getOptions('views.update.targetQuery')||this.parent.getOptions('targetQuery'),
 						prefix: this.parent.getOptions('views.update.prefix')||this.parent.getOptions('prefix'),
 						role: this.parent.getOptions('views.update.role')||this.parent.getOptions('role'),
@@ -82,7 +83,7 @@ class CRUDUpdate extends notController {
 	}
 
 	update(item) {
-		item['$'+this.parent.getOptions('views.update.action')]()
+		item['$'+(this.parent.getOptions('views.update.action')||OPT_DEFAULT_ACTION)]()
 			.then((result) => {
 				notCommon.log('form saved', result);
 				this.parent.app.getWorking('router').navigate(this.getModuleName());

@@ -55,7 +55,7 @@ class CRUDDetails extends notController {
 			},
 			title: this.parent.getOptions('names.single')
 		};
-		return this.render('view', item, helpers);
+		return this.render('default', item, helpers);
 	}
 
 	renderDetails() {

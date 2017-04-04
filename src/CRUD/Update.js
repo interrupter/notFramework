@@ -47,9 +47,9 @@ class CRUDUpdate extends notController {
 					data: this.getData(),
 					options: {
 						action: this.parent.getOptions('views.update.action'),
-						targetQuery: this.parent.getOptions('views.update.targetQuery'),
-						prefix: this.parent.getOptions('views.update.prefix'),
-						role: this.parent.getOptions('views.update.role'),
+						targetQuery: this.parent.getOptions('views.update.targetQuery')||this.parent.getOptions('targetQuery'),
+						prefix: this.parent.getOptions('views.update.prefix')||this.parent.getOptions('prefix'),
+						role: this.parent.getOptions('views.update.role')||this.parent.getOptions('role'),
 						data: this.getData(),
 						helpers: notCommon.extend({
 							file: (params) => {

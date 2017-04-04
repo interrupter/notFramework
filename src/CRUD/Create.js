@@ -38,10 +38,10 @@ class CRUDCreate extends notController{
 					data: this.newItem,
 					options: {
 						action: this.parent.getOptions('views.create.action'),
-						targetQuery: this.parent.getOptions('views.create.targetQuery'),
-						targetEl: document.querySelector(this.parent.getOptions('views.create.targetQuery')),
-						prefix: this.parent.getOptions('views.create.prefix'),
-						role: this.parent.getOptions('views.create.role'),
+						targetQuery: this.parent.getOptions('views.create.targetQuery')||this.parent.getOptions('targetQuery'),
+						targetEl: document.querySelector(this.parent.getOptions('views.create.targetQuery')||this.parent.getOptions('targetQuery')),
+						prefix: this.parent.getOptions('views.create.prefix')||this.parent.getOptions('prefix'),
+						role: this.parent.getOptions('views.create.role')||this.parent.getOptions('role'),
 						helpers: notCommon.extend({
 							file: (params) => {
 								let files = params.e.target.files || params.e.dataTransfer.files;

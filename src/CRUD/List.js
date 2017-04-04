@@ -45,7 +45,7 @@ class CRUDList extends notController {
 				this.tableView = new notTable({
 					options: {
 						fields: this.parent.getOptions('views.list.fields'),
-						targetEl: this.parent.getOptions('views.list.targetQuery'),
+						targetEl: this.parent.getOptions('views.list.targetQuery')||this.parent.getOptions('targetQuery'),
 						helpers: notCommon.extend({
 							title: this.parent.getOptions('names.plural')
 						}, this.parent.getOptions('views.list.helpers') || {}),

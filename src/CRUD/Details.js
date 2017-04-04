@@ -66,10 +66,10 @@ class CRUDDetails extends notController {
 					data: item,
 					options: {
 						targetQuery: this.parent.getOptions('views.details.targetQuery'),
-						targetEl: document.querySelector(this.parent.getOptions('views.details.targetQuery')),
+						targetEl: document.querySelector(this.parent.getOptions('views.details.targetQuery')||this.parent.getOptions('targetQuery')),
 						action: this.parent.getOptions('views.details.action') || OPT_DEFAULT_LOAD_ACTION,
-						prefix: this.parent.getOptions('views.details.prefix'),
-						role: this.parent.getOptions('views.details.role'),
+						prefix: this.parent.getOptions('views.details.prefix')||this.parent.getOptions('prefix'),
+						role: this.parent.getOptions('views.details.role')||this.parent.getOptions('role'),
 						helpers: notCommon.extend({
 							libs: this.getOptions('lib'),
 							ID: item[this.parent.getModuleName() + 'ID'],

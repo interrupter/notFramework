@@ -9,7 +9,7 @@ class CRUDDelete extends notController{
 		this.parent = parent;
 		this.setOptions('params', params);
 		notCommon.log('CRUD Delete');
-		this.preloadLib(this.parent.getOptions('views.delete.preload')||[])
+		this.preloadLib(this.parent.getOptions('views.delete.preload'))
 			.then(()=>{
 				if (confirm('Удалить запись?')) {
 					this.delete();

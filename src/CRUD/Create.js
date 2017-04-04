@@ -18,7 +18,7 @@ class CRUDCreate extends notController{
 				helpers: {}
 			}
 		});
-		this.preloadLib(this.parent.getOptions('views.create.preload')||[])
+		this.preloadLib(this.parent.getOptions('views.create.preload'))
 			.then(this.renderWrapper.bind(this))
 			.then(this.renderForm.bind(this))
 			.then(this.onAfterRender.bind(this))

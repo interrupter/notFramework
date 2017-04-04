@@ -20,7 +20,7 @@ class CRUDUpdate extends notController {
 			}
 		});
 
-		this.preloadLib(this.parent.getOptions('views.update.preload')||[])
+		this.preloadLib(this.parent.getOptions('views.update.preload'))
 			.then(this.loadItem.bind(this))
 			.then(this.setData.bind(this))
 			.then(this.renderWrapper.bind(this))

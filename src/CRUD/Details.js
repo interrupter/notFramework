@@ -20,7 +20,7 @@ class CRUDDetails extends notController {
 			}
 		});
 
-		this.preloadLib(this.parent.getOptions('views.details.preload')||[])
+		this.preloadLib(this.parent.getOptions('views.details.preload'))
 			.then(this.loadItem.bind(this))
 			.then(this.setData.bind(this))
 			.then(this.renderWrapper.bind(this))

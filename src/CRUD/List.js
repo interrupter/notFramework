@@ -19,7 +19,7 @@ class CRUDList extends notController {
 				helpers: {}
 			}
 		});
-		this.preloadLib(this.parent.getOptions('views.list.preload')||[])
+		this.preloadLib(this.parent.getOptions('views.list.preload'))
 			.then(this.renderWrapper.bind(this))
 			.then(this.updateDatatable.bind(this))
 			.then(this.onAfterRender.bind(this))

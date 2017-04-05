@@ -298,9 +298,11 @@ class notTable extends notBase {
 					this.updateData();
 				});
 			}
+
 			if (field.hasOwnProperty(OPT_FIELD_NAME_PRE_PROC)) {
 				preprocessed = field[OPT_FIELD_NAME_PRE_PROC](val, item, index);
 			}
+
 			if (field.hasOwnProperty('component')) {
 				new notComponent({
 					data: field.component.data || preprocessed || {val, item, index},
@@ -314,6 +316,7 @@ class notTable extends notBase {
 			} else {
 				newTd.innerHTML = preprocessed || val;
 			}
+
 			if (field.hasOwnProperty('events') && field.events) {
 				for (var j in field.events) {
 					newTd.addEventListener(j, (e)=>{

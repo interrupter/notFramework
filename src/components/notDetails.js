@@ -141,7 +141,49 @@ class notDetails extends notBase {
 	}
 
 	addFieldComponent(fieldName) {
-		let fieldType = this.getFieldsDefinition(fieldName);
+		let fieldType = this.getFieldsDefinition(fieldName),
+			rec = null;
+		if(fieldType.component){
+			rec = this.castCustom(fieldName, fieldType);
+		}else{
+			rec = this.castCommon(fieldName, fieldType);
+		}
+		this.getWorking('components').push(rec);
+	}
+
+	castCustom(fieldName, fieldType){
+		let CustomComponent = notFramework.notCommon.get('components')[fieldType.component];
+		let rec = {
+			field: {
+				name: fieldName,
+				title: fieldType.label || fieldType.placeholder,
+				type: fieldType.type,
+				label: fieldType.label,
+				array: fieldType.array,
+				default: fieldType.default,
+				placeholder: fieldType.placeholder,
+				options: this.getOptions(notPath.join('helpers','libs',fieldName))
+			}
+		};
+		let helpers = notCommon.extend({
+			isChecked: (params) => {
+				return params.item.value === this.getData(fieldName);
+			},
+			field: rec.field,
+			data: this.getData()
+		}, this.getOptions('helpers'));
+
+		rec.component = new CustomComponent({
+			data: this.getData(),
+			options: {
+				helpers,
+				targetEl: this.getTargetElement(fieldType.target),
+				renderAnd: 'placeLast'
+			}
+		});
+	}
+
+	castCommon(fieldName, fieldType){
 		let rec = {
 			field: {
 				name: fieldName,
@@ -172,7 +214,7 @@ class notDetails extends notBase {
 				renderAnd: 'placeLast'
 			}
 		});
-		this.getWorking('components').push(rec);
+		return rec;
 	}
 
 	getTargetElement(target = 'body'){

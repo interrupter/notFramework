@@ -317,6 +317,14 @@ class notTable extends notBase {
 				newTd.innerHTML = preprocessed || val;
 			}
 
+			if(field.hasOwnProperty('style')){
+				for(let style in field.style){
+					if(field.style.hasOwnProperty(style)){
+						newTd.style[style] = field.style[style];
+					}
+				}
+			}
+
 			if (field.hasOwnProperty('events') && field.events) {
 				for (var j in field.events) {
 					newTd.addEventListener(j, (e)=>{

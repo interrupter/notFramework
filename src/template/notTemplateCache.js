@@ -53,7 +53,11 @@ class notTemplateCache extends notBase{
 	}
 
 	setOne(key, element) {
-		this[META_CACHE][key] = element;
+		if(element instanceof HTMLElement){
+			this[META_CACHE][key] = element;
+		}else{
+			this.addFromText(key, element);	
+		}
 	}
 
 	get(key) {

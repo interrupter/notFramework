@@ -181,6 +181,7 @@ class notDetails extends notBase {
 				renderAnd: 'placeLast'
 			}
 		});
+		return rec;
 	}
 
 	castCommon(fieldName, fieldType){

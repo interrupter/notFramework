@@ -10,6 +10,13 @@ var notTemplateProcessorsLib = {
 		scope.element.textContent = scope.attributeResult;
 	},
 	bind: function(scope, item, helpers) {
+		if (scope.element.binds){
+			if(scope.element.binds.hasOwnProperty(scope.params[0])){
+				if(scope.element.binds[scope.params[0]].indexOf(scope.attributeExpression) > -1){
+					return;
+				}
+			}
+		}
 		scope.element.addEventListener(scope.params[0], (e) => {
 			e.stopImmediatePropagation();
 			e.preventDefault();
@@ -24,6 +31,15 @@ var notTemplateProcessorsLib = {
 				return true;
 			}
 		});
+		if(!scope.element.hasOwnProperty('binds')){
+			scope.element.binds = {};
+		}
+		if(!scope.element.binds.hasOwnProperty(scope.params[0])){
+			scope.element.binds[scope.params[0]] = [];
+		}
+		if(scope.element.binds[scope.params[0]].indexOf(scope.attributeExpression) === -1){
+			scope.element.binds[scope.params[0]].push(scope.attributeExpression);
+		}
 	},
 	value: function(scope, item, helpers) {
 		let liveEvents = ['change', 'keyup'],

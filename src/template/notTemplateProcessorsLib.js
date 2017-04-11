@@ -18,7 +18,6 @@ var notTemplateProcessorsLib = {
 			}
 		}
 		scope.element.addEventListener(scope.params[0], (e) => {
-			e.stopImmediatePropagation();
 			e.preventDefault();
 			if (scope.attributeResult) {
 				return scope.attributeResult({

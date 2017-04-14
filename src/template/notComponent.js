@@ -341,6 +341,14 @@ class notComponent extends notBase {
 		}
 		return false;
 	}
+
+	show(){
+		
+	}
+
+	hide(){
+
+	}
 }
 
 export default notComponent;

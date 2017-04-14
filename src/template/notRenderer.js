@@ -332,6 +332,14 @@ class notRenderer extends notBase {
 	isData(data = {}) {
 		return this.getData() === data;
 	}
+
+	hide(){
+
+	}
+
+	show(){
+
+	}
 }
 
 export default notRenderer;

@@ -34,7 +34,8 @@ class CRUDCreate extends notController {
     }
 
     renderForm() {
-        return new Promise((resolve, reject) => {
+      notCommon.log('before promise to build form ', this);
+        return new Promise(function(resolve, reject) {
             notCommon.log('promise to build create form');
             notCommon.log('here',this);
             this.form = new notForm({
@@ -71,7 +72,7 @@ class CRUDCreate extends notController {
                     ]
                 ]
             });
-        });
+        }.bind(this));
     }
 
     create(item) {

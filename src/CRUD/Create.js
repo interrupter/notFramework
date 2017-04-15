@@ -26,17 +26,12 @@ class CRUDCreate extends notController {
             }
         });
         this.preloadLib(this.parent.getOptions('views.create.preload'))
+            .then(this.initData.bind(this))
             .then(this.renderWrapper.bind(this))
             .then(this.renderForm.bind(this))
             .then(this.onAfterRender.bind(this))
             .catch(notCommon.report);
         return this;
-    }
-
-
-
-    renderWrapper() {
-        return this.render('default', {}, {});
     }
 
     createDefault(){
@@ -51,10 +46,20 @@ class CRUDCreate extends notController {
       }
     }
 
+    initData(){
+      return new Promise(()=>{
+        return this.setData(this.createDefault());
+      });
+    }
+
+    renderWrapper() {
+        return this.render('default', {}, {});
+    }
+
     renderForm() {
         return new Promise((resolve, reject) =>{
             this.form = new notForm({
-                data: this.createDefault(),
+                data: this.getData(),
                 options: {
                     action: this.parent.getOptions('views.create.action') || OPT_DEFAULT_ACTION,
                     targetQuery: this.parent.getOptions('views.create.targetQuery') || this.parent.getOptions('targetQuery'),

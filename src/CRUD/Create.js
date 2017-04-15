@@ -47,8 +47,14 @@ class CRUDCreate extends notController {
     }
 
     initData(){
-      return new Promise(()=>{
-        return this.setData(this.createDefault());
+      return new Promise((resolve, reject)=>{
+        try{
+          this.setData(this.createDefault());
+          resolve(this.getData());
+        }
+        catch(e){
+          reject(e);
+        }
       });
     }
 

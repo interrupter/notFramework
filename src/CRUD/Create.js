@@ -1,9 +1,15 @@
 import notController from '../notController.js';
 import notCommon from '../common';
+import notRecord from '../notRecord';
 import notForm from '../components/notForm.js';
 
-const OPT_DEFAULT_VIEW = 'edit';
-const OPT_DEFAULT_ACTION = 'create';
+const OPT_DEFAULT_VIEW = 'edit',
+  OPT_DEFAULT_ACTION = 'create',
+  OPT_DEFAULT_ITEM = {
+    _id: null,
+    title: 'Title',
+    value: 'Value'
+  };
 
 class CRUDCreate extends notController {
     constructor(parent, params) {
@@ -33,13 +39,22 @@ class CRUDCreate extends notController {
         return this.render('default', {}, {});
     }
 
+    createDefault(){
+      if (this.parent.getOptions('views.create.defaultItem') && this.parent.getModuleName() && this.parent.make[this.parent.getModuleName()]){
+        return this.parent.make[this.parent.getModuleName()](this.parent.getOptions('views.create.defaultItem'));
+      }else if(this.parent.initItem){
+        return this.parent.initItem();
+      }else if (this.parent.getModuleName() && this.parent.make[this.parent.getModuleName()]){
+        return this.parent.make[this.parent.getModuleName()](OPT_DEFAULT_ITEM);
+      }else{
+        return new notRecord({}, OPT_DEFAULT_ITEM);
+      }
+    }
+
     renderForm() {
-      notCommon.log('before promise to build form ', this);
-        return new Promise(function(resolve, reject) {
-            notCommon.log('promise to build create form');
-            notCommon.log('here',this);
+        return new Promise((resolve, reject) =>{
             this.form = new notForm({
-                data: this.initItem(),
+                data: this.createDefault(),
                 options: {
                     action: this.parent.getOptions('views.create.action') || OPT_DEFAULT_ACTION,
                     targetQuery: this.parent.getOptions('views.create.targetQuery') || this.parent.getOptions('targetQuery'),
@@ -72,7 +87,7 @@ class CRUDCreate extends notController {
                     ]
                 ]
             });
-        }.bind(this));
+        });
     }
 
     create(item) {

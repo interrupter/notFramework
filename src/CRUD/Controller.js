@@ -33,7 +33,7 @@ class CRUDController extends notController {
 			}else if(params[1] === 'update'){
 				return this.runUpdate(params);
 			}else {
-				let routeRunnerName = 'run' + notCommon.capitalizeFirstLetter(params[1]);
+				let routeRunnerName = 'run' + notCommon.capitalizeFirstLetter(params[0]);
 				if(this[routeRunnerName] && typeof this[routeRunnerName] === 'function'){
 					return this[routeRunnerName](params);
 				}

@@ -20,7 +20,6 @@ class CRUDCreate extends notController {
             }
         });
         this.preloadLib(this.parent.getOptions('views.create.preload'))
-            .then(this.loadItem.bind(this))
             .then(this.renderWrapper.bind(this))
             .then(this.renderForm.bind(this))
             .then(this.onAfterRender.bind(this))
@@ -28,21 +27,7 @@ class CRUDCreate extends notController {
         return this;
     }
 
-    loadItem() {
-        return new Promise((resolve, reject) => {
-            try {
-                let t = this.initItem();
-                if (t) {
-                    this.setData(t);
-                    resolve(t);
-                } else {
-                    reject(t);
-                }
-            } catch (e) {
-                reject(e);
-            }
-        });
-    }
+
 
     renderWrapper() {
         return this.render('default', {}, {});
@@ -52,7 +37,7 @@ class CRUDCreate extends notController {
         return new Promise((resolve, reject) => {
             try {
                 this.form = new notForm({
-                    data: this.getData(),
+                    data: this.initItem(),
                     options: {
                         action: this.parent.getOptions('views.create.action') || OPT_DEFAULT_ACTION,
                         targetQuery: this.parent.getOptions('views.create.targetQuery') || this.parent.getOptions('targetQuery'),

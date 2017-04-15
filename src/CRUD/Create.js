@@ -41,13 +41,13 @@ class CRUDCreate extends notController {
 
     createDefault(){
       if (this.parent.getOptions('views.create.defaultItem') && this.parent.getModuleName() && this.parent.make[this.parent.getModuleName()]){
-        return this.parent.make[this.parent.getModuleName()](this.parent.getOptions('views.create.defaultItem'));
+        return this.parent.make[this.parent.getModuleName()](notCommon.extend({}, this.parent.getOptions('views.create.defaultItem')));
       }else if(this.parent.initItem){
         return this.parent.initItem();
       }else if (this.parent.getModuleName() && this.parent.make[this.parent.getModuleName()]){
-        return this.parent.make[this.parent.getModuleName()](OPT_DEFAULT_ITEM);
+        return this.parent.make[this.parent.getModuleName()](notCommon.extend({}, OPT_DEFAULT_ITEM));
       }else{
-        return new notRecord({}, OPT_DEFAULT_ITEM);
+        return new notRecord({}, notCommon.extend({}, OPT_DEFAULT_ITEM));
       }
     }
 

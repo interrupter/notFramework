@@ -82,7 +82,7 @@ class CRUDCreate extends notController {
                         },
                         submit: () => {
                             notCommon.log('submit form ', this.newItem);
-                            this.execUploads(this.newItem)
+                            this.execUploads(this.getData())
                                 .then(this.create.bind(this));
                         },
                         afterSubmit: () => {

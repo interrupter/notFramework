@@ -35,44 +35,42 @@ class CRUDCreate extends notController {
 
     renderForm() {
         return new Promise((resolve, reject) => {
-            try {
-                this.form = new notForm({
-                    data: this.initItem(),
-                    options: {
-                        action: this.parent.getOptions('views.create.action') || OPT_DEFAULT_ACTION,
-                        targetQuery: this.parent.getOptions('views.create.targetQuery') || this.parent.getOptions('targetQuery'),
-                        targetEl: document.querySelector(this.parent.getOptions('views.create.targetQuery') || this.parent.getOptions('targetQuery')),
-                        prefix: this.parent.getOptions('views.create.prefix') || this.parent.getOptions('prefix'),
-                        role: this.parent.getOptions('views.create.role') || this.parent.getOptions('role'),
-                        helpers: notCommon.extend({
-                            file: (params) => {
-                                let files = params.e.target.files || params.e.dataTransfer.files;
-                                notCommon.log('file changed', files);
-                                if (params.helpers.field.name && files) {
-                                    this.queeUpload(params.helpers.field.name, files);
-                                }
-                            },
-                            submit: () => {
-                                notCommon.log('submit form ', this.newItem);
-                                this.execUploads(this.newItem)
-                                    .then(this.create.bind(this));
-                            },
-                            afterSubmit: () => {
-                                this.goToTable();
-                            },
-                            libs: this.getOptions('libs'),
-                        }, this.parent.getOptions('views.create.helpers') || {})
-                    },
-                    events: [
-                        ['afterRender', resolve],
-                        [
-                            ['afterSubmit', 'afterRestore'], this.backToList.bind(this)
-                        ]
+            notCommon.log('promise to build create form');
+            notCommon.log('here',this);
+            this.form = new notForm({
+                data: this.initItem(),
+                options: {
+                    action: this.parent.getOptions('views.create.action') || OPT_DEFAULT_ACTION,
+                    targetQuery: this.parent.getOptions('views.create.targetQuery') || this.parent.getOptions('targetQuery'),
+                    targetEl: document.querySelector(this.parent.getOptions('views.create.targetQuery') || this.parent.getOptions('targetQuery')),
+                    prefix: this.parent.getOptions('views.create.prefix') || this.parent.getOptions('prefix'),
+                    role: this.parent.getOptions('views.create.role') || this.parent.getOptions('role'),
+                    helpers: notCommon.extend({
+                        file: (params) => {
+                            let files = params.e.target.files || params.e.dataTransfer.files;
+                            notCommon.log('file changed', files);
+                            if (params.helpers.field.name && files) {
+                                this.queeUpload(params.helpers.field.name, files);
+                            }
+                        },
+                        submit: () => {
+                            notCommon.log('submit form ', this.newItem);
+                            this.execUploads(this.newItem)
+                                .then(this.create.bind(this));
+                        },
+                        afterSubmit: () => {
+                            this.goToTable();
+                        },
+                        libs: this.getOptions('libs'),
+                    }, this.parent.getOptions('views.create.helpers') || {})
+                },
+                events: [
+                    ['afterRender', resolve],
+                    [
+                        ['afterSubmit', 'afterRestore'], this.backToList.bind(this)
                     ]
-                });
-            } catch (e) {
-                reject(e);
-            }
+                ]
+            });
         });
     }
 

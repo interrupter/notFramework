@@ -14,21 +14,18 @@ class CRUDDelete extends notController{
 				if (confirm('Удалить запись?')) {
 					this.delete();
 				}else{
-					this.backToList();
+					this.parent.backToList();
 				}
 			});
 
 		return this;
 	}
 
-	backToList(){
-		this.parent.app.getWorking('router').navigate(this.parent.getModuleName());
-	}
 
 	delete() {
 		let action ='$'+(this.parent.getOptions('views.delete.action')||OPT_DEFAULT_ACTION);
 		this.make[this.parent.getModuleName()]({'_id': this.getOptions('params.0')})[action]()
-			.then(this.backToList.bind(this))
+			.then(this.parent.backToList.bind(this.parent))
 			.catch(notCommon.report);
 	}
 

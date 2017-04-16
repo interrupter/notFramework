@@ -73,6 +73,7 @@ class CRUDCreate extends notController {
                     prefix: this.parent.getOptions('views.create.prefix') || this.parent.getOptions('prefix'),
                     role: this.parent.getOptions('views.create.role') || this.parent.getOptions('role'),
                     helpers: notCommon.extend({
+                      linkBackToList: this.parent.linkBackToList(),
                         file: (params) => {
                             let files = params.e.target.files || params.e.dataTransfer.files;
                             notCommon.log('file changed', files);
@@ -94,7 +95,7 @@ class CRUDCreate extends notController {
                 events: [
                     ['afterRender', resolve],
                     [
-                        ['afterSubmit', 'afterRestore'], this.backToList.bind(this)
+                        ['afterSubmit', 'afterRestore'], this.parent.backToList.bind(this.parent)
                     ]
                 ]
             });
@@ -110,10 +111,6 @@ class CRUDCreate extends notController {
             .catch((result) => {
                 notCommon.error('form not saved', result);
             });
-    }
-
-    backToList() {
-        this.parent.app.getWorking('router').navigate(this.parent.getModuleName());
     }
 
 }

@@ -66,12 +66,12 @@ class CRUDUpdate extends notController {
 									.then(this.update.bind(this));
 							},
 							libs: this.getOptions('libs'),
-							afterSubmit: this.backToList.bind(this),
+							afterSubmit: this.parent.backToList.bind(this.parent),
 						}, this.parent.getOptions('views.update.helpers') || {})
 					},
 					events: [
 						[
-							['afterRestore', 'afterSubmit'], this.backToList.bind(this)
+							['afterRestore', 'afterSubmit'], this.parent.backToList.bind(this.parent)
 						],
 						['afterRender', resolve]
 					]
@@ -94,9 +94,6 @@ class CRUDUpdate extends notController {
 			});
 	}
 
-	backToList() {
-		this.parent.app.getWorking('router').navigate(this.parent.getModuleName());
-	}
 }
 
 export default CRUDUpdate;

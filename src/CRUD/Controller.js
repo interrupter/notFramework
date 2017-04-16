@@ -75,6 +75,14 @@ class CRUDController extends notController {
 	onAfterRender(){
 		this.trigger('afterRender');
 	}
+
+	backToList() {
+		this.app.getWorking('router').navigate(this.getModuleName());
+	}
+
+	linkBackToList() {
+		return this.getModuleName();
+	}
 }
 
 export default CRUDController;

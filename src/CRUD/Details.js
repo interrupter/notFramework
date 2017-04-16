@@ -50,9 +50,7 @@ class CRUDDetails extends notController {
 			delete: (params) => {
 				this.app.getWorking('router').navigate([this.parent.getModuleName(), params.item._id, 'delete'].join('/'));
 			},
-			getLinkToTable: () => {
-				return this.app.getWorking('router').getFullRoute(this.parent.getModuleName());
-			},
+			linkBackToList: this.parent.linkBackToList.bind(this),
 			title: this.parent.getOptions('names.single')
 		};
 		return this.render('default', item, helpers);
@@ -71,6 +69,7 @@ class CRUDDetails extends notController {
 						prefix: this.parent.getOptions('views.details.prefix')||this.parent.getOptions('prefix'),
 						role: this.parent.getOptions('views.details.role')||this.parent.getOptions('role'),
 						helpers: notCommon.extend({
+							linkBackToList: this.parent.linkBackToList(),
 							libs: this.getOptions('lib'),
 							ID: item[this.parent.getModuleName() + 'ID'],
 							__version: item.__version,
@@ -84,10 +83,6 @@ class CRUDDetails extends notController {
 				reject(e);
 			}
 		});
-	}
-
-	backToList() {
-		this.app.getWorking('router').navigate(this.parent.getModuleName());
 	}
 
 }

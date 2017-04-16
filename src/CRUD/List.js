@@ -33,7 +33,7 @@ class CRUDList extends notController {
 			showAddForm: () => {
 				this.parent.app.getWorking('router').navigate([this.parent.getModuleName(), 'create'].join('/'));
 			},
-			linkBackToList: this.parent.linkBackToList.bind(this),
+		linkBackToList: this.parent.linkBackToList.bind(this.parent),
 		});
 	}
 

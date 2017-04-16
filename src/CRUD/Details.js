@@ -50,7 +50,7 @@ class CRUDDetails extends notController {
 			delete: (params) => {
 				this.app.getWorking('router').navigate([this.parent.getModuleName(), params.item._id, 'delete'].join('/'));
 			},
-			linkBackToList: this.parent.linkBackToList.bind(this),
+			linkBackToList: this.parent.linkBackToList.bind(this.parent),
 			title: this.parent.getOptions('names.single')
 		};
 		return this.render('default', item, helpers);

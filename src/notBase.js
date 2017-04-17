@@ -188,8 +188,9 @@ export default class notBase {
 					let targetId = -1;
 					for(let h = 0; h < this[META_EVENTS][name].length; h++){
 						let event = this[META_EVENTS][name][h];
-						if (h === -1 && eventCallbacks === event.callbacks) {
+						if (targetId === -1 && eventCallbacks === event.callbacks) {
 								targetId = h;
+								break;
 						}
 					}
 					if (targetId > -1) {

@@ -218,7 +218,7 @@ class notComponent extends notBase {
 
 	placePart(data, index){
 		let part = this.getPartByData(data),
-			nodes = part.getStash(),
+			nodes = part&&part.getStash?part.getStash():[],
 			targetEl,
 			lastNode,
 			placer;
@@ -343,7 +343,7 @@ class notComponent extends notBase {
 	}
 
 	show(){
-		
+
 	}
 
 	hide(){

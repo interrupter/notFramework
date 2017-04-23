@@ -21,7 +21,10 @@ var CommonLogs = {
 		if(!notFramework.notCommon.get('production')){
 			window[LOG].trace(...arguments);
 		}
-	}
+	},
+	mute:function(){
+		this.register('production', true);
+	},
 };
 
 export default CommonLogs;

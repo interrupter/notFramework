@@ -37,7 +37,7 @@ export default class notApp extends notBase {
 	}
 
 	initAPI(){
-		notCommon.getManager().setAPI(new notAPI({}));
+		notCommon.getManager().setAPI(new notAPI(this.getOptions('api') || {}));
 	}
 
 	initTemplates(){

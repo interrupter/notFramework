@@ -18,7 +18,9 @@ var notTemplateProcessorsLib = {
 			}
 		}
 		scope.element.addEventListener(scope.params[0], (e) => {
-			e.preventDefault();
+			if (scope.params.length===1 || scope.params[1] !== 'default') {
+				e.preventDefault();
+			}
 			if (scope.attributeResult) {
 				return scope.attributeResult({
 					scope,
@@ -29,7 +31,7 @@ var notTemplateProcessorsLib = {
 			} else {
 				return true;
 			}
-		});
+		}, false);
 		if(!scope.element.hasOwnProperty('binds')){
 			scope.element.binds = {};
 		}

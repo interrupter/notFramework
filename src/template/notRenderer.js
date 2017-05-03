@@ -60,7 +60,7 @@ class notRenderer extends notBase {
 	initData(val) {
 		this.setData(val);
 		if (this.getData().isRecord) {
-			this.getData().on('change', this.update.bind(this));
+			this.getData().on('change', this.onChange.bind(this));
 		}
 	}
 
@@ -89,6 +89,11 @@ class notRenderer extends notBase {
 		this.execProcessors(this.getData());
 		this.searchForSubTemplates();
 		this.stashRendered();
+	}
+
+	onChange(proxy, key, value) {
+		this.update(key);
+		this.trigger('obsolete', proxy, key, value);
 	}
 
 	update(key) {

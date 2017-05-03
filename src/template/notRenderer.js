@@ -60,7 +60,7 @@ class notRenderer extends notBase {
 	initData(val) {
 		this.setData(val);
 		if (this.getData().isRecord) {
-			this.getData().on('change', this.onChange.bind(this));
+			this.getData().on('change', this.update.bind(this));
 		}
 	}
 
@@ -83,14 +83,6 @@ class notRenderer extends notBase {
 		}
 	}
 
-	onChange(proxy, key, value) {
-		/*notCommon.log(this);
-		notCommon.log(this.getBreadCrumps().join(' > '));
-		notCommon.log('updating renderer ', this.getWorking('partId'), ' after changes', key, value);*/
-		this.update(key);
-		this.trigger('obsolete',proxy, key, value);
-	}
-
 	render() {
 		this.clearStash();
 		this.setWorkingMapping();
@@ -104,15 +96,13 @@ class notRenderer extends notBase {
 		for (let t in this[META_COMPONENTS]) {
 			let item = this[META_COMPONENTS][t],
 				ifPart = true;
-			if (key){
-				if (item.getOptions('dataPath')===null){
+			if (key) {
+				if (item.getOptions('dataPath') === null) {
 					continue;
 				}
-				let	componentPath = notPath.normilizePath(item.getOptions('dataPath')),
+				let componentPath = notPath.normilizePath(item.getOptions('dataPath')),
 					changedPath = notPath.normilizePath(key);
 				ifPart = notPath.ifFullSubPath(changedPath, componentPath);
-				/*notCommon.log(item.getOptions('name'), ' >-< ', item.getOptions('id'), ' >-< ', componentPath, changedPath);
-				notCommon.log('will be updated', ifPart);*/
 			}
 
 			if (ifPart) {
@@ -216,9 +206,9 @@ class notRenderer extends notBase {
 
 	destroy() {
 		this.clearSubTemplates();
-		for(let t = 0; t < this.getStash().length; t++){
+		for (let t = 0; t < this.getStash().length; t++) {
 			let el = this.getStash()[t];
-			if (el.parentNode){
+			if (el.parentNode) {
 				el.parentNode.removeChild(el);
 			}
 		}
@@ -262,7 +252,7 @@ class notRenderer extends notBase {
 				id: ntEl.attributes.id ? ntEl.attributes.id.value : OPTS.COMPONENT_ID_PREFIX + Math.random()
 			},
 			options = {
-				data: details.dataPath!== null? this.getAttributeExpressionResult(details.dataPath, this.getData()):null,
+				data: details.dataPath !== null ? this.getAttributeExpressionResult(details.dataPath, this.getData()) : null,
 				template: {
 					name: details.name,
 					src: details.src
@@ -333,11 +323,11 @@ class notRenderer extends notBase {
 		return this.getData() === data;
 	}
 
-	hide(){
+	hide() {
 
 	}
 
-	show(){
+	show() {
 
 	}
 }

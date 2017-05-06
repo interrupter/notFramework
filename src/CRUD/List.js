@@ -22,7 +22,9 @@ class CRUDList extends notController {
 		this.preloadLib(this.parent.getOptions('views.list.preload'))
 			.then(this.renderWrapper.bind(this))
 			.then(this.updateDatatable.bind(this))
-			.then(this.onAfterRender.bind(this))
+			.then(() => {
+				this.trigger('afterRender');
+			})
 			.catch(notCommon.report);
 		return this;
 	}
@@ -33,17 +35,17 @@ class CRUDList extends notController {
 			showAddForm: () => {
 				this.parent.app.getWorking('router').navigate([this.parent.getModuleName(), 'create'].join('/'));
 			},
-		linkBackToList: this.parent.linkBackToList.bind(this.parent),
+			linkBackToList: this.parent.linkBackToList.bind(this.parent),
 		});
 	}
 
 	updateDatatable() {
 		return new Promise((resolve, reject) => {
-			try{
+			try {
 				this.tableView = new notTable({
 					options: {
 						fields: this.parent.getOptions('views.list.fields'),
-						targetEl: document.querySelector(this.parent.getOptions('views.list.targetQuery')||this.parent.getOptions('targetQuery')),
+						targetEl: document.querySelector(this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery')),
 						helpers: notCommon.extend({
 							title: this.parent.getOptions('names.plural')
 						}, this.parent.getOptions('views.list.helpers') || {}),
@@ -57,7 +59,7 @@ class CRUDList extends notController {
 						['afterRender', resolve]
 					]
 				});
-			}catch(e){
+			} catch (e) {
 				reject(e);
 			}
 		});

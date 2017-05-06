@@ -53,6 +53,7 @@ class CRUDList extends notController {
 						pageNumber: 0,
 						onePager: true,
 						liveLoad: true,
+						footerQuery: this.parent.getOptions('views.list.footerQuery'),
 						interface: this.make[this.parent.getModuleName()]
 					},
 					events: [

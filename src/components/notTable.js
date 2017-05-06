@@ -13,8 +13,10 @@ class notTable extends notBase {
 	constructor(input) {
 		super(input);
 		this.setWorking('filteredData', []);
-		if(!this.getData() || !Array.isArray(this.getData('rows'))){
-			this.setData({rows:[]});
+		if (!this.getData() || !Array.isArray(this.getData('rows'))) {
+			this.setData({
+				rows: []
+			});
 		}
 		this.resetPager();
 		this.resetFilter();
@@ -39,7 +41,8 @@ class notTable extends notBase {
 				},
 				events: [
 					[
-						['afterRender', 'afterUpdate'], this.renderInside.bind(this)
+						['afterRender', 'afterUpdate'],
+						[this.initAutoloader.bind(this), this.renderInside.bind(this)]
 					]
 				]
 			});
@@ -79,12 +82,12 @@ class notTable extends notBase {
 	}
 
 	changeSortingOptions(el, fieldName) {
-		if (fieldName === this.getSorter().sortByField){
+		if (fieldName === this.getSorter().sortByField) {
 			this.setSorter({
 				sortByField: fieldName,
 				sortDirection: -1 * this.getSorter().sortDirection,
 			});
-		}else{
+		} else {
 			this.setSorter({
 				sortByField: fieldName,
 				sortDirection: OPT_DEFAULT_SORT_DIRECTION,
@@ -118,7 +121,7 @@ class notTable extends notBase {
 		this.updateData();
 	}
 
-	resetSorter(){
+	resetSorter() {
 		this.setSorter({
 			sortByField: OPT_DEFAULT_SORT_FIELD,
 			sortDirection: OPT_DEFAULT_SORT_DIRECTION,
@@ -135,8 +138,8 @@ class notTable extends notBase {
 
 	invalidateData() {
 		if (this.getOptions('liveLoad') && this.getOptions('onePager')) {
-			while(this.getData('rows').length>0){
-				this.getData('rows').pop();
+			if (this.getData('rows').length > 0) {
+				this.getData('rows').splice(0, this.getData('rows').length);
 			}
 			this.resetPager();
 		}
@@ -164,8 +167,8 @@ class notTable extends notBase {
 
 	resetPager() {
 		this.setWorking('pager', {
-			pageSize: isNaN(this.getOptions('pageSize')) ? OPT_DEFAULT_PAGE_SIZE:this.getOptions('pageSize'),
-			pageNumber: isNaN(this.getOptions('pageNumber')) ? OPT_DEFAULT_PAGE_NUMBER:this.getOptions('pageNumber'),
+			pageSize: isNaN(this.getOptions('pageSize')) ? OPT_DEFAULT_PAGE_SIZE : this.getOptions('pageSize'),
+			pageNumber: isNaN(this.getOptions('pageNumber')) ? OPT_DEFAULT_PAGE_NUMBER : this.getOptions('pageNumber'),
 		});
 	}
 
@@ -232,11 +235,11 @@ class notTable extends notBase {
 		if (typeof thatSorter !== 'undefined' && thatSorter !== null) {
 			this.getWorking('filteredData').sort((item1, item2) => {
 				let t1 = notPath.get(thatSorter.sortByField, item1, {}),
-					t2 = notPath.get(thatSorter.sortByField,item2,{});
+					t2 = notPath.get(thatSorter.sortByField, item2, {});
 				if (isNaN(t1)) {
-					if (typeof t1 !== 'undefined' && typeof t2 !== 'undefined' && t1.localeCompare){
-						return t1.localeCompare() * - thatSorter.sortDirection;
-					}else{
+					if (typeof t1 !== 'undefined' && typeof t2 !== 'undefined' && t1.localeCompare) {
+						return t1.localeCompare() * -thatSorter.sortDirection;
+					} else {
 						return 0;
 					}
 				} else {
@@ -293,7 +296,7 @@ class notTable extends notBase {
 				newTd.dataset.path = field.path;
 				newTd.dataset.itemId = item[this.getOptions('itemIdField')];
 				newTd.dataset.value = val;
-				newTd.addEventListener('blur', ()=>{
+				newTd.addEventListener('blur', () => {
 					notPath.set(field.path, item, this.getOptions('helpers'), newTd.textContent);
 					this.updateData();
 				});
@@ -305,7 +308,11 @@ class notTable extends notBase {
 
 			if (field.hasOwnProperty('component')) {
 				new notComponent({
-					data: field.component.data || preprocessed || {val, item, index},
+					data: field.component.data || preprocessed || {
+						val,
+						item,
+						index
+					},
 					template: field.component.template,
 					options: {
 						targetEl: newTd,
@@ -317,9 +324,9 @@ class notTable extends notBase {
 				newTd.innerHTML = preprocessed || val;
 			}
 
-			if(field.hasOwnProperty('style')){
-				for(let style in field.style){
-					if(field.style.hasOwnProperty(style)){
+			if (field.hasOwnProperty('style')) {
+				for (let style in field.style) {
+					if (field.style.hasOwnProperty(style)) {
 						newTd.style[style] = field.style[style];
 					}
 				}
@@ -327,7 +334,7 @@ class notTable extends notBase {
 
 			if (field.hasOwnProperty('events') && field.events) {
 				for (var j in field.events) {
-					newTd.addEventListener(j, (e)=>{
+					newTd.addEventListener(j, (e) => {
 						e.preventDefault();
 						return field.events[j]({
 							event: e,
@@ -371,9 +378,9 @@ class notTable extends notBase {
 		tableBody.innerHTML = '';
 	}
 
-	checkFiltered(){
-		if (!Array.isArray(this.getWorking('filteredData'))){
-			this.setWorking('filteredData',[]);
+	checkFiltered() {
+		if (!Array.isArray(this.getWorking('filteredData'))) {
+			this.setWorking('filteredData', []);
 		}
 	}
 
@@ -391,15 +398,29 @@ class notTable extends notBase {
 		}
 	}
 
-	testDataItem(item){
+	testDataItem(item) {
 		var strValue = this.getFilterSearch().toLowerCase();
-		for(var k in item){
+		for (var k in item) {
 			var toComp = item[k].toString().toLowerCase();
-			if (toComp.indexOf(strValue)>-1){
+			if (toComp.indexOf(strValue) > -1) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	initAutoloader() {
+		if (jQuery && jQuery.scrollSpy && !this.getWorking('live')) {
+			console.log('autoload possible');
+			if (this.getOptions('liveLoad') && this.getOptions('onePager') && this.getOptions('footerQuery')) {
+				let t = $(this.getOptions('footerQuery'));
+				if (t) {
+					t.on('scrollSpy:enter', this.loadNext.bind(this));
+					t.scrollSpy();
+					this.setWorking('live', true);
+				}
+			}
+		}
 	}
 }
 

@@ -389,6 +389,7 @@ class notTable extends notBase {
 			this.clearBody();
 		}
 		this.checkFiltered();
+
 		var thisPageStarts = this.getPager().pageSize * (this.getPager().pageNumber),
 			nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1),
 			tbody = this.findBody();

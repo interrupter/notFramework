@@ -15,15 +15,15 @@ class notRouter extends notBase {
 		return this;
 	}
 
-	history(){
+	history() {
 		this.setWorking('mode', OPT_MODE_HISTORY);
 	}
 
-	hash(){
+	hash() {
 		this.setWorking('mode', OPT_MODE_HASH);
 	}
 
-	setRoot(root){
+	setRoot(root) {
 		this.setWorking('root', root ? '/' + this.clearSlashes(root) + '/' : '/');
 		return this;
 	}
@@ -72,11 +72,11 @@ class notRouter extends notBase {
 		return this;
 	}
 
-	isInitialized(){
+	isInitialized() {
 		return this.getWorking('initialized');
 	}
 
-	setInitialized(val = true){
+	setInitialized(val = true) {
 		return this.setWorking('initialized', val);
 	}
 
@@ -95,22 +95,22 @@ class notRouter extends notBase {
 		return this.clearSlashes(fragment);
 	}
 
-	checkLocation(){
-		let current =this.getWorking('current'),
-			fragment =this.getFragment(),
+	checkLocation() {
+		let current = this.getWorking('current'),
+			fragment = this.getFragment(),
 			init = this.isInitialized();
-		if (current !==fragment  || !init) {
-			this.setWorking('current',fragment);
+		if (current !== fragment || !init) {
+			this.setWorking('current', fragment);
 			this.check(fragment);
 			this.setInitialized();
 		}
 	}
 
-	hrefClick(){
+	hrefClick() {
 		//console.log(...arguments);
 	}
 
-	getRoot(){
+	getRoot() {
 		return '';
 	}
 
@@ -126,7 +126,7 @@ class notRouter extends notBase {
 		var fragment = f || this.getFragment();
 		for (var i = 0; i < this.getWorking('routes').length; i++) {
 			let path = this.getWorking('root') + this.getWorking('routes')[i].re;
-			let fullRE =  this.clearSlashes(decodeURI(path));
+			let fullRE = this.clearSlashes(decodeURI(path));
 			var match = fragment.match(fullRE);
 			if (match) {
 				match.shift();
@@ -139,13 +139,15 @@ class notRouter extends notBase {
 
 	navigate(path) {
 		path = path ? path : '';
-		switch (this.getWorking('mode')){
-			case OPT_MODE_HISTORY: {
+		switch (this.getWorking('mode')) {
+		case OPT_MODE_HISTORY:
+			{
 				//console.log('push state', this.getFullRoute(path));
 				history.pushState(null, null, this.getFullRoute(path));
 				break;
 			}
-			case OPT_MODE_HASH: {
+		case OPT_MODE_HASH:
+			{
 				window.location.href.match(/#(.*)$/);
 				window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
 				break;
@@ -154,11 +156,11 @@ class notRouter extends notBase {
 		return this;
 	}
 
-	getFullRoute(path = ''){
+	getFullRoute(path = '') {
 		return this.getWorking('root') + this.clearSlashes(path);
 	}
 
-	getAllLinks(){
+	getAllLinks() {
 		var allElements = document.body.querySelectorAll('a');
 		var list = [];
 		for (var j = 0; j < allElements.length; j++) {
@@ -172,19 +174,19 @@ class notRouter extends notBase {
 		return list;
 	}
 
-	reRouteExisted(){
+	reRouteExisted() {
 		let list = this.getAllLinks();
-		for(let t = 0; t < list.length; t++){
+		for (let t = 0; t < list.length; t++) {
 			this.initRerouting(list[t], list[t].getAttribute('n-href'));
 		}
 		return this;
 	}
 
-	initRerouting(el, link){
-		if (!el.notRouterInitialized){
+	initRerouting(el, link) {
+		if (!el.notRouterInitialized) {
 			let fullLink = this.getFullRoute(link);
 			el.setAttribute('href', fullLink);
-			el.addEventListener('click', (e)=>{
+			el.addEventListener('click', (e) => {
 				e.preventDefault();
 				this.navigate(link);
 				return false;

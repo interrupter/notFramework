@@ -1,3 +1,4 @@
+/* global jQuery,$ */
 import notBase from '../notBase';
 import notCommon from '../common';
 import notComponent from '../template/notComponent';
@@ -412,7 +413,6 @@ class notTable extends notBase {
 
 	initAutoloader() {
 		if (jQuery && jQuery.scrollSpy && !this.getWorking('live')) {
-			console.log('autoload possible');
 			if (this.getOptions('liveLoad') && this.getOptions('onePager') && this.getOptions('footerQuery')) {
 				let t = $(this.getOptions('footerQuery'));
 				if (t) {

@@ -2,23 +2,23 @@ import notPath from '../notPath.js';
 import notRouter from '../notRouter';
 
 var notTemplateProcessorsLib = {
-	content: function(scope, item, helpers) {
+	content: function (scope, item, helpers) {
 		scope.attributeResult = notPath.parseSubs(scope.attributeExpression, item, helpers);
 		if (scope.params.indexOf('capitalize') > -1) {
 			scope.attributeResult = scope.attributeResult.toUpperCase();
 		}
 		scope.element.textContent = scope.attributeResult;
 	},
-	bind: function(scope, item, helpers) {
-		if (scope.element.binds){
-			if(scope.element.binds.hasOwnProperty(scope.params[0])){
-				if(scope.element.binds[scope.params[0]].indexOf(scope.attributeExpression) > -1){
+	bind: function (scope, item, helpers) {
+		if (scope.element.binds) {
+			if (scope.element.binds.hasOwnProperty(scope.params[0])) {
+				if (scope.element.binds[scope.params[0]].indexOf(scope.attributeExpression) > -1) {
 					return;
 				}
 			}
 		}
 		scope.element.addEventListener(scope.params[0], (e) => {
-			if (scope.params.length===1 || scope.params[1] !== 'default') {
+			if (scope.params.length === 1 || scope.params[1] !== 'default') {
 				e.preventDefault();
 			}
 			if (scope.attributeResult) {
@@ -32,17 +32,17 @@ var notTemplateProcessorsLib = {
 				return true;
 			}
 		}, false);
-		if(!scope.element.hasOwnProperty('binds')){
+		if (!scope.element.hasOwnProperty('binds')) {
 			scope.element.binds = {};
 		}
-		if(!scope.element.binds.hasOwnProperty(scope.params[0])){
+		if (!scope.element.binds.hasOwnProperty(scope.params[0])) {
 			scope.element.binds[scope.params[0]] = [];
 		}
-		if(scope.element.binds[scope.params[0]].indexOf(scope.attributeExpression) === -1){
+		if (scope.element.binds[scope.params[0]].indexOf(scope.attributeExpression) === -1) {
 			scope.element.binds[scope.params[0]].push(scope.attributeExpression);
 		}
 	},
-	value: function(scope, item, helpers) {
+	value: function (scope, item, helpers) {
 		let liveEvents = ['change', 'keyup'],
 			onEvent = () => {
 				if (['checkbox', 'radio', 'select-multiple'].indexOf(scope.element.type) > -1) {
@@ -73,7 +73,7 @@ var notTemplateProcessorsLib = {
 			};
 		scope.element.setAttribute('value', notPath.get(scope.attributeExpression, item, helpers));
 		if (scope.element.processedValue !== true) {
-			if(scope.element.type === 'textarea'){
+			if (scope.element.type === 'textarea') {
 				scope.element.innerHTML = notPath.get(scope.attributeExpression, item, helpers);
 			}
 			for (let t of liveEvents) {
@@ -82,7 +82,7 @@ var notTemplateProcessorsLib = {
 			scope.element.processedValue = true;
 		}
 	},
-	attr: function(scope, item, helpers) {
+	attr: function (scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers) || notPath.parseSubs(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof res === 'function') ? res({
 			scope,
@@ -91,13 +91,13 @@ var notTemplateProcessorsLib = {
 		}) : res);
 		scope.element.setAttribute(scope.params[0], scope.attributeResult);
 	},
-	name: function(scope, item, helpers) {
+	name: function (scope, item, helpers) {
 		scope.element.setAttribute('name', notPath.get(scope.attributeExpression, item, helpers));
 	},
-	change: function( /*scope, item, helpers*/ ) {
+	change: function ( /*scope, item, helpers*/ ) {
 
 	},
-	checked: function(scope, item, helpers) {
+	checked: function (scope, item, helpers) {
 		let result = notPath.get(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof result === 'function') ? result({
 			scope,
@@ -106,7 +106,7 @@ var notTemplateProcessorsLib = {
 		}) : result);
 		scope.attributeResult ? scope.element.setAttribute('checked', true) : scope.element.removeAttribute('checked');
 	},
-	class: function(scope, item, helpers) {
+	class: function (scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof res === 'function') ? res({
 			scope,
@@ -140,7 +140,7 @@ var notTemplateProcessorsLib = {
 			}
 		}
 	},
-	options: function(scope, item, helpers) {
+	options: function (scope, item, helpers) {
 		let i = 0,
 			option = null,
 			valueFieldName = 'value',
@@ -169,7 +169,7 @@ var notTemplateProcessorsLib = {
 				option.setAttribute('value', lib[i][valueFieldName]);
 				option.textContent = lib[i][labelFieldName];
 				if (helpers.field.array) {
-					if (item[itemValueFieldName] && Array.isArray(item[itemValueFieldName])){
+					if (item[itemValueFieldName] && Array.isArray(item[itemValueFieldName])) {
 						if (item[itemValueFieldName].indexOf(lib[i][valueFieldName]) > -1) {
 							option.setAttribute('selected', true);
 						}
@@ -183,18 +183,54 @@ var notTemplateProcessorsLib = {
 			}
 		}
 	},
-	href:function(scope, item, helpers){
-		if (!scope.element.notRouterInitialized){
+	href: function (scope, item, helpers) {
+		if (!scope.element.notRouterInitialized) {
 			scope.attributeResult = notPath.parseSubs(scope.attributeExpression, item, helpers);
 			scope.element.setAttribute('href', notRouter.getFullRoute(scope.attributeResult));
-			scope.element.addEventListener('click', (e)=>{
+			scope.element.addEventListener('click', (e) => {
 				e.preventDefault();
 				notRouter.navigate(notPath.parseSubs(scope.attributeExpression, item, helpers));
 				return false;
 			});
 			scope.element.notRouterInitialized = true;
 		}
+	},
+	/*
+	n-keybind-[enter|letter|digit]-[ctrl|shift|alt|meta]*="actionPath"
+	*/
+	keybind: function (scope, item, helpers) {
+		if (scope.element.keybinds) {
+			if (scope.element.keybinds.hasOwnProperty(scope.params.join('-'))) {
+				if (scope.element.keybinds[scope.params.join('-')].indexOf(scope.attributeExpression) > -1) {
+					return;
+				}
+			}
+		}
+		scope.element.addEventListener('keyup', (e) => {
+			if (scope.attributeResult) {
+				if (e.key.toLowerCase() === scope.params[0]) {
+					return scope.attributeResult({
+						scope,
+						item,
+						helpers,
+						e
+					});
+				} else {
+					return true;
+				}
+			} else {
+				return true;
+			}
+		}, false);
+		if (!scope.element.hasOwnProperty('binds')) {
+			scope.element.keybinds = {};
+		}
+		if (!scope.element.keybinds.hasOwnProperty(scope.params.join('-'))) {
+			scope.element.keybinds[scope.params.join('-')] = [];
+		}
+		if (scope.element.keybinds[scope.params.join('-')].indexOf(scope.attributeExpression) === -1) {
+			scope.element.keybinds[scope.params.join('-')].push(scope.attributeExpression);
+		}
 	}
-
 };
 export default notTemplateProcessorsLib;

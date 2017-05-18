@@ -17,72 +17,78 @@ const SUB_PATH_START = '{',
 	FUNCTION_MARKER = '()',
 	MAX_DEEP = 10;
 
-class notPath{
-	constructor(){
+class notPath {
+	constructor() {
 		return this;
 	}
 	/*
 		input ':{::helperVal}.sub'
 		return ::helperVal
 	*/
-	findNextSubPath(path/* string */){
+	findNextSubPath(path /* string */ ) {
 		let subPath = '',
 			find = false;
-		for(let i = 0; i < path.length; i++){
-			if (path[i] === SUB_PATH_START){
+		for (let i = 0; i < path.length; i++) {
+			if (path[i] === SUB_PATH_START) {
 				find = true;
 				subPath = '';
-			}else{
-				if(path[i] === SUB_PATH_END && find){
+			} else {
+				if (path[i] === SUB_PATH_END && find) {
 					if (find) {
 						return subPath;
 					}
-				}else{
-					subPath+=path[i];
+				} else {
+					subPath += path[i];
 				}
 			}
 		}
-		return find?subPath:null;
+		return find ? subPath : null;
 	}
 
-	replaceSubPath(path, sub, parsed){
-		let subf = SUB_PATH_START+sub+SUB_PATH_END;
-		while(path.indexOf(subf) > -1){
+	replaceSubPath(path, sub, parsed) {
+		let subf = SUB_PATH_START + sub + SUB_PATH_END;
+		while (path.indexOf(subf) > -1) {
 			path = path.replace(subf, parsed);
 		}
 		return path;
 	}
 
-	parseSubs(path, item, helpers){
-		let subPath, subPathParsed, i = 0;
-		while(subPath = this.findNextSubPath(path)){
-			subPathParsed = this.getValueByPath(subPath.indexOf(PATH_START_HELPERS)>-1?helpers:item, subPath, item, helpers);
+	parseSubs(path, item, helpers) {
+		let subPath = this.findNextSubPath(path),
+			subPathParsed, i = 0;
+		while (subPath) {
+			subPathParsed = this.getValueByPath(subPath.indexOf(PATH_START_HELPERS) > -1 ? helpers : item, subPath, item, helpers);
 			path = this.replaceSubPath(path, subPath, subPathParsed);
 			i++;
-			if (i > MAX_DEEP){
+			if (i > MAX_DEEP) {
 				break;
 			}
+			subPath = this.findNextSubPath(path);
 		}
 		return path;
 	}
 
-	get(path, item, helpers){
-		switch (path){
-			case PATH_START_OBJECT: return item;
-			case PATH_START_HELPERS: return helpers;
+	get(path, item, helpers) {
+		switch (path) {
+		case PATH_START_OBJECT:
+			return item;
+		case PATH_START_HELPERS:
+			return helpers;
 		}
 		path = this.parseSubs(path, item, helpers);
-		return this.getValueByPath(path.indexOf(PATH_START_HELPERS)>-1?helpers:item, path, item, helpers);
+		return this.getValueByPath(path.indexOf(PATH_START_HELPERS) > -1 ? helpers : item, path, item, helpers);
 	}
 
-	set(path, item, helpers, attrValue){
-		let subPath, subPathParsed, i = 0;
-		while(subPath = this.findNextSubPath(path)){
-			subPathParsed = this.getValueByPath( subPath.indexOf(PATH_START_HELPERS)>-1?helpers:item, subPath, item, helpers);
+	set(path, item, helpers, attrValue) {
+		let subPath = this.findNextSubPath(path),
+			subPathParsed, i = 0;
+		while (subPath) {
+			subPathParsed = this.getValueByPath(subPath.indexOf(PATH_START_HELPERS) > -1 ? helpers : item, subPath, item, helpers);
 			path = this.replaceSubPath(path, subPath, subPathParsed);
-			if (i > MAX_DEEP){
+			if (i > MAX_DEEP) {
 				break;
 			}
+			subPath = this.findNextSubPath(path);
 		}
 		this.setValueByPath(item, path, attrValue);
 		if (item.isRecord && this.normilizePath(path).length > 1) {
@@ -90,31 +96,31 @@ class notPath{
 		}
 	}
 
-	unset(path, item, helpers){
+	unset(path, item, helpers) {
 		this.set(path, item, helpers, null);
 	}
 
-	parsePathStep(step, item, helper){
+	parsePathStep(step, item, helper) {
 		let rStep = null;
-		if(step.indexOf(PATH_START_HELPERS) === 0 && helper){
+		if (step.indexOf(PATH_START_HELPERS) === 0 && helper) {
 			rStep = step.replace(PATH_START_HELPERS, '');
-			if(rStep.indexOf(FUNCTION_MARKER) === rStep.length-2){
+			if (rStep.indexOf(FUNCTION_MARKER) === rStep.length - 2) {
 				rStep = step.replace(FUNCTION_MARKER, '');
-				if(helper.hasOwnProperty(rStep)){
+				if (helper.hasOwnProperty(rStep)) {
 					return helper[rStep](item, undefined);
 				}
-			}else{
+			} else {
 				return helper[rStep];
 			}
-		}else{
-			if(step.indexOf(PATH_START_OBJECT) === 0 && item){
+		} else {
+			if (step.indexOf(PATH_START_OBJECT) === 0 && item) {
 				rStep = step.replace(PATH_START_OBJECT, '');
-				if(rStep.indexOf(FUNCTION_MARKER) === rStep.length-2){
+				if (rStep.indexOf(FUNCTION_MARKER) === rStep.length - 2) {
 					rStep = step.replace(FUNCTION_MARKER, '');
-					if(item.hasOwnProperty(rStep)){
+					if (item.hasOwnProperty(rStep)) {
 						return item[rStep](item, undefined);
 					}
-				}else{
+				} else {
 					return item[rStep];
 				}
 			}
@@ -126,22 +132,22 @@ class notPath{
 	//{}
 	//{fieldName: 'targetRecordField'}
 	////['targetRecordField', 'result']
-	parsePath(path, item, helper){
-		if (!Array.isArray(path)){
+	parsePath(path, item, helper) {
+		if (!Array.isArray(path)) {
 			path = path.split(PATH_SPLIT);
 		}
-		for(var i = 0; i < path.length; i++){
+		for (var i = 0; i < path.length; i++) {
 			path[i] = this.parsePathStep(path[i], item, helper);
 		}
 		return path;
 	}
 
-	normilizePath(path){
-		if (Array.isArray(path)){
+	normilizePath(path) {
+		if (Array.isArray(path)) {
 			return path;
-		}else{
-			while(path.indexOf(PATH_START_OBJECT) > -1){
-				path = path.replace(PATH_START_OBJECT,'');
+		} else {
+			while (path.indexOf(PATH_START_OBJECT) > -1) {
+				path = path.replace(PATH_START_OBJECT, '');
 			}
 			return path.split(PATH_SPLIT);
 		}
@@ -154,47 +160,54 @@ class notPath{
 
 	*/
 
-	ifFullSubPath(big, small){
-		if (big.length<small.length){return false;}
-		for(let t =0; t < small.length; t++){
-			if(small[t] !== big[t]){
+	ifFullSubPath(big, small) {
+		if (big.length < small.length) {
+			return false;
+		}
+		for (let t = 0; t < small.length; t++) {
+			if (small[t] !== big[t]) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	getValueByPath(object, attrPath, item, helpers){
+	getValueByPath(object, attrPath, item, helpers) {
 		attrPath = this.normilizePath(attrPath);
 		let attrName = attrPath.shift(),
-			isFunction = attrName.indexOf(FUNCTION_MARKER)>-1;
-		if (isFunction){
+			isFunction = attrName.indexOf(FUNCTION_MARKER) > -1;
+		if (isFunction) {
 			attrName = attrName.replace(FUNCTION_MARKER, '');
 		}
-		if ((typeof object === 'object') && typeof object[attrName] !== 'undefined' && object[attrName] !== null){
-			let newObj = isFunction?object[attrName]({item, helpers}):object[attrName];
-			if (attrPath.length > 0){
+		if ((typeof object === 'object') && typeof object[attrName] !== 'undefined' && object[attrName] !== null) {
+			let newObj = isFunction ? object[attrName]({
+				item,
+				helpers
+			}) : object[attrName];
+			if (attrPath.length > 0) {
 				return this.getValueByPath(newObj, attrPath, item, helpers);
-			}else{
+			} else {
 				return newObj;
 			}
-		}else{
+		} else {
 			return undefined;
 		}
 	}
 
-	setValueByPath(object, attrPath, attrValue){
+	setValueByPath(object, attrPath, attrValue) {
 		attrPath = this.normilizePath(attrPath);
 		let attrName = attrPath.shift();
-		if (attrPath.length > 0){
-			if (!object.hasOwnProperty(attrName)){object[attrName] = {};}
+		if (attrPath.length > 0) {
+			if (!object.hasOwnProperty(attrName)) {
+				object[attrName] = {};
+			}
 			this.setValueByPath(object[attrName], attrPath, attrValue);
-		}else{
+		} else {
 			object[attrName] = attrValue;
 		}
 	}
 
-	join(){
+	join() {
 		let args = Array.prototype.slice.call(arguments);
 		return args.join(PATH_SPLIT);
 	}

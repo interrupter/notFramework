@@ -55,7 +55,7 @@ class notDetails extends notBase {
 		this.renderWrapper();
 	}
 
-	getPartTemplateName(formPart){
+	getPartTemplateName(formPart) {
 		return this.getOptions('prefix') + formPart;
 	}
 
@@ -74,8 +74,10 @@ class notDetails extends notBase {
 					targetQuery: this.getOptions('targetQuery'),
 					id: this.getOptions('id')
 				},
-				events:[
-					[['afterRender', 'afterUpdate'], this.renderComponents.bind(this)]
+				events: [
+					[
+						['afterRender', 'afterUpdate'], this.renderComponents.bind(this)
+					]
 				]
 			};
 			let wrapper = new notComponent(input);
@@ -91,12 +93,12 @@ class notDetails extends notBase {
 	}
 
 	renderComponents() {
-		if (this.getWorking('components') && this.getWorking('components').length){
-			for(let t = 0; t < this.getWorking('components').length; t++){
+		if (this.getWorking('components') && this.getWorking('components').length) {
+			for (let t = 0; t < this.getWorking('components').length; t++) {
 				this.getWorking('components')[t].component.update();
 			}
-		}else{
-			for(let t = 0; t < this.getFieldsList().length; t++){
+		} else {
+			for (let t = 0; t < this.getFieldsList().length; t++) {
 				let fieldName = this.getFieldsList()[t];
 				this.addFieldComponent(fieldName);
 			}
@@ -111,7 +113,7 @@ class notDetails extends notBase {
 		}
 	}
 
-	getFieldsLibs(){
+	getFieldsLibs() {
 		let result = {
 			options: {},
 			manifest: {},
@@ -120,10 +122,10 @@ class notDetails extends notBase {
 		if (this.getOptions('fields')) {
 			result.options = this.getOptions('fields');
 		}
-		if (notCommon.getApp() && notCommon.getApp().getOptions('fields')){
+		if (notCommon.getApp() && notCommon.getApp().getOptions('fields')) {
 			result.app = notCommon.getApp().getOptions('fields');
 		}
-		if (this.getData().isRecord && this.getData().getManifest()){
+		if (this.getData().isRecord && this.getData().getManifest()) {
 			result.manifest = this.getData().getManifest().fields;
 		}
 		return result;
@@ -132,8 +134,8 @@ class notDetails extends notBase {
 	getFieldsDefinition(fieldName) {
 		let def = OPT_DEFAULT_FIELD_DEFINITION,
 			fieldsLibs = this.getFieldsLibs();
-		for(let t of OPT_DEFAULT_FIELD_DEFINITION_SOURCES_PRIORITY_LIST){
-			if (fieldsLibs.hasOwnProperty(t) && fieldsLibs[t].hasOwnProperty(fieldName)){
+		for (let t of OPT_DEFAULT_FIELD_DEFINITION_SOURCES_PRIORITY_LIST) {
+			if (fieldsLibs.hasOwnProperty(t) && fieldsLibs[t].hasOwnProperty(fieldName)) {
 				return fieldsLibs[t][fieldName];
 			}
 		}
@@ -143,16 +145,16 @@ class notDetails extends notBase {
 	addFieldComponent(fieldName) {
 		let fieldType = this.getFieldsDefinition(fieldName),
 			rec = null;
-		if(fieldType.component){
+		if (fieldType.component) {
 			rec = this.castCustom(fieldName, fieldType);
-		}else{
+		} else {
 			rec = this.castCommon(fieldName, fieldType);
 		}
 		this.getWorking('components').push(rec);
 	}
 
-	castCustom(fieldName, fieldType){
-		let CustomComponent = notFramework.notCommon.get('components')[fieldType.component];
+	castCustom(fieldName, fieldType) {
+		let CustomComponent = notCommon.get('components')[fieldType.component];
 		let rec = {
 			field: {
 				name: fieldName,
@@ -162,7 +164,7 @@ class notDetails extends notBase {
 				array: fieldType.array,
 				default: fieldType.default,
 				placeholder: fieldType.placeholder,
-				options: this.getOptions(notPath.join('helpers','libs',fieldName))
+				options: this.getOptions(notPath.join('helpers', 'libs', fieldName))
 			}
 		};
 		let helpers = notCommon.extend({
@@ -184,7 +186,7 @@ class notDetails extends notBase {
 		return rec;
 	}
 
-	castCommon(fieldName, fieldType){
+	castCommon(fieldName, fieldType) {
 		let rec = {
 			field: {
 				name: fieldName,
@@ -194,7 +196,7 @@ class notDetails extends notBase {
 				array: fieldType.array,
 				default: fieldType.default,
 				placeholder: fieldType.placeholder,
-				options: this.getOptions(notPath.join('helpers','libs',fieldName))
+				options: this.getOptions(notPath.join('helpers', 'libs', fieldName))
 			}
 		};
 		let helpers = notCommon.extend({
@@ -218,16 +220,18 @@ class notDetails extends notBase {
 		return rec;
 	}
 
-	getTargetElement(target = 'body'){
-		if (!target){target = 'body';}
+	getTargetElement(target = 'body') {
+		if (!target) {
+			target = 'body';
+		}
 		let res = this.getOptions('targetEl').querySelector('[role="' + target + '"]');
-		if (!res && target!=='body'){
+		if (!res && target !== 'body') {
 			target = 'body';
 			res = this.getOptions('targetEl').querySelector('[role="' + target + '"]');
 		}
-		if(!res && target=='body'){
+		if (!res && target == 'body') {
 			return this.getOptions('targetEl');
-		}else{
+		} else {
 			return res;
 		}
 	}
@@ -236,16 +240,16 @@ class notDetails extends notBase {
 		Data management
 	*/
 
-	updateField(fieldName){
-		for(let t = 0; t < this.getWorking('components').length; t++){
-			if (this.getWorking('components')[t].field.name === fieldName){
+	updateField(fieldName) {
+		for (let t = 0; t < this.getWorking('components').length; t++) {
+			if (this.getWorking('components')[t].field.name === fieldName) {
 				this.getWorking('components')[t].component.update();
 			}
 		}
 	}
 
-	update(){
-		for(let t = 0; t < this.getWorking('components').length; t++){
+	update() {
+		for (let t = 0; t < this.getWorking('components').length; t++) {
 			this.getWorking('components')[t].component.update();
 		}
 	}

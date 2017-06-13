@@ -80,6 +80,10 @@ class notPath {
 	}
 
 	set(path, item, helpers, attrValue) {
+		if (arguments.length === 3) {
+			attrValue = helpers;
+			helpers = undefined;
+		}
 		let subPath = this.findNextSubPath(path),
 			subPathParsed, i = 0;
 		while (subPath) {

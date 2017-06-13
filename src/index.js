@@ -26,7 +26,14 @@ import notApp from './notApp';
 */
 import notController from './notController';
 
-import {CRUDController,CRUDCreate,CRUDDelete,CRUDDetails,CRUDList,CRUDUpdate} from './CRUD';
+import {
+	CRUDController,
+	CRUDCreate,
+	CRUDDelete,
+	CRUDDetails,
+	CRUDList,
+	CRUDUpdate
+} from './CRUD';
 
 /*
 	templating and common structures
@@ -42,8 +49,10 @@ import notForm from './components/notForm';
 import notTable from './components/notTable';
 import notDetails from './components/notDetails';
 
-import notRecordInterface from './notRecordInterface'; //	how to interact with data on server
-import notRecord from './notRecord'; //	wrapper for data with server<->view live interactions
+import notRecord from './record'; //	wrapper for data with server<->view live interactions
+import {
+	notRecordInterface
+} from './record'; //	how to interact with data on server
 
 notTemplateProcessors.add(notTemplateProcessorsLib);
 

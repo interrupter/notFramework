@@ -1,6 +1,6 @@
 import notCommon from './common';
 import notTemplateCache from './template/notTemplateCache';
-import notRecord from './notRecord';
+import notRecord from './record';
 import notBase from './notBase';
 import notRouter from './notRouter';
 import notAPI from './api';
@@ -10,7 +10,9 @@ const OPT_CONTROLLER_PREFIX = 'nc',
 
 export default class notApp extends notBase {
 	constructor(options) {
-		super({options});
+		super({
+			options
+		});
 		notCommon.log('start app');
 		notCommon.register('app', this);
 		this.resources = {};
@@ -27,41 +29,43 @@ export default class notApp extends notBase {
 		return this;
 	}
 
-	initManager(){
-		notCommon.setManager(
-			{
-				setAPI(v){ this.api = v;},
-				getAPI(){return this.api;},
-			}
-		);
+	initManager() {
+		notCommon.setManager({
+			setAPI(v) {
+				this.api = v;
+			},
+			getAPI() {
+				return this.api;
+			},
+		});
 	}
 
-	initAPI(){
+	initAPI() {
 		notCommon.getManager().setAPI(new notAPI(this.getOptions('api') || {}));
 	}
 
-	initTemplates(){
-		if (this.getOptions('templates')){
+	initTemplates() {
+		if (this.getOptions('templates')) {
 			let prom = null;
-			for(let t in this.getOptions('templates')){
-				if (t && this.getOptions('templates').hasOwnProperty(t)){
+			for (let t in this.getOptions('templates')) {
+				if (t && this.getOptions('templates').hasOwnProperty(t)) {
 					let url = this.getOptions('templates')[t];
-					if(prom){
+					if (prom) {
 						prom.then(notTemplateCache.addLibFromURL.bind(notTemplateCache, url));
-					}else{
+					} else {
 						prom = notTemplateCache.addLibFromURL(url);
 					}
 				}
 			}
-			if (prom){
+			if (prom) {
 				prom.then(this.initManifest.bind(this))
 					.catch((e) => {
 						notCommon.report('no templates lib', e);
 					});
-			}else{
+			} else {
 				this.initManifest();
 			}
-		}else{
+		} else {
 			this.initManifest();
 		}
 	}
@@ -73,23 +77,23 @@ export default class notApp extends notBase {
 			.catch(notCommon.report.bind(this));
 	}
 
-	preInitRouter(){
+	preInitRouter() {
 		this.setWorking('router', notRouter);
 		this.getWorking('router').setRoot(this.getOptions('router.root'));
 		notRouter.reRouteExisted();
 	}
 
-	initRouter(){
+	initRouter() {
 		var routieInput = {};
-		for(let t = 0; t < this.getOptions('router.manifest').length; t++){
+		for (let t = 0; t < this.getOptions('router.manifest').length; t++) {
 			let routeBlock = this.getOptions('router.manifest')[t],
 				paths = routeBlock.paths,
 				controller = routeBlock.controller;
-			for(let i = 0; i < paths.length; i++){
+			for (let i = 0; i < paths.length; i++) {
 				routieInput[paths[i]] = this.bindController(controller);
 			}
 		}
-		this.getWorking('router').addList(routieInput).listen();//.navigate(this.getOptions('router.index'));
+		this.getWorking('router').addList(routieInput).listen(); //.navigate(this.getOptions('router.index'));
 	}
 
 	setInterfaceManifest(manifest) {
@@ -120,13 +124,13 @@ export default class notApp extends notBase {
 
 	bindController(controllerName) {
 		let app = this;
-		return function(){
+		return function () {
 			new controllerName(app, arguments);
 		};
 	}
 
 	initController() {
-		if (typeof(this.getOptions('initController')) !== 'undefined') {
+		if (typeof (this.getOptions('initController')) !== 'undefined') {
 			let initController = this.getOptions('initController');
 			this.setWorking('initController', new initController(this));
 		}
@@ -145,7 +149,7 @@ export default class notApp extends notBase {
 		this.clearInterfaces();
 		let manifests = this.getOptions('interfaceManifest');
 		if (manifests) {
-			for(let name in manifests){
+			for (let name in manifests) {
 				let recordManifest = manifests[name];
 				this.getWorking('interfaces')[name] = (recordData) => new notRecord(recordManifest, recordData);
 				window['nr' + notCommon.capitalizeFirstLetter(name)] = this.getWorking('interfaces')[name];

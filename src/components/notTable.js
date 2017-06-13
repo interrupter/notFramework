@@ -3,21 +3,99 @@ import notBase from '../notBase';
 import notCommon from '../common';
 import notComponent from '../template/notComponent';
 import notPath from '../notPath';
+import notRecord from '../record';
 
 const OPT_DEFAULT_PAGE_SIZE = 20,
 	OPT_DEFAULT_PAGE_NUMBER = 0,
+	OPT_DEFAULT_PAGE_RANGE = 6,
 	OPT_DEFAULT_SORT_DIRECTION = 1,
+	OPT_DEFAULT_COUNT_ACTION = 'count',
+	OPT_DEFAULT_LIST_ACTION = 'list',
 	OPT_DEFAULT_SORT_FIELD = '_id',
 	OPT_FIELD_NAME_PRE_PROC = 'preprocessor';
+
+/**
+	Few concepts
+		*	two modes 1 - live requesting from server, 2 - static data
+
+		*	in live mode: changing of filters or sorters leads to another request
+			to server, in endless mode after scroll down to the bottom of
+			table next page will be requested and glued to the bottom of the
+			table, in pagination mode after change of sorter or filter
+			pagination will be reset
+
+		*	in static mode: change in filters or sorters will lead to pagination
+			reset
+
+	let input = {
+		data:	//array of items to be presented in table
+				//in case of static - unfiltered
+				//in case of live - will be mirrored to table without any changes
+		options: {
+			//to post proc any row after it will be rendered
+			procRow:(
+				trow,	//HTMLElement of row
+				titem	//item displayed in row
+			)=>{
+				//some actions
+				return trow;
+			},
+			//array of fields that we will show in table
+			fields:[
+				{
+					path: ':id', 	// notPath to field
+					title: 'ID',	//what show in table titles row
+					sortable: true	//enale sorting
+					editable: true,	//inline editing
+					searchable: true//searchable from inline search field
+					events : {
+						click: (input){
+							console.log(...arguments);
+							input.item.status = !input.item.status;
+							table.updateData();
+						}
+					}
+				}
+			],
+			pageSize: 50,		//how many rows per "page"
+			pageNumber: 0,		//default page number aka first
+			endless: true,		//true - will loadup data from
+			endlessTrigger: 	//endless trigger
+			helpers: {},		//will be available for every processor in sub-templates
+			targetEl: el		//where we will place it
+			interface:{			//for online requested list
+				factory: 		//target notRecord factory with notRecordInterface, source of online data
+				listAction:		//which action will be called to retrieve data from server, default 'list'
+				countAction:	//which action will be called to retrieve raws count from server, default 'count'
+				onSuccess:		//will be called after successfull request
+				onError:		//will be called after failed request
+			},
+		}
+	}
+*/
 
 class notTable extends notBase {
 	constructor(input) {
 		super(input);
 		this.setWorking('filteredData', []);
-		if (!this.getData() || !Array.isArray(this.getData('rows'))) {
-			this.setData({
-				rows: []
-			});
+		this.data = new notRecord({}, {
+			pagination: {
+				items: {
+					count: 0,
+					from: 0,
+					to: 0
+				},
+				pages: {
+					count: 0,
+					from: 0,
+					to: 0,
+					current: 0,
+					list: []
+				}
+			}
+		});
+		if (this.getData() && !Array.isArray(this.getData())) {
+			this.setData(new notRecord({}, []));
 		}
 		this.resetPager();
 		this.resetFilter();
@@ -31,14 +109,25 @@ class notTable extends notBase {
 			this.getWorking('component').update();
 		} else {
 			let component = new notComponent({
-				data: {},
+				data: this.data,
 				template: {
 					name: 'table_wrapper'
 				},
 				options: {
 					renderAnd: this.getOptions('renderAnd'),
 					targetEl: this.getOptions('targetEl'),
-					helpers: this.getOptions('helpers')
+					helpers: notCommon.extend({
+						goToPage: (input) => {
+							this.goToPage(input.item.index);
+						},
+						goToFirst: this.goToFirst.bind(this),
+						goToLast: this.goToLast.bind(this),
+						goToNext: this.goToNext.bind(this),
+						goToPrev: this.goToPrev.bind(this),
+						isPageActive: (input) => {
+							return input.item.index === this.data.pagination.pages.current;
+						}
+					}, this.getOptions('helpers'))
 				},
 				events: [
 					[
@@ -48,6 +137,36 @@ class notTable extends notBase {
 				]
 			});
 			this.setWorking('component', component);
+		}
+	}
+
+	renderPagination() {
+		if (this.getWorking('componentPagination')) {
+			this.getWorking('componentPagination').update();
+		} else {
+			let component = new notComponent({
+				data: this.data.pagination,
+				template: {
+					name: 'table_pagination'
+				},
+				options: {
+					renderAnd: this.getOptions('replace'),
+					targetEl: this.getOptions('targetEl').querySelector('nav[role="pagination"]'),
+					helpers: notCommon.extend({
+						goToPage: (input) => {
+							this.goToPage(input.item.index);
+						},
+						goToFirst: this.goToFirst.bind(this),
+						goToLast: this.goToLast.bind(this),
+						goToNext: this.goToNext.bind(this),
+						goToPrev: this.goToPrev.bind(this),
+						isPageActive: (input) => {
+							return input.item.index === this.data.pagination.pages.current;
+						}
+					}, this.getOptions('helpers'))
+				}
+			});
+			this.setWorking('componentPagination', component);
 		}
 	}
 
@@ -116,7 +235,6 @@ class notTable extends notBase {
 	}
 
 	setSorter(hash) {
-		//console.log('setSorter', hash);
 		this.setWorking('sorter', hash);
 		this.invalidateData();
 		this.updateData();
@@ -137,13 +255,34 @@ class notTable extends notBase {
 		return (typeof this.getFilter() !== 'undefined' && this.getFilter() !== null && typeof this.getFilter().filterSearch !== 'undefined' && this.getFilter().filterSearch !== null) ? this.getFilter().filterSearch.toString() : '';
 	}
 
-	invalidateData() {
-		if (this.getOptions('liveLoad') && this.getOptions('onePager')) {
-			if (this.getData('rows').length > 0) {
-				this.getData('rows').splice(0, this.getData('rows').length);
-			}
-			this.resetPager();
+	clearFilteredData() {
+		if (this.getWorking('filteredData') && this.getWorking('filteredData').length > 0) {
+			this.getWorking('filteredData').splice(0, this.getWorking('filteredData').length);
+		} else {
+			//initialize if not exists
+			this.setWorking('filteredData', new notRecord({}, []));
 		}
+	}
+
+	clearData() {
+		if (this.getData() && this.getData().length > 0) {
+			this.getData().splice(0, this.getData().length);
+		} else {
+			//or init empty list
+			this.setData(new notRecord({}, []));
+		}
+	}
+
+	invalidateData() {
+		//clearing filtered and sorted
+		this.clearFilteredData();
+		//in case live loading from server
+		if (this.isLive()) {
+			//clearing loaded data
+			this.clearData();
+		}
+		//resset pager anyway
+		this.resetPager();
 	}
 
 	setFilter(hash) {
@@ -166,15 +305,27 @@ class notTable extends notBase {
 		this.updateData();
 	}
 
+	getDefaultPageNumber() {
+		return isNaN(this.getOptions('pageNumber')) ? OPT_DEFAULT_PAGE_NUMBER : this.getOptions('pageNumber');
+	}
+
+	getDefaultPageSize() {
+		return isNaN(this.getOptions('pageSize')) ? OPT_DEFAULT_PAGE_SIZE : this.getOptions('pageSize');
+	}
+
 	resetPager() {
 		this.setWorking('pager', {
-			pageSize: isNaN(this.getOptions('pageSize')) ? OPT_DEFAULT_PAGE_SIZE : this.getOptions('pageSize'),
-			pageNumber: isNaN(this.getOptions('pageNumber')) ? OPT_DEFAULT_PAGE_NUMBER : this.getOptions('pageNumber'),
+			pageSize: this.getDefaultPageSize(),
+			pageNumber: this.getDefaultPageNumber(),
 		});
 	}
 
 	getPager() {
 		return this.getWorking('pager');
+	}
+
+	isLive() {
+		return this.getOptions('interface') && this.getOptions('interface.factory');
 	}
 
 	setUpdating() {
@@ -189,41 +340,79 @@ class notTable extends notBase {
 		return this.getWorking('updating');
 	}
 
+	getDataInterface() {
+		return this.getOptions('interface.factory')({});
+	}
+
+	getLoadDataActionName() {
+		return (this.getOptions('interface.listAction') ? this.getOptions('interface.listAction') : OPT_DEFAULT_LIST_ACTION);
+	}
+
+	getCountActionName() {
+		return this.getOptions('interface.countAction') ? this.getOptions('interface.countAction') : OPT_DEFAULT_COUNT_ACTION;
+	}
+
+	loadData() {
+		//load from server
+		let query = this.getDataInterface()
+			.setFilter(this.getFilter())
+			.setSorter(this.getSorter())
+			.setPager(this.getPager().pageSize, this.getPager().pageNumber);
+		return query['$' + this.getLoadDataActionName()]();
+	}
+
+	goToNext() {
+		let next = isNaN(this.getWorking('pager').pageNumber) ? this.getDefaultPageNumber() : this.getWorking('pager').pageNumber + 1;
+		this.getWorking('pager').pageNumber = Math.min(next, this.data.pagination.pages.to);
+		this.updateData();
+	}
+
+	goToPrev() {
+		let prev = isNaN(this.getWorking('pager').pageNumber) ? this.getDefaultPageNumber() : this.getWorking('pager').pageNumber - 1;
+		this.getWorking('pager').pageNumber = Math.max(prev, this.data.pagination.pages.from);
+		this.updateData();
+	}
+
+	goToFirst() {
+		this.getWorking('pager').pageNumber = this.data.pagination.pages.from;
+		this.updateData();
+	}
+
+	goToLast() {
+		this.getWorking('pager').pageNumber = this.data.pagination.pages.to;
+		this.updateData();
+	}
+
+	goToPage(pageNumber) {
+		this.getWorking('pager').pageNumber = pageNumber;
+		this.updateData();
+	}
+
 	updateData() {
-		if (this.getOptions('liveLoad') && this.getOptions('interface')) {
+		if (this.isLive()) {
 			if (this.ifUpdating()) {
 				return;
 			}
-			//load from server
-			let query = this.getOptions('interface')({})
-				.setFilter(this.getFilter())
-				.setSorter(this.getSorter())
-				.setPager(this.getPager().pageSize, this.getPager().pageNumber);
+			if (!this.getOptions('endless', false)) {
+				this.getData().splice(0, this.getData().length);
+			}
 			this.setUpdating();
-			query.$list()
-				.then((data) => {
-					//console.log('$list for table', data);
-					this.setData({
-						rows: this.getData('rows').concat(data)
-					});
-					this.proccessData();
-					this.refreshBody();
-					this.setUpdated();
-				})
-				.catch((e) => {
-					notCommon.error(e);
-					this.setUpdated();
-				});
+			this.loadData()
+				.then(data => this.getData().push(...data))
+				.then(this.getRowsCount.bind(this))
+				.then(this.refreshBody.bind(this))
+				.catch(notCommon.error.bind(this))
+				.then(this.setUpdated.bind(this));
 		} else {
 			//local magic
 			this.setUpdating();
-			this.proccessData();
+			this.processData();
 			this.refreshBody();
 			this.setUpdated();
 		}
 	}
 
-	proccessData() {
+	processData() {
 		var thatFilter = this.getFilter();
 		if (typeof thatFilter !== 'undefined' && thatFilter !== null && typeof thatFilter.filterSearch !== 'undefined' && thatFilter.filterSearch !== null && thatFilter.filterSearch.length > 0) {
 			//
@@ -302,11 +491,9 @@ class notTable extends notBase {
 					this.updateData();
 				});
 			}
-
 			if (field.hasOwnProperty(OPT_FIELD_NAME_PRE_PROC)) {
 				preprocessed = field[OPT_FIELD_NAME_PRE_PROC](val, item, index);
 			}
-
 			if (field.hasOwnProperty('component')) {
 				new notComponent({
 					data: field.component.data || preprocessed || {
@@ -355,19 +542,7 @@ class notTable extends notBase {
 		return newRow;
 	}
 
-	refreshBody() {
-		var tbody = this.findBody();
-		if (!tbody) {
-			return;
-		}
-		this.clearBody();
-		this.checkFiltered();
-		var thisPageStarts = 0,
-			nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1);
-		for (var i = thisPageStarts; i < Math.min(nextPageEnds, this.getWorking('filteredData').length); i++) {
-			tbody.appendChild(this.renderRow(this.getWorking('filteredData')[i]));
-		}
-	}
+
 
 	findBody() {
 		return this.getOptions('targetEl').querySelector('tbody');
@@ -386,19 +561,83 @@ class notTable extends notBase {
 	}
 
 	renderBody() {
-		if (!this.getOptions('onePager')) {
+		let tbody = this.findBody();
+		if (!tbody) {
+			return;
+		}
+		if (!this.getOptions('endless')) {
 			this.clearBody();
 		}
 		this.checkFiltered();
+		if (this.isLive()) {
 
-		var thisPageStarts = this.getPager().pageSize * (this.getPager().pageNumber),
-			nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1),
-			tbody = this.findBody();
+			for (let i = 0; i < this.getData().length; i++) {
+				tbody.appendChild(this.renderRow(this.getData()[i]));
+			}
+		} else {
+			let thisPageStarts = this.getPager().pageSize * (this.getPager().pageNumber),
+				nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1);
 
-		for (var i = thisPageStarts; i < Math.min(nextPageEnds, this.getWorking('filteredData').length); i++) {
-			tbody.appendChild(this.renderRow(this.getWorking('filteredData')[i]));
+			for (let i = thisPageStarts; i < Math.min(nextPageEnds, this.getWorking('filteredData').length); i++) {
+				tbody.appendChild(this.renderRow(this.getWorking('filteredData')[i]));
+			}
 		}
 	}
+
+	refreshBody() {
+		var tbody = this.findBody();
+		if (!tbody) {
+			return;
+		}
+		this.clearBody();
+		this.checkFiltered();
+		if (this.isLive()) {
+			for (let i = 0; i < this.getData().length; i++) {
+				tbody.appendChild(this.renderRow(this.getData()[i]));
+			}
+		} else {
+			let thisPageStarts = 0,
+				nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1);
+			for (let i = thisPageStarts; i < Math.min(nextPageEnds, this.getWorking('filteredData').length); i++) {
+				tbody.appendChild(this.renderRow(this.getWorking('filteredData')[i]));
+			}
+		}
+	}
+
+	getRowsCount() {
+		let query = this.getDataInterface().setFilter(this.getFilter());
+		return query['$' + this.getCountActionName()]()
+			.then((data) => {
+				this.updatePagination(data.count);
+			})
+			.catch((e) => {
+				notCommon.error(e);
+			});
+	}
+
+	updatePagination(itemsCount) {
+		this.data.pagination.pages.list.splice(0, this.data.pagination.pages.list.length);
+		let itemsFrom = (this.getPager().pageNumber - OPT_DEFAULT_PAGE_NUMBER) * this.getPager().pageSize + 1,
+			pagesCount = itemsCount % this.getPager().pageSize ? Math.floor(itemsCount / this.getPager().pageSize) + 1 : Math.round(itemsCount / this.getPager().pageSize),
+			pagesFrom = Math.max(OPT_DEFAULT_PAGE_NUMBER, this.getPager().pageNumber - OPT_DEFAULT_PAGE_RANGE),
+			pagesTo = Math.min(pagesCount - (1 - OPT_DEFAULT_PAGE_NUMBER), this.getPager().pageNumber + OPT_DEFAULT_PAGE_RANGE),
+			list = [],
+			itemsTo = Math.min(itemsFrom + this.getPager().pageSize - 1, itemsCount);
+		for (let t = pagesFrom; t <= pagesTo; t++) {
+			list.push({
+				index: t
+			});
+		}
+		this.data.pagination.items.count = itemsCount;
+		this.data.pagination.items.from = itemsFrom;
+		this.data.pagination.items.to = itemsTo;
+		this.data.pagination.pages.count = pagesCount;
+		this.data.pagination.pages.from = pagesFrom;
+		this.data.pagination.pages.to = pagesTo;
+		this.data.pagination.pages.current = this.getPager().pageNumber;
+		this.data.pagination.pages.list.splice(0, this.data.pagination.pages.list.length, ...list);
+	}
+
 
 	testDataItem(item) {
 		var strValue = this.getFilterSearch().toLowerCase();
@@ -413,8 +652,8 @@ class notTable extends notBase {
 
 	initAutoloader() {
 		if (jQuery && jQuery.scrollSpy && !this.getWorking('live')) {
-			if (this.getOptions('liveLoad') && this.getOptions('onePager') && this.getOptions('footerQuery')) {
-				let t = $(this.getOptions('footerQuery'));
+			if (this.isLive() && this.getOptions('endless') && this.getOptions('endlessTrigger')) {
+				let t = $(this.getOptions('endlessTrigger'));
 				if (t) {
 					t.on('scrollSpy:enter', this.loadNext.bind(this));
 					t.scrollSpy();

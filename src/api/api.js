@@ -3,14 +3,16 @@ import notBase from '../notBase.js';
 
 import notAPIOptions from './options.js';
 import notAPIQuee from './quee.js';
+import notAPICache from './cache.js';
 
 
-class notAPI extends  notBase{
+class notAPI extends notBase {
 	constructor(options) {
 		super();
 		this.setOptions(notCommon.extend(notAPIOptions, options));
 		this.quee = new notAPIQuee(this.getOptions('rps'));
 		this.quee.run();
+		this.cache = new notAPICache();
 		return this;
 	}
 
@@ -18,7 +20,7 @@ class notAPI extends  notBase{
 		return parts.join('/');
 	}
 
-	queeRequest(method, url, id, data, good, bad){
+	queeRequest(method, url, id, data, good, bad) {
 		return new Promise((resolve, reject) => {
 			this.quee.add(
 				this.makeRequest.bind(this, method, url, id, data, (responseOK) => {

@@ -1,6 +1,6 @@
 import notController from '../notController.js';
 import notCommon from '../common';
-import notRecord from '../notRecord';
+import notRecord from '../record';
 import notForm from '../components/notForm.js';
 
 const OPT_DEFAULT_VIEW = 'edit',

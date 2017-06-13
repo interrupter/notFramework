@@ -1,7 +1,7 @@
 import notBase from '../notBase';
 import notPath from '../notPath';
 import notCommon from '../common';
-import notRecord from '../notRecord';
+import notRecord from '../record';
 import notComponent from '../template/notComponent';
 
 const OPT_DEFAULT_DETAILS_PREFIX = 'details_',

@@ -2,7 +2,8 @@ import notTable from '../components/notTable.js';
 import notController from '../notController.js';
 import notCommon from '../common';
 
-const OP_DEFAULT_PAGE_SIZE = 50,
+const OPT_DEFAULT_PAGE_SIZE = 50,
+	OPT_DEFAULT_PAGE_NUMBER = 0,
 	OPT_DEFAULT_VIEW = 'list';
 
 class CRUDList extends notController {
@@ -44,17 +45,21 @@ class CRUDList extends notController {
 			try {
 				this.tableView = new notTable({
 					options: {
+						procRow: this.parent.getOptions('views.list.procRow', false),
 						fields: this.parent.getOptions('views.list.fields'),
-						targetEl: document.querySelector(this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery')),
+						pageSize: this.getOptions('views.list.pager.size') || this.app.getOptions('pager.size') || OPT_DEFAULT_PAGE_SIZE,
+						pageNumber: this.getOptions('views.list.pager.number') || this.app.getOptions('pager.number') || OPT_DEFAULT_PAGE_NUMBER,
+						endless: this.parent.getOptions('views.list.endless', false),
+						endlessTrigger: this.parent.getOptions('views.list.endlessTrigger', null),
 						helpers: notCommon.extend({
 							title: this.parent.getOptions('names.plural')
 						}, this.parent.getOptions('views.list.helpers') || {}),
-						pageSize: this.app.getOptions('pager.size') || OP_DEFAULT_PAGE_SIZE,
-						pageNumber: 0,
-						onePager: true,
-						liveLoad: true,
-						footerQuery: this.parent.getOptions('views.list.footerQuery'),
-						interface: this.make[this.parent.getModuleName()]
+						targetEl: document.querySelector(this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery')),
+						interface: {
+							factory: this.parent.getOptions('views.list.interface.factory', this.make[this.parent.getModuleName()]),
+								listAction: this.parent.getOptions('views.list.interface.listAction'),
+								countAction: this.parent.getOptions('views.list.interface.countAction'),
+						}
 					},
 					events: [
 						['afterRender', resolve]

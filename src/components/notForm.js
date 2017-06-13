@@ -1,5 +1,5 @@
 import notComponent from '../template/notComponent';
-import notRecord from '../notRecord';
+import notRecord from '../record';
 import notCommon from '../common';
 import notBase from '../notBase';
 import notPath from '../notPath';
@@ -63,7 +63,7 @@ class notForm extends notBase {
 		this.renderWrapper();
 	}
 
-	getPartTemplateName(formPart){
+	getPartTemplateName(formPart) {
 		return this.getOptions('prefix') + formPart;
 	}
 
@@ -82,9 +82,11 @@ class notForm extends notBase {
 					targetQuery: this.getOptions('targetQuery'),
 					id: this.getOptions('id')
 				},
-				events:[
+				events: [
 					['afterRender', this.bindFormEvents.bind(this)],
-					[['afterRender', 'afterUpdate'], this.renderComponents.bind(this)]
+					[
+						['afterRender', 'afterUpdate'], this.renderComponents.bind(this)
+					]
 				]
 			};
 			let wrapper = new notComponent(input);
@@ -100,12 +102,12 @@ class notForm extends notBase {
 	}
 
 	renderComponents() {
-		if (this.getWorking('components') && this.getWorking('components').length){
-			for(let t = 0; t < this.getWorking('components').length; t++){
+		if (this.getWorking('components') && this.getWorking('components').length) {
+			for (let t = 0; t < this.getWorking('components').length; t++) {
 				this.getWorking('components')[t].component.update();
 			}
-		}else{
-			for(let t = 0; t < this.getFormFieldsList().length; t++){
+		} else {
+			for (let t = 0; t < this.getFormFieldsList().length; t++) {
 				let fieldName = this.getFormFieldsList()[t];
 				this.addFieldComponent(fieldName);
 			}
@@ -120,7 +122,7 @@ class notForm extends notBase {
 		}
 	}
 
-	getFieldsLibs(){
+	getFieldsLibs() {
 		let result = {
 			options: {},
 			manifest: {},
@@ -129,10 +131,10 @@ class notForm extends notBase {
 		if (this.getOptions('fields')) {
 			result.options = this.getOptions('fields');
 		}
-		if (notCommon.getApp() && notCommon.getApp().getOptions('fields')){
+		if (notCommon.getApp() && notCommon.getApp().getOptions('fields')) {
 			result.app = notCommon.getApp().getOptions('fields');
 		}
-		if (this.getData().isRecord && this.getData().getManifest()){
+		if (this.getData().isRecord && this.getData().getManifest()) {
 			result.manifest = this.getData().getManifest().fields;
 		}
 		return result;
@@ -141,8 +143,8 @@ class notForm extends notBase {
 	getFieldsDefinition(fieldName) {
 		let def = OPT_DEFAULT_FIELD_DEFINITION,
 			fieldsLibs = this.getFieldsLibs();
-		for(let t of OPT_DEFAULT_FIELD_DEFINITION_SOURCES_PRIORITY_LIST){
-			if (fieldsLibs.hasOwnProperty(t) && fieldsLibs[t].hasOwnProperty(fieldName)){
+		for (let t of OPT_DEFAULT_FIELD_DEFINITION_SOURCES_PRIORITY_LIST) {
+			if (fieldsLibs.hasOwnProperty(t) && fieldsLibs[t].hasOwnProperty(fieldName)) {
 				return fieldsLibs[t][fieldName];
 			}
 		}
@@ -160,11 +162,11 @@ class notForm extends notBase {
 				array: fieldType.array,
 				default: fieldType.default,
 				placeholder: fieldType.placeholder,
-				options: this.getOptions(notPath.join('helpers','libs',fieldName))
+				options: this.getOptions(notPath.join('helpers', 'libs', fieldName))
 			}
 		};
 		let helpers = notCommon.extend({
-			isChecked: (params)=>{
+			isChecked: (params) => {
 				return params.item.value === this.getData(fieldName);
 			},
 			field: rec.field,
@@ -180,7 +182,7 @@ class notForm extends notBase {
 				helpers,
 				targetEl: this.getFormTargetElement(fieldType.target),
 				renderAnd: 'placeLast',
-				events:[
+				events: [
 					['afterDataChange', this.collectDataFromComponents.bind(this)]
 				]
 			}
@@ -188,20 +190,22 @@ class notForm extends notBase {
 		this.getWorking('components').push(rec);
 	}
 
-	collectDataFromComponents(params){
+	collectDataFromComponents(params) {
 		notCommon.log('collect data from components', params);
 	}
 
-	getFormTargetElement(target = 'body'){
-		if (!target){target = 'body';}
+	getFormTargetElement(target = 'body') {
+		if (!target) {
+			target = 'body';
+		}
 		let res = this.getOptions('targetEl').querySelector('[role="' + target + '"]');
-		if (!res && target!=='body'){
+		if (!res && target !== 'body') {
 			target = 'body';
 			res = this.getOptions('targetEl').querySelector('[role="' + target + '"]');
 		}
-		if(!res && target=='body'){
+		if (!res && target == 'body') {
 			return this.getOptions('targetEl');
-		}else{
+		} else {
 			return res;
 		}
 	}
@@ -214,33 +218,33 @@ class notForm extends notBase {
 		//let data = this.collectDataFromComponents.bind(this);
 	}
 
-	bindFormEvents(){
+	bindFormEvents() {
 		let targetQuery = this.getOptions('targetQuery');
-		if(targetQuery){
+		if (targetQuery) {
 			let target = document.querySelector(targetQuery);
-			if(target){
+			if (target) {
 				this.setOptions('targetEl', target);
 			}
 		}
-		if (this.getOptions('targetEl')){
-			let	form = this.getOptions('targetEl').querySelector('form');
-			if(form){
+		if (this.getOptions('targetEl')) {
+			let form = this.getOptions('targetEl').querySelector('form');
+			if (form) {
 				form.addEventListener('submit', this.onSubmit.bind(this));
 				form.addEventListener('reset', this.onReset.bind(this));
 			}
 		}
 	}
 
-	updateField(fieldName){
-		for(let t = 0; t < this.getWorking('components').length; t++){
-			if (this.getWorking('components')[t].field.name === fieldName){
+	updateField(fieldName) {
+		for (let t = 0; t < this.getWorking('components').length; t++) {
+			if (this.getWorking('components')[t].field.name === fieldName) {
 				this.getWorking('components')[t].component.update();
 			}
 		}
 	}
 
-	update(){
-		for(let t = 0; t < this.getWorking('components').length; t++){
+	update() {
+		for (let t = 0; t < this.getWorking('components').length; t++) {
 			this.getWorking('components')[t].component.update();
 		}
 	}

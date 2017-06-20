@@ -1,3 +1,5 @@
+import 'babel-polyfill/dist/polyfill';
+
 /*
 	Common functions
 */

@@ -1,11 +1,11 @@
 {
   "name": "not-framework",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "description": "node complimentary part for client side notFramework. + dadata.ru api",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-		"testonly": "./node_modules/.bin/mocha --reporter spec",
-		"build": "./node_modules/.bin/rollup -c",
+    "testonly": "./node_modules/.bin/mocha --reporter spec",
+    "build": "./node_modules/.bin/rollup -c",
     "production": "NODE_ENV=production ./node_modules/.bin/rollup -c",
     "lint": "./node_modules/.bin/eslint ./src/**/**.js",
     "cover": "istanbul cover _mocha $(find ./test -name \"*.js\" -not -path \"./node_modules/*\")",
@@ -26,19 +26,20 @@
   },
   "dependencies": {},
   "devDependencies": {
-		"babel-polyfill": "*",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-es2015-rollup": "*",
     "chai": "*",
     "chai-as-promised": "*",
     "cssnano": "*",
     "eslint": "*",
+    "fs-extra": "*",
     "istanbul": "*",
     "mocha": "*",
-		"fs-extra": "*",
     "postcss-cssnext": "*",
     "postcss-env-replace": "*",
     "postcss-nested": "*",
     "postcss-simple-vars": "*",
+    "request": "*",
     "rollup": "*",
     "rollup-plugin-babel": "*",
     "rollup-plugin-commonjs": "*",
@@ -49,8 +50,7 @@
     "rollup-plugin-replace": "*",
     "rollup-plugin-sass": "*",
     "rollup-plugin-uglify": "*",
-    "rollup-watch": "*",
-    "request": "*"
+    "rollup-watch": "*"
   },
   "homepage": "https://github.com/interrupter/not-framework#readme"
 }

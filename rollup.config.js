@@ -29,10 +29,12 @@ export default {
 		}),
 		commonjs(),
 		eslint({
-			exclude: ['build/**', 'node_modules/**', 'css/**','js/**', 'test/**', 'bower_components/**', 'assets/*', 'dist/**']
+			exclude: ['build/**', 'node_modules/**', 'css/**', 'js/**', 'test/**', 'bower_components/**', 'assets/*', 'dist/**']
 		}),
 		babel({
-			exclude: ['build/**', 'node_modules/**', 'css/**','js/**', 'test/**', 'bower_components/**', 'assets/*', 'dist/**']
+			babelrc: false,
+			presets: ['es2015-rollup'],
+			exclude: ['build/**', 'node_modules/**', 'css/**', 'js/**', 'test/**', 'bower_components/**', 'assets/*', 'dist/**']
 		}), replace({
 			ENV: JSON.stringify(process.env.NODE_ENV || 'development')
 		}),

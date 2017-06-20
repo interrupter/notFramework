@@ -1,6 +1,6 @@
 {
   "name": "not-framework",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "description": "node complimentary part for client side notFramework. + dadata.ru api",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
@@ -26,7 +26,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "babel-polyfill": "^6.23.0",
+    "babel-polyfill": "*",
     "babel-preset-es2015-rollup": "*",
     "chai": "*",
     "chai-as-promised": "*",

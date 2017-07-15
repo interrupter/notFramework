@@ -236,8 +236,9 @@ var notTemplateProcessorsLib = {
 		if (scope.element.tagName === 'IMG') {
 			if (scope.attributeResult) {
 				scope.element.src = scope.attributeResult;
+				scope.element.display = 'block';
 			} else {
-				scope.element.parentNode.removeChild(scope.element);
+				scope.element.display = 'none';
 			}
 		}
 	}

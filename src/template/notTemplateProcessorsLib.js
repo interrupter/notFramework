@@ -232,9 +232,10 @@ var notTemplateProcessorsLib = {
 			scope.element.keybinds[scope.params.join('-')].push(scope.attributeExpression);
 		}
 	},
-	src: function (scope) {
+	src: function (scope, item, helpers) {
 		if (scope.element.tagName === 'IMG') {
-			if (scope.attributeResult) {
+			let t = notPath.parseSubs(scope.attributeExpression, item, helpers);
+			if (t) {
 				scope.element.src = scope.attributeResult;
 				scope.element.display = 'block';
 			} else {

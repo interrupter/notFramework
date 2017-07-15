@@ -231,6 +231,15 @@ var notTemplateProcessorsLib = {
 		if (scope.element.keybinds[scope.params.join('-')].indexOf(scope.attributeExpression) === -1) {
 			scope.element.keybinds[scope.params.join('-')].push(scope.attributeExpression);
 		}
+	},
+	src: function (scope) {
+		if (scope.element.tagName === 'IMG') {
+			if (scope.attributeResult) {
+				scope.element.src = scope.attributeResult;
+			} else {
+				scope.element.parentNode.removeChild(scope.element);
+			}
+		}
 	}
 };
 export default notTemplateProcessorsLib;

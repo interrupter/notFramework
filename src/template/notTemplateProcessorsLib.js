@@ -236,7 +236,7 @@ var notTemplateProcessorsLib = {
 		if (scope.element.tagName === 'IMG') {
 			let t = notPath.parseSubs(scope.attributeExpression, item, helpers);
 			if (t) {
-				scope.element.src = scope.attributeResult;
+				scope.element.src = t;
 				scope.element.display = 'block';
 			} else {
 				scope.element.display = 'none';

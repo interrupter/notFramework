@@ -13,6 +13,19 @@ class notAPI extends notBase {
 		this.setOptions(notCommon.extend(notAPIOptions, options));
 		this.quee = new notAPIQuee(this.getOptions('rps'));
 		this.quee.run();
+		this.mark = {
+			start: 0,
+			end: 0,
+			length: 0,
+			duration: 0,
+			total: {
+				length: 0,
+				duration: 0,
+				speed: 0
+			},
+			speed: 0,
+			history: []
+		};
 		this.connection = new notAPIConnection(this.getOptions('connection'));
 		this.connection.run();
 		this.cache = new notAPICache();
@@ -38,15 +51,48 @@ class notAPI extends notBase {
 	}
 
 	makeRequest(method, url, id, data, good, bad) {
+		this.markStart();
 		notCommon.requestJSON(method, url, data)
 			.then((response) => {
+				this.markEnd(response);
 				this.quee.next();
 				good && good(response);
 			})
 			.catch((response) => {
+				this.markFailed();
 				this.quee.next();
 				bad && bad(response);
 			});
+	}
+
+	markStart() {
+		this.mark.start = (new Date()).getTime();
+	}
+
+	markEnd(data) {
+		this.mark.end = (new Date()).getTime();
+		this.mark.duration = this.mark.end - this.mark.start;
+		this.mark.length = data.length;
+		this.mark.speed = data.length / (this.mark.duration / 1000);
+		this.mark.history.push(this.mark.speed);
+		this.mark.total.length += this.mark.length;
+		this.mark.total.duration += this.mark.duration;
+		this.mark.total.speed = this.mark.total.length / (this.mark.total.duration / 1000);
+		this.checkSpeed();
+	}
+
+	markFailed() {
+		this.mark.start = 0;
+		this.mark.end = 0;
+		this.mark.duration = 0;
+	}
+
+	checkSpeed() {
+		if (this.mark.total.duration > this.getOptions('mark.minDelay') && this.mark.total.length > this.getOptions('mark.minLength')) {
+			if (this.mark.total.speed < this.getOptions('mark.minSpeed')) {
+				this.trigger('slowConnection');
+			}
+		}
 	}
 
 	update(obj, good, bad) {

@@ -11,7 +11,6 @@ class notAPI extends notBase {
 	constructor(options) {
 		super();
 		this.setOptions(notCommon.extend(notAPIOptions, options));
-		this.registerOnLine();
 		this.quee = new notAPIQuee(this.getOptions('rps'));
 		this.quee.run();
 		this.connection = new notAPIConnection(this.getOptions('connection'));

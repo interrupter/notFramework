@@ -58,6 +58,7 @@ var CommonNetwork = {
 			xhr.onload = function () {
 				let status = xhr.status;
 				if (status == 200) {
+					xhr.response.lengthInBytes(xhr.getResponseHeader('Content-Length'));
 					resolve(xhr.response);
 				} else {
 					reject(xhr.response);

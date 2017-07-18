@@ -52,13 +52,14 @@ class CRUDList extends notController {
 						endless: this.parent.getOptions('views.list.endless', false),
 						endlessTrigger: this.parent.getOptions('views.list.endlessTrigger', null),
 						helpers: notCommon.extend({
-							title: this.parent.getOptions('names.plural')
-						}, this.parent.getOptions('views.list.helpers') || {}),
+								title: this.parent.getOptions('names.plural')
+							},
+							this.parent.getOptions('views.list.helpers') || {}),
 						targetEl: document.querySelector(this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery')),
 						interface: {
 							factory: this.parent.getOptions('views.list.interface.factory', this.make[this.parent.getModuleName()]),
 								listAction: this.parent.getOptions('views.list.interface.listAction'),
-								countAction: this.parent.getOptions('views.list.interface.countAction'),
+								countAction: this.parent.getOptions('views.list.interface.countAction')
 						}
 					},
 					events: [

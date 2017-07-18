@@ -4,14 +4,18 @@ import notBase from '../notBase.js';
 import notAPIOptions from './options.js';
 import notAPIQuee from './quee.js';
 import notAPICache from './cache.js';
+import notAPIConnection from './connection.js';
 
 
 class notAPI extends notBase {
 	constructor(options) {
 		super();
 		this.setOptions(notCommon.extend(notAPIOptions, options));
+		this.registerOnLine();
 		this.quee = new notAPIQuee(this.getOptions('rps'));
 		this.quee.run();
+		this.connection = new notAPIConnection(this.getOptions('connection'));
+		this.connection.run();
 		this.cache = new notAPICache();
 		return this;
 	}

@@ -10,19 +10,14 @@ import notAPIConnection from './connection.js';
 class notAPI extends notBase {
 	constructor(options) {
 		super();
+		this.requests = [];
 		this.setOptions(notCommon.extend(notAPIOptions, options));
 		this.quee = new notAPIQuee(this.getOptions('rps'));
 		this.quee.run();
+
 		this.mark = {
-			start: 0,
-			end: 0,
 			length: 0,
 			duration: 0,
-			total: {
-				length: 0,
-				duration: 0,
-				speed: 0
-			},
 			speed: 0,
 			history: []
 		};
@@ -51,45 +46,48 @@ class notAPI extends notBase {
 	}
 
 	makeRequest(method, url, id, data, good, bad) {
-		this.markStart();
 		notCommon.requestJSON(method, url, data)
 			.then((response) => {
-				this.markEnd(response);
 				this.quee.next();
 				good && good(response);
 			})
 			.catch((response) => {
-				this.markFailed();
 				this.quee.next();
 				bad && bad(response);
 			});
 	}
 
-	markStart() {
-		this.mark.start = (new Date()).getTime();
+	markStart(xhr) {
+		xhr.mark = {
+			start: (new Date()).getTime(),
+			end: 0,
+			length: 0,
+			duration: 0,
+			speed: 0
+		};
 	}
 
-	markEnd(data) {
-		this.mark.end = (new Date()).getTime();
-		this.mark.duration = this.mark.end - this.mark.start;
-		this.mark.length = data.length;
-		this.mark.speed = data.length / (this.mark.duration / 1000);
-		this.mark.history.push(this.mark.speed);
-		this.mark.total.length += this.mark.length;
-		this.mark.total.duration += this.mark.duration;
-		this.mark.total.speed = this.mark.total.length / (this.mark.total.duration / 1000);
+	markEnd(xhr) {
+		xhr.mark.end = (new Date()).getTime();
+		xhr.mark.duration = xhr.mark.end - xhr.mark.start;
+		xhr.mark.length = parseInt(xhr.getResponseHeader('Content-Length'));
+		xhr.mark.speed = xhr.mark.length / (xhr.mark.duration / 1000);
+		this.mark.history.push(xhr.mark.speed);
+		this.mark.length += xhr.mark.length;
+		this.mark.duration += xhr.mark.duration;
+		this.mark.speed = this.mark.length / (this.mark.duration / 1000);
 		this.checkSpeed();
 	}
 
-	markFailed() {
-		this.mark.start = 0;
-		this.mark.end = 0;
-		this.mark.duration = 0;
+	markFailed(xhr) {
+		xhr.mark.start = 0;
+		xhr.mark.end = 0;
+		xhr.mark.duration = 0;
 	}
 
 	checkSpeed() {
-		if (this.mark.total.duration > this.getOptions('mark.minDelay') && this.mark.total.length > this.getOptions('mark.minLength')) {
-			if (this.mark.total.speed < this.getOptions('mark.minSpeed')) {
+		if (this.mark.duration > this.getOptions('mark.minDelay') && this.mark.length > this.getOptions('mark.minLength')) {
+			if (this.mark.speed < this.getOptions('mark.minSpeed')) {
 				this.trigger('slowConnection');
 			}
 		}
@@ -178,6 +176,10 @@ class notAPI extends notBase {
 				})
 			);
 		});
+	}
+
+	getConnection() {
+		return this.connection;
 	}
 }
 

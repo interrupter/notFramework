@@ -1,3 +1,4 @@
+/* global notFramework */
 var CommonNetwork = {
 	addHost: function (uri) {
 		return this.get('host') + uri;
@@ -55,20 +56,43 @@ var CommonNetwork = {
 			xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 			xhr.responseType = 'json';
 			xhr.withCredentials = true;
-			xhr.onload = function () {
+			notFramework.notCommon.registerRequest(xhr);
+			xhr.onload = () => {
 				let status = xhr.status;
 				if (status == 200) {
-					xhr.response.lengthInBytes = xhr.getResponseHeader('Content-Length');
+					notFramework.notCommon.onSuccessRequest(xhr);
 					resolve(xhr.response);
 				} else {
+					notFramework.notCommon.onFailedRequest(xhr);
 					reject(xhr.response);
 				}
 			};
-			let t = () => reject(xhr.status);
+			let t = () => {
+				notFramework.notCommon.onFailedRequest(xhr);
+				reject(xhr.status);
+			};
 			xhr.onerror = t;
 			xhr.ontimeout = t;
 			xhr.send(data);
 		});
+	},
+	registerRequest: (xhr) => {
+		let con = notFramework.notCommon.getAPI ? notFramework.notCommon.getAPI() : false;
+		if (con && xhr) {
+			con.markStart(xhr);
+		}
+	},
+	onSuccessRequest: (xhr) => {
+		let con = notFramework.notCommon.getAPI ? notFramework.notCommon.getAPI() : false;
+		if (con && xhr) {
+			con.markEnd(xhr);
+		}
+	},
+	onFailedRequest: (xhr) => {
+		let con = notFramework.notCommon.getAPI ? notFramework.notCommon.getAPI() : false;
+		if (con && xhr) {
+			con.markFailed(xhr);
+		}
 	},
 	getJSON: function (url, data) {
 		return new Promise((resolve, reject) => {

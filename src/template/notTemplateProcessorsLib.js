@@ -113,8 +113,8 @@ var notTemplateProcessorsLib = {
 			item,
 			helpers
 		}) : result);
-		if (scope.params.length > 1) {
-			if (scope.params[1] === 'not') {
+		if (scope.params.length > 0) {
+			if (scope.params[0] === 'not') {
 				scope.attributeResult = !scope.attributeResult;
 			}
 		}
@@ -127,8 +127,8 @@ var notTemplateProcessorsLib = {
 			item,
 			helpers
 		}) : result);
-		if (scope.params.length > 1) {
-			if (scope.params[1] === 'not') {
+		if (scope.params.length > 0) {
+			if (scope.params[0] === 'not') {
 				scope.attributeResult = !scope.attributeResult;
 			}
 		}

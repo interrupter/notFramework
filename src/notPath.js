@@ -95,7 +95,7 @@ class notPath {
 			subPath = this.findNextSubPath(path);
 		}
 		this.setValueByPath(item, path, attrValue);
-		if (item.isRecord && this.normilizePath(path).length > 1) {
+		if (item.isRecord && this.normilizePath(path).length > 1 && item.__isActive) {
 			item.trigger('change', item, path, attrValue);
 		}
 	}

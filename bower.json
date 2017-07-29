@@ -37,7 +37,7 @@
         "jquery":"*"
     },
 		"devDependencies":{
-        "faker":"*",
+        "Faker":"*",
 				"bootstrap":"*"
     }
 }

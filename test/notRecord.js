@@ -7,20 +7,24 @@ let testItem = {
 		value: 'wicked sick',
 		_id: 'sdfoqw834u5v2909-59nv237',
 		data: {
-			path:{
-				to:[0,1,2,3,4, {
+			path: {
+				to: [0, 1, 2, 3, 4, {
 					key: 'bingo'
 				}]
 			}
 		},
-		getLocalData:function(){
+		getLocalData: function () {
 			console.log('this data', this);
 			return this.data;
 		},
 		author: {
 			name: 'Mike'
 		},
-		history: [{action: 'delete'}, {action: 'update'}],
+		history: [{
+			action: 'delete'
+		}, {
+			action: 'update'
+		}],
 		low: false,
 		faulty: 11
 	},
@@ -59,71 +63,77 @@ let testItem = {
 		}
 	};
 
-before(function(){
+before(function () {
 	notCommon.setManager({
-		setAPI(v){ this.api = v;},
-		getAPI(){return this.api;},
+		setAPI(v) {
+			this.api = v;
+		},
+		getAPI() {
+			return this.api;
+		},
 	});
 	notCommon.getManager().setAPI(new notAPI({}));
 });
 
-describe("notRecord", function() {
-	describe("create", function() {
-		it("single", function() {
-			let rec = new notRecord(manifest, notCommon.completeAssign({},testItem));
+describe("notRecord", function () {
+	describe("create", function () {
+		it("single", function () {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
 			expect(rec.isRecord).to.equal(true);
 		});
-		it("collection", function() {
+		it("collection", function () {
 			let recs = new notRecord(manifest, testCollection);
 			expect(recs.length).to.equal(3);
 			expect(recs[0].isRecord).to.equal(true);
 		});
 	});
 
-	describe("network interface", function() {
-		it("single get", function() {
-			let rec = new notRecord(manifest, notCommon.completeAssign({},testItem));
+	describe("network interface", function () {
+		it("single get", function () {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
 			expect(rec.$view).to.be.ok;
 			rec.$view()
 				.then(
-					(data)=>{
+					(data) => {
 						console.log('$view success', data);
 					}
 				)
 				.catch(
-					(data)=>{
+					(data) => {
 						console.log('$view failure', data);
 					}
 				);
 		});
 
-		it("single post", function() {
-			let rec = new notRecord(manifest, notCommon.completeAssign({},testItem));
+		it("single post", function () {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
 			expect(rec.$update).to.be.ok;
 			rec.$update()
-				.then((data)=>{
+				.then((data) => {
 					console.log('$update one success', data);
 				})
-				.catch((data)=>{
+				.catch((data) => {
 					console.log('$update one failure', data);
 				});
 		});
 
-		it("query filter set/get", function() {
+		it("query filter set/get", function () {
 			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
-			rec.setFilter({ letMe:'speak'});
+			rec.setFilter({
+				letMe: 'speak'
+			});
 			expect(rec.getFilter()).to.have.key('letMe');
 		});
 
-		it("query pager set/get", function() {
+		it("query pager set/get", function () {
 			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
-			rec.setPager(1,2);
+			rec.setPager(1, 2);
 			expect(rec.getPager()).to.have.keys('pageSize', 'pageNumber');
 			expect(rec.getPager().pageSize).to.be.equal(1);
 			expect(rec.getPager().pageNumber).to.be.equal(2);
 		});
 
-		it("query pager reset/get", function() {
+		it("query pager reset/get", function () {
 			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
 			rec.setPager();
 			expect(rec.getPager()).to.have.keys('pageSize', 'pageNumber');
@@ -132,77 +142,94 @@ describe("notRecord", function() {
 		});
 	});
 
-	describe("proxy", function() {
+	describe("proxy", function () {
 
-		it("detect as record (isRecord)", function() {
-			let rec = new notRecord(manifest, notCommon.completeAssign({},testItem));
+		it("detect as record (isRecord)", function () {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
 			expect(rec.isRecord).to.be.ok;
 		});
 
-		it("get simple key", function() {
-			let rec = new notRecord(manifest,notCommon.completeAssign({},testItem)),
+		it("get simple key", function () {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem)),
 				result = testItem.name;
 			expect(rec.name).to.be.equal(result);
 		});
 
-		it("set simple key", function() {
-			let rec = new notRecord(manifest,notCommon.completeAssign({},testItem)),
+		it("set simple key", function () {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem)),
 				result = 'name';
 			rec.name = result;
 			expect(rec.name).to.be.equal(result);
 		});
 
-		it("set simple key and change Event", function() {
-			let rec = new notRecord(manifest, notCommon.completeAssign({},testItem));
-			rec.on('change', function(){
+		it("set simple key and change Event", function () {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
+			rec.on('change', function () {
 				expect(true).to.be.equal(true);
 			}.bind(this));
 			rec.value = 'like me or not';
 		});
 
-		it("set complex key and change Event", function() {
-			let rec = new notRecord(manifest, notCommon.completeAssign({},testItem));
-			rec.on('change', function(){
+		it("set complex key and change Event", function () {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
+			rec.on('change', function () {
 				console.log(arguments);
 				expect(true).to.be.equal(true);
 			}.bind(this));
 			rec.setAttr('data.path.to.1', 'value 1');
 		});
 
+		it("set complex key in passive mode", function () {
+			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem))
+			t = 0;
+			rec.on('change', function () {
+				t++;
+				console.log('on changes commited', arguments);
+				expect(arguments.length).to.be.equal(0);
+				expect(t).to.be.equal(1);
+			}.bind(this));
+			rec.__setPassive;
+			rec.setAttr('data.path.to.1', 'value 1');
+			rec.setAttr('data.path.to.1', 'value 2');
+			rec.setAttr('data.path.to.1', 'value 3');
+			rec.setAttr('data.path.to.1', 'value 4');
+			rec.setAttr('data.path.to.1', 'value 5');
+			rec.__setActive;
+		});
+
 	});
 
-	describe("path requests intergration", function() {
-
-		describe("simple get", function() {
-			it('get simple path key "name"', function() {
-				let rec = new notRecord(manifest, notCommon.completeAssign({},testItem)),
+	describe("path requests intergration", function () {
+		describe("simple get", function () {
+			it('get simple path key "name"', function () {
+				let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem)),
 					result = rec.name;
 				expect(rec.getAttr('name')).to.be.equal(result);
 			});
 
-			it('get simple path keys ["name", "low", "faulty"]', function() {
-				let rec = new notRecord(manifest, notCommon.completeAssign({},testItem)),
+			it('get simple path keys ["name", "low", "faulty"]', function () {
+				let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem)),
 					result = [rec.name, rec.low, rec.faulty];
 				expect(rec.getAttrs(['name', 'low', 'faulty'])).to.be.deep.equal(result);
 			});
 
-			it('get simple throu function :getLocalData().path.to.0', function() {
+			it('get simple throu function :getLocalData().path.to.0', function () {
 				let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem)),
 					result = 0;
 				expect(notPath.get(':getLocalData().path.to.0', rec, {})).to.be.equal(result);
 			});
 		});
 
-		describe("simple set", function() {
-			it('set simple path key "name"', function() {
-				let rec = new notRecord(manifest, notCommon.completeAssign({},testItem)),
+		describe("simple set", function () {
+			it('set simple path key "name"', function () {
+				let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem)),
 					result = 'Title';
 				rec.setAttr('name', result);
 				expect(rec.name).to.be.equal(result);
 			});
 
-			it('set simple path keys {name: "title 1", faulty: 12, low: true}', function() {
-				let rec = new notRecord(manifest, notCommon.completeAssign({},testItem));
+			it('set simple path keys {name: "title 1", faulty: 12, low: true}', function () {
+				let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
 				rec.setAttrs({
 					'name': 'title 1',
 					'faulty': 12,
@@ -214,25 +241,25 @@ describe("notRecord", function() {
 			});
 		});
 
-		describe("complex get", function() {
-			it('get complex path key "data.path.to.5.key"', function() {
-				let rec = new notRecord(manifest, notCommon.completeAssign({},testItem)),
+		describe("complex get", function () {
+			it('get complex path key "data.path.to.5.key"', function () {
+				let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem)),
 					result = rec.data.path.to[5].key;
 				expect(rec.getAttr('data.path.to.5.key')).to.be.equal(result);
 			});
 
-			it('get complex path keys ["data.path.to.5.key", "author.name", "history.1.action"]', function() {
-				let rec = new notRecord(manifest, notCommon.completeAssign({},testItem)),
+			it('get complex path keys ["data.path.to.5.key", "author.name", "history.1.action"]', function () {
+				let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem)),
 					result = [rec.data.path.to[5].key, rec.author.name, rec.history[1].action];
 				expect(rec.getAttrs(["data.path.to.5.key", "author.name", "history.1.action"])).to.be.deep.equal(result);
 			});
 
 		});
 
-		describe("complex set", function() {
+		describe("complex set", function () {
 
-			it('set complex path key "data.path.to.5.key"', function() {
-				let rec = new notRecord(manifest, notCommon.completeAssign({},testItem)),
+			it('set complex path key "data.path.to.5.key"', function () {
+				let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem)),
 					result = 'not bingo anymore';
 				rec.setAttr('data.path.to.5.key', result);
 				expect(rec.data.path.to[5].key).to.be.equal(result);
@@ -242,8 +269,8 @@ describe("notRecord", function() {
 				"data.path.to.4": "value 4",\
 				"author.name": "Leonard",\
 				"history.0.action": "reverted"\
-			}', function() {
-				let rec = new notRecord(manifest, notCommon.completeAssign({},testItem));
+			}', function () {
+				let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
 				rec.setAttrs({
 					'data.path.to.4': 'value 4',
 					'author.name': 'Leonard',

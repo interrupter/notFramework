@@ -43,6 +43,9 @@ class CRUDList extends notController {
 	updateDatatable() {
 		return new Promise((resolve, reject) => {
 			try {
+				let helpers = this.parent.getOptions('views.list.helpers') || {},
+					modelFactory = this.make[this.parent.getModuleName()],
+					targetSelector = this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery');
 				this.tableView = new notTable({
 					options: {
 						procRow: this.parent.getOptions('views.list.procRow', false),
@@ -52,14 +55,13 @@ class CRUDList extends notController {
 						endless: this.parent.getOptions('views.list.endless', false),
 						endlessTrigger: this.parent.getOptions('views.list.endlessTrigger', null),
 						helpers: notCommon.extend({
-								title: this.parent.getOptions('names.plural')
-							},
-							this.parent.getOptions('views.list.helpers') || {}),
-						targetEl: document.querySelector(this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery')),
-						interface: {
-							factory: this.parent.getOptions('views.list.interface.factory', this.make[this.parent.getModuleName()]),
-								listAction: this.parent.getOptions('views.list.interface.listAction'),
-								countAction: this.parent.getOptions('views.list.interface.countAction')
+							title: this.parent.getOptions('names.plural')
+						}, helpers),
+						targetEl: document.querySelector(targetSelector),
+						'interface': {
+							listAction: this.parent.getOptions('views.list.interface.listAction'),
+							countAction: this.parent.getOptions('views.list.interface.countAction'),
+							factory: this.parent.getOptions('views.list.interface.factory', modelFactory)
 						}
 					},
 					events: [

@@ -106,6 +106,24 @@ var notTemplateProcessorsLib = {
 		}) : result);
 		scope.attributeResult ? scope.element.setAttribute('checked', true) : scope.element.removeAttribute('checked');
 	},
+	disabled: function (scope, item, helpers) {
+		let result = notPath.get(scope.attributeExpression, item, helpers);
+		scope.attributeResult = ((typeof result === 'function') ? result({
+			scope,
+			item,
+			helpers
+		}) : result);
+		scope.attributeResult ? scope.element.setAttribute('disabled', true) : scope.element.removeAttribute('disabled');
+	},
+	readonly: function (scope, item, helpers) {
+		let result = notPath.get(scope.attributeExpression, item, helpers);
+		scope.attributeResult = ((typeof result === 'function') ? result({
+			scope,
+			item,
+			helpers
+		}) : result);
+		scope.attributeResult ? scope.element.setAttribute('readonly', true) : scope.element.removeAttribute('readonly');
+	},
 	class: function (scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof res === 'function') ? res({

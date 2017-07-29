@@ -414,6 +414,7 @@ class notTable extends notBase {
 
 	processData() {
 		var thatFilter = this.getFilter();
+		this.getData('rows').setPassive();
 		if (typeof thatFilter !== 'undefined' && thatFilter !== null && typeof thatFilter.filterSearch !== 'undefined' && thatFilter.filterSearch !== null && thatFilter.filterSearch.length > 0) {
 			//
 			this.setWorking('filteredData', this.getData('rows').filter(this.testDataItem.bind(this)));
@@ -437,6 +438,7 @@ class notTable extends notBase {
 				}
 			});
 		}
+		this.getData('rows').setActive();
 	}
 
 	bindSearch() {

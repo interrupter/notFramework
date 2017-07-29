@@ -113,6 +113,11 @@ var notTemplateProcessorsLib = {
 			item,
 			helpers
 		}) : result);
+		if (scope.params.length > 1) {
+			if (scope.params[1] === 'not') {
+				scope.attributeResult = !scope.attributeResult;
+			}
+		}
 		scope.attributeResult ? scope.element.setAttribute('disabled', true) : scope.element.removeAttribute('disabled');
 	},
 	readonly: function (scope, item, helpers) {
@@ -122,6 +127,11 @@ var notTemplateProcessorsLib = {
 			item,
 			helpers
 		}) : result);
+		if (scope.params.length > 1) {
+			if (scope.params[1] === 'not') {
+				scope.attributeResult = !scope.attributeResult;
+			}
+		}
 		scope.attributeResult ? scope.element.setAttribute('readonly', true) : scope.element.removeAttribute('readonly');
 	},
 	class: function (scope, item, helpers) {

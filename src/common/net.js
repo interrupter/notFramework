@@ -42,7 +42,11 @@ var CommonNetwork = {
 				xhr.setRequestHeader('SessionID', this.getSessionID());
 				xhr.setRequestHeader('Content-Type', upload.file.type);
 				xhr.setRequestHeader('X_FILENAME', encodeURIComponent(upload.file.name));
-				xhr.send(upload.file);
+				try {
+					xhr.send(upload.file);
+				} catch (e) {
+					reject(e);
+				}
 			} else {
 				reject();
 			}
@@ -73,7 +77,11 @@ var CommonNetwork = {
 			};
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(data);
+			try {
+				xhr.send(data);
+			} catch (e) {
+				reject(e);
+			}
 		});
 	},
 	registerRequest: (xhr) => {
@@ -113,7 +121,11 @@ var CommonNetwork = {
 			let t = () => reject(xhr.status);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(data);
+			try {
+				xhr.send(data);
+			} catch (e) {
+				reject(e);
+			}
 		});
 	},
 	postJSON: function (url, data) {
@@ -135,7 +147,11 @@ var CommonNetwork = {
 			let t = () => reject(xhr.status);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(data);
+			try {
+				xhr.send(data);
+			} catch (e) {
+				reject(e);
+			}
 		});
 	},
 	putJSON: function (url, data) {
@@ -157,7 +173,11 @@ var CommonNetwork = {
 			let t = () => reject(xhr.status);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(data);
+			try {
+				xhr.send(data);
+			} catch (e) {
+				reject(e);
+			}
 		});
 	},
 	deleteJSON: function (url, data) {
@@ -200,7 +220,11 @@ var CommonNetwork = {
 			let t = (e) => reject(e);
 			xhr.onerror = t;
 			xhr.ontimeout = t;
-			xhr.send(data);
+			try {
+				xhr.send(data);
+			} catch (e) {
+				reject(e);
+			}
 		});
 	},
 	getSessionID: function (name = 'SessionID') {

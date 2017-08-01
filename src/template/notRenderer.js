@@ -192,8 +192,10 @@ class notRenderer extends notBase {
 		this.trigger('rendered');
 	}
 
-	getAttributeExpressionResult(path, item) {
-		return notPath.get(path, item, this.getOptions('helpers', {}));
+	getAttributeExpressionResult(path, item, index) {
+		let helpers = this.getOptions('helpers', {});
+		helpers.__index = index;
+		return notPath.get(path, item, helpers);
 	}
 
 	clearSubTemplates() {

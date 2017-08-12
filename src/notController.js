@@ -20,7 +20,7 @@ class notController extends notBase {
 		this.setWorking({
 			ready: false,
 			views: {},
-			libs:{},
+			libs: {},
 			viewName: OPT_DEFAULT_VIEW_NAME,
 			helpers: {}
 		});
@@ -31,8 +31,8 @@ class notController extends notBase {
 			prefix: this.app.getOptions('paths.module'),
 			postfix: OPT_DEFAULT_VIEWS_POSTFIX,
 			renderFromURL: OPT_DEFAULT_RENDER_FROM_URL,
-			names:{
-				plural:OPT_DEFAULT_PLURAL_NAME,
+			names: {
+				plural: OPT_DEFAULT_PLURAL_NAME,
 				single: OPT_DEFAULT_SINGLE_NAME
 			}
 		});
@@ -43,30 +43,30 @@ class notController extends notBase {
 		let interfaces = this.app.getInterfaces();
 		this.make = {};
 		for (let t in interfaces) {
-			if (interfaces.hasOwnProperty(t)){
+			if (interfaces.hasOwnProperty(t)) {
 				this.make[t] = interfaces[t];
 			}
 		}
 		return this;
 	}
 
-	initRender(){
+	initRender() {
 		this.render(this.getWorking('viewName'), this.getData(), this.getWorking('helpers'));
 	}
 
-	render(viewName ='default' /* view name */, data = {} /* data for notTemplate*/ , helpers = {}/* could be not represented */) {
-		return new Promise((resolve, reject)=>{
+	render(viewName = 'default' /* view name */ , data = {} /* data for notTemplate*/ , helpers = {} /* could be not represented */ ) {
+		return new Promise((resolve, reject) => {
 			var view = this.getView(viewName);
 
 			if (typeof view === 'undefined' || view === null) {
 				reject('No view found', viewName);
-			}else{
+			} else {
 				view = notCommon.extend({}, view);
 				// если place не указано, что возможно и разумно при не существовании
 				// элемента, но известном идентификаторе
 				if (((typeof view.targetEl === 'undefined') || (view.targetEl === null)) && (typeof view.targetQuery !== 'undefined' && view.targetQuery !== null && view.targetQuery.length > 0)) {
 					view.targetEl = document.querySelector(view.targetQuery);
-				}else{
+				} else {
 					view.targetEl = document.querySelector(this.getOptions('containerSelector'));
 				}
 				view.data = data;
@@ -79,11 +79,11 @@ class notController extends notBase {
 				if (this.getOptions('renderFromURL')) {
 					//и адрес не указан
 					if (typeof view.templateURL === 'undefined' || view.templateURL == null || view.templateURL.length == 0) {
-						let prefix = (view.common ? this.app.getOptions('paths.common'): this.getModulePrefix()),
+						let prefix = (view.common ? this.app.getOptions('paths.common') : this.getModulePrefix()),
 							name = ((typeof view.name !== 'undefined' && view.name !== null && view.name.length > 0) ? view.name : viewName),
 							postfix = this.getOptions('postfix');
 						//генерируем адрес по шаблону
-						view.templateURL =  [prefix, name].join('/') + postfix;
+						view.templateURL = [prefix, name].join('/') + postfix;
 					}
 				} else {
 					//а если есть название шаблона, то
@@ -94,14 +94,16 @@ class notController extends notBase {
 				}
 				this.setWorking('component', new notComponent({
 					data,
-					template:{
+					template: {
 						name: view.templateName,
 						src: view.templateURL,
 					},
-					events:[['afterRender', resolve]],
-					options:{
+					events: [
+						['afterRender', resolve]
+					],
+					options: {
 						targetEl: view.targetEl,
-						helpers,
+						helpers: view.helpers,
 						renderAnd: view.renderAnd || OPT_DEFAULT_RENDER_AND
 					}
 				}));
@@ -128,19 +130,19 @@ class notController extends notBase {
 		val ? this.trigger('ready') : this.trigger('busy');
 	}
 
-	setView(name, view){
+	setView(name, view) {
 		this.setWorking(notPath.join('views', name), view);
 		return this;
 	}
 
-	setViews(views){
-		for(let t in views){
+	setViews(views) {
+		for (let t in views) {
 			this.setWorking(notPath.join('views', t), views[t]);
 		}
 		return this;
 	}
 
-	getView(name = 'default'){
+	getView(name = 'default') {
 		return this.getWorking(notPath.join('views', name));
 	}
 
@@ -153,101 +155,101 @@ class notController extends notBase {
 		return this.getOptions('moduleName');
 	}
 
-	getModulePrefix(){
+	getModulePrefix() {
 		return [this.app.getOptions('paths.modules'), this.getModuleName()].join('/');
 	}
 
-	preloadLib(list = {}){
-		return new Promise((resolve, reject)=>{
-			if(typeof list !== 'object'){
+	preloadLib(list = {}) {
+		return new Promise((resolve, reject) => {
+			if (typeof list !== 'object') {
 				resolve();
-			}else{
+			} else {
 				this.setWorking('loading', []);
-				for(let t in list){
+				for (let t in list) {
 					this.getWorking('loading').push(list[t]);
 					this.make[list[t]]({}).$listAll()
-						.then((data)=>{
-							if (!this.getOptions('libs')){
+						.then((data) => {
+							if (!this.getOptions('libs')) {
 								this.setOptions('libs', {});
 							}
 							this.getOptions('libs')[t] = data;
-							if(this.getWorking('loading').indexOf(list[t]) > -1){
+							if (this.getWorking('loading').indexOf(list[t]) > -1) {
 								this.getWorking('loading').splice(this.getWorking('loading').indexOf(list[t]), 1);
 							}
-							if(this.getWorking('loading').length === 0){
+							if (this.getWorking('loading').length === 0) {
 								resolve();
 							}
 						})
-						.catch((err)=>{
+						.catch((err) => {
 							notCommon.report(err);
 							reject();
 						});
 				}
-				if(this.getWorking('loading').length === 0){
+				if (this.getWorking('loading').length === 0) {
 					resolve();
 				}
 			}
 		});
 	}
 
-	queeUpload(name, list){
+	queeUpload(name, list) {
 		//hash (fieldName=>filesList)
-		if(!this.getWorking('uploadQuee')){
+		if (!this.getWorking('uploadQuee')) {
 			this.setWorking('uploadQuee', {});
 		}
 		this.getWorking('uploadQuee')[name] = list;
 	}
 
-	execUploads(item){
+	execUploads(item) {
 		let list = this.getWorking('uploadQuee');
-		return new Promise((resolve, reject)=>{
-			if(typeof list !== 'object'){
+		return new Promise((resolve, reject) => {
+			if (typeof list !== 'object') {
 				resolve(item);
-			}else{
+			} else {
 				this.setWorking('uploading', {});
-				for(let t in list){
+				for (let t in list) {
 					let fieldFiles = list[t];
-					if (fieldFiles.length > 1){
+					if (fieldFiles.length > 1) {
 						item[t] = [];
-					}else{
+					} else {
 						item[t] = '';
 					}
-					for(let f = 0; f < fieldFiles.length; f++){
-						if(!this.getWorking('uploading').hasOwnProperty(t)){
+					for (let f = 0; f < fieldFiles.length; f++) {
+						if (!this.getWorking('uploading').hasOwnProperty(t)) {
 							this.getWorking('uploading')[t] = 0;
 						}
 						this.getWorking('uploading')[t]++;
 						this.app.getWorking('uploader')
 							.upload(fieldFiles[f])
 							.then((savedFile) => {
-								notCommon.log('file uploaded', t,f, savedFile);
+								notCommon.log('file uploaded', t, f, savedFile);
 								this.getWorking('uploading')[t]--;
-								if(this.getWorking('uploading')[t] === 0){
+								if (this.getWorking('uploading')[t] === 0) {
 									delete this.getWorking('uploading')[t];
 								}
-								if(Array.isArray(item[f])){
+								if (Array.isArray(item[f])) {
 									item[t].push(savedFile.hash);
-								}else{
+								} else {
 									item[t] = savedFile.hash;
 								}
-								if(Object.keys(this.getWorking('uploading')).length === 0){
+								if (Object.keys(this.getWorking('uploading')).length === 0) {
 									resolve(item);
 								}
 							})
-							.catch((err)=>{
+							.catch((err) => {
 								notCommon.report(err);
 								reject(err);
 							});
 					}
 				}
-				if(Object.keys(this.getWorking('uploading')).length === 0){
+				if (Object.keys(this.getWorking('uploading')).length === 0) {
 					resolve(item);
 				}
 			}
 		});
 	}
 
-	onAfterRender(){
+	onAfterRender() {
 		this.trigger('afterRender');
 	}
 

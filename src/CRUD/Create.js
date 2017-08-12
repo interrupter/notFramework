@@ -22,7 +22,7 @@ class CRUDCreate extends notController {
 				name: this.parent.getOptions('views.create.name') || OPT_DEFAULT_VIEW,
 				common: this.parent.getOptions('views.create.common') || true,
 				targetQuery: this.parent.getOptions('views.create.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: {}
+				helpers: this.parent.getOptions('views.create.name') || {},
 			}
 		});
 		this.preloadLib(this.parent.getOptions('views.create.preload'))

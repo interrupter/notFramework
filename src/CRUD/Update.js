@@ -17,7 +17,7 @@ class CRUDUpdate extends notController {
 				name: this.parent.getOptions('views.update.name') || OPT_DEFAULT_VIEW,
 				common: this.parent.getOptions('views.update.common') || true,
 				targetQuery: this.parent.getOptions('views.update.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: {}
+				helpers: this.parent.getOptions('views.update.name') || {},
 			}
 		});
 

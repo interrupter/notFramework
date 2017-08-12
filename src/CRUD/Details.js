@@ -16,7 +16,7 @@ class CRUDDetails extends notController {
 				name: this.parent.getOptions('views.details.name') || OPT_DEFAULT_VIEW,
 				common: this.parent.getOptions('views.details.common') || true,
 				targetQuery: this.parent.getOptions('views.details.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: {}
+				helpers: this.parent.getOptions('views.details.name') || {},
 			}
 		});
 

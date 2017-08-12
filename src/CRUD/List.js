@@ -17,7 +17,7 @@ class CRUDList extends notController {
 				name: this.parent.getOptions('views.list.name') || OPT_DEFAULT_VIEW,
 				common: this.parent.getOptions('views.list.common') || true,
 				targetQuery: parent.getOptions('views.list.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: {}
+				helpers: this.parent.getOptions('views.list.helpers') || {}
 			}
 		});
 		this.preloadLib(this.parent.getOptions('views.list.preload'))

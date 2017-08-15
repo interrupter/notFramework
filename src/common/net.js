@@ -41,7 +41,7 @@ var CommonNetwork = {
 				xhr.open('PUT', upload.url, true);
 				xhr.setRequestHeader('SessionID', this.getSessionID());
 				xhr.setRequestHeader('Content-Type', upload.file.type);
-				xhr.setRequestHeader('X_FILENAME', encodeURIComponent(upload.file.name));
+				xhr.setRequestHeader('X-FILENAME', encodeURIComponent(upload.file.name));
 				try {
 					xhr.send(upload.file);
 				} catch (e) {

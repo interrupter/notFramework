@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mocha Tests for active/passive changes</title>
+	<link rel="stylesheet" href="node_modules/mocha/mocha.css">
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<style>
+		.active {
+			background-color: green;
+		}
+		#test{
+			display: block;
+			width: 1600px;
+			height: 800px;
+			overflow-y: hidden;
+		}
+		.innerContainer{
+			position: relative;
+		}
+		.scroll_item{
+			border: 1px dashed #3d3d3d;
+		}
+	</style>
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="build/not-framework.js"></script>
+	<script src="bower_components/Faker/build/build/faker.js" type = "text/javascript"></script>
+	<script src="test/libs/jquery-scrollspy/scrollspy.js" type = "text/javascript"></script>
+</head>
+
+<body>
+	<div id="test"></div>
+	<footer id="footer">
+		make some noise
+	</footer>
+	<script>
+		let data = [];
+		for(let t = 0; t < 1000; t++){
+			let r = Math.random();
+			data.push({
+				id: faker.random.number(),
+				width: 150+r*150,
+				height: 150+r*150,
+				image: faker.image.technics(),
+				name: faker.name.firstName(),
+				status: faker.random.boolean(),
+				email: faker.internet.email(),
+				date: faker.date.future().toString(),
+			});
+		}
+
+		let colors = [];
+		for(let t=0; t< 100; t++){
+			colors.push(faker.internet.color());
+		}
+
+		let renderScroll = function() {
+			window.scroll = new notFramework.notScroll({
+				data,
+				options: {
+					framesCount: 3,
+					frameLength: 30,					
+					targetEl: document.getElementById('test'),
+					template:{
+						name: 'scroll'
+					},
+					helpers:{
+						setSize:(input)=>{
+							input.scope.element.style.height = (input.item.height)+'px';
+							input.scope.element.style.width = (input.item.width)+'px';
+							input.scope.element.style.display = 'inline-block';
+							let frameId = window.scroll&& window.scroll.getItemFrameIndex&&window.scroll.getItemFrameIndex(input.item),
+								color = (frameId>-1 && colors.length>frameId)?colors[frameId]:colors[0];
+							input.scope.element.style.backgroundColor = color;
+							input.scope.element.style.margin = '10px';
+							input.scope.element.style.position = 'relative';
+						}
+					}
+				}
+			});
+			window.scroll.addArray(data);
+			window.scroll.update();
+		};
+
+		notFramework.notTemplateCache.addLibFromURL('./test/templates/scroll.html').then(renderScroll).catch((e) => {
+			console.error('no templates lib', e);
+		});
+	</script>
+</body>
+
+</html>

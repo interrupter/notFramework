@@ -270,6 +270,15 @@ var notTemplateProcessorsLib = {
 				scope.element.display = 'none';
 			}
 		}
+	},
+	style: function (scope, item, helpers) {
+		let res = notPath.get(scope.attributeExpression, item, helpers) || notPath.parseSubs(scope.attributeExpression, item, helpers);
+		scope.attributeResult = ((typeof res === 'function') ? res({
+			scope,
+			item,
+			helpers
+		}) : res);
+		scope.element.style[scope.params[0]] = scope.attributeResult;
 	}
 };
 export default notTemplateProcessorsLib;

@@ -50,6 +50,7 @@ import notComponent from './template/notComponent'; // smarter with bindings for
 import notForm from './components/notForm';
 import notTable from './components/notTable';
 import notDetails from './components/notDetails';
+import notScroll from './components/notScroll';
 
 import notRecord from './record'; //	wrapper for data with server<->view live interactions
 import {
@@ -78,6 +79,7 @@ export {
 	notRenderer,
 	notComponent,
 	notForm,
+	notScroll,
 	notRouter,
 	notTable,
 	notDetails,

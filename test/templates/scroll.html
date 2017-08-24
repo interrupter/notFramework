@@ -1,0 +1,18 @@
+<nt name="scroll">
+	<div class="innerContainer">
+		<nt name="scrollFrame" data=":frames" helpers="::"></nt>
+	</div>
+</nt>
+
+
+<nt name="scrollFrame">
+	<div class="scroll_frame">
+		<nt name="scrollItem" data=":items" helpers="::"></nt>
+	</div>
+</nt>
+
+<nt name="scrollItem">
+	<div class="scroll_item" n-attr-n="::setSize">
+		<img n-attr-src=":image" n-attr-width=":width" n-attr-height=":height" />
+	</div>
+</nt>

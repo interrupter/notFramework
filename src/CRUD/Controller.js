@@ -20,21 +20,21 @@ class CRUDController extends notController {
 		return this;
 	}
 
-	route(params = []){
-		if(params.length==1){
-			if(params[0] === 'create'){
+	route(params = []) {
+		if (params.length == 1) {
+			if (params[0] === 'create') {
 				return this.runCreate(params);
-			}else{
+			} else {
 				return this.runDetails(params);
 			}
-		}else if(params.length == 2){
-			if (params[1] === 'delete'){
+		} else if (params.length == 2) {
+			if (params[1] === 'delete') {
 				return this.runDelete(params);
-			}else if(params[1] === 'update'){
+			} else if (params[1] === 'update') {
 				return this.runUpdate(params);
-			}else {
-				let routeRunnerName = 'run' + notCommon.capitalizeFirstLetter(params[0]);
-				if(this[routeRunnerName] && typeof this[routeRunnerName] === 'function'){
+			} else {
+				let routeRunnerName = 'run' + notCommon.capitalizeFirstLetter(params[1]);
+				if (this[routeRunnerName] && typeof this[routeRunnerName] === 'function') {
 					return this[routeRunnerName](params);
 				}
 			}
@@ -42,37 +42,37 @@ class CRUDController extends notController {
 		return this.runList(params);
 	}
 
-	runCreate(params = []){
+	runCreate(params = []) {
 		this.view = new CRUDCreate(this, params)
 			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 
-	runList(params = []){
+	runList(params = []) {
 		this.view = new CRUDList(this, params)
 			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 
-	runDetails(params = []){
+	runDetails(params = []) {
 		this.view = new CRUDDetails(this, params)
 			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 
-	runDelete(params = []){
+	runDelete(params = []) {
 		this.view = new CRUDDelete(this, params)
 			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 
-	runUpdate(params = []){
+	runUpdate(params = []) {
 		this.view = new CRUDUpdate(this, params)
 			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 
-	onAfterRender(){
+	onAfterRender() {
 		this.trigger('afterRender');
 	}
 

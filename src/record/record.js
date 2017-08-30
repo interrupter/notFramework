@@ -87,11 +87,18 @@ class notRecord extends notBase {
 		this[META_ACTIVE] = true;
 		this.setData(this.initProperties(item));
 		this.interfaceUp();
+		this.mapToInterface();
 		this[META_PROXY] = new Proxy(item, createRecordHandlers(this));
 		//notCommon.log('proxy record created from ', item);
 		this.on('change', this[META_CHANGE].bind(this));
 		this.on('change.nested', this[META_CHANGE_NESTED].bind(this));
 		return this[META_PROXY];
+	}
+
+	mapToInterface() {
+		for (let t of META_MAP_TO_INTERFACE) {
+			this[t] = this[META_INTERFACE][t].bind(this[META_INTERFACE]);
+		}
 	}
 
 	initProperties(item, path = '') {
@@ -210,7 +217,6 @@ class notRecord extends notBase {
 	}
 
 	[META_CHANGE_NESTED]() {
-
 		if (this[META_ACTIVE]) {
 			this.trigger('change', this[META_PROXY], notPath.join(arguments[1], arguments[2]), arguments[3]);
 		}
@@ -219,69 +225,11 @@ class notRecord extends notBase {
 	setItem(item) {
 		this.setData(this.initProperties(item));
 		this[META_PROXY] = new Proxy(item, createRecordHandlers(this));
-		//notCommon.log('proxy created from ', item);
 		this.off('change');
 		this.off('change.nested');
 		this.on('change', this[META_CHANGE].bind(this));
 		this.on('change.nested', this[META_CHANGE_NESTED].bind(this));
-		//notCommon.trace();
 		return this[META_PROXY];
-	}
-
-	setFindBy() {
-		this[META_INTERFACE].setFindBy(...arguments);
-		return this;
-	}
-
-	setFilter() {
-		this[META_INTERFACE].setFilter(...arguments);
-		return this;
-	}
-
-	resetFilter() {
-		this[META_INTERFACE].resetFilter(...arguments);
-		return this;
-	}
-
-	getFilter() {
-		return this[META_INTERFACE].getFilter(...arguments);
-	}
-
-	setSorter() {
-		this[META_INTERFACE].setSorter(...arguments);
-		return this;
-	}
-
-	getSorter() {
-		return this[META_INTERFACE].getSorter(...arguments);
-	}
-
-	setPageNumber() {
-		this[META_INTERFACE].setPageNumber(...arguments);
-		return this;
-	}
-
-	setPageSize() {
-		this[META_INTERFACE].setPageSize(...arguments);
-		return this;
-	}
-
-	setPager() {
-		this[META_INTERFACE].setPager(...arguments);
-		return this;
-	}
-
-	resetPager() {
-		this[META_INTERFACE].resetPager(...arguments);
-		return this;
-	}
-
-	getPager() {
-		return this[META_INTERFACE].getPager(...arguments);
-	}
-
-	getModelName() {
-		return this[META_INTERFACE].getModelName(...arguments);
 	}
 
 }

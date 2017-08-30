@@ -100,7 +100,7 @@ class notRecord extends notBase {
 		for (let t of META_MAP_TO_INTERFACE) {
 			if (this[META_INTERFACE][t] && typeof this[META_INTERFACE][t] === 'function') {
 				this[t] = function () {
-					let res = rec[META_INTERFACE][t](arguments);
+					let res = rec[META_INTERFACE][t](...arguments);
 					return res == rec[META_INTERFACE] ? rec : res;
 				};
 			}

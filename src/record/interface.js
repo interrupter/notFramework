@@ -166,4 +166,22 @@ export default class notInterface extends notBase {
 		}
 		return data;
 	}
+
+	addFormFieldType(fieldName, field) {
+		this.getFieldTypes()[fieldName] = field;
+		return this;
+	}
+
+	addFormField(action, scenario, fieldName) {
+		this.manifest.actions[action].fields[scenario].push(fieldName);
+		return this;
+	}
+
+	getFieldTypes() {
+		return this.manifest.fields;
+	}
+
+	getActionFormFields(action, scenario) {
+		return this.manifest.actions[action].fields[scenario];
+	}
 }

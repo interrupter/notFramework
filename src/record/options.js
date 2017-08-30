@@ -44,7 +44,11 @@ const
 		'setPageSize',
 		'setPager',
 		'resetPager',
-		'getPager'
+		'getPager',
+		'addFormFieldType',
+		'addFormField',
+		'getFieldTypes',
+		'getActionFormFields'
 	],
 	DEFAULT_ACTION_PREFIX = '$';
 

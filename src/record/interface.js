@@ -177,6 +177,19 @@ export default class notInterface extends notBase {
 	}
 
 	addFormField(action, scenario, fieldName) {
+		if (typeof this.manifest.actions[action] === 'undefined') {
+			this.manifest.actions[action] = {
+				fields: {}
+			};
+			this.manifest.actions[action].fields[scenario] = [];
+		}
+		if (typeof this.manifest.actions[action].fields === 'undefined') {
+			this.manifest.actions[action].fields = {};
+			this.manifest.actions[action].fields[scenario] = [];
+		}
+		if (typeof this.manifest.actions[action].fields[scenario] === 'undefined') {
+			this.manifest.actions[action].fields[scenario] = [];
+		}
 		this.manifest.actions[action].fields[scenario].push(fieldName);
 		return this;
 	}

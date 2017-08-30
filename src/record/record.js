@@ -97,7 +97,9 @@ class notRecord extends notBase {
 
 	mapToInterface() {
 		for (let t of META_MAP_TO_INTERFACE) {
-			this[t] = this[META_INTERFACE][t].bind(this[META_INTERFACE]);
+			if (this[META_INTERFACE][t] && typeof this[META_INTERFACE][t] === 'function') {
+				this[t] = this[META_INTERFACE][t].bind(this[META_INTERFACE]);
+			}
 		}
 	}
 

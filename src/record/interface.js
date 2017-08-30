@@ -87,6 +87,10 @@ export default class notInterface extends notBase {
 		return this.setWorking('sorter', sorterData);
 	}
 
+	resetSorter() {
+		return this.setSorter({});
+	}
+
 	getSorter() {
 		return this.getWorking('sorter');
 	}

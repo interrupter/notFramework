@@ -39,17 +39,17 @@ class notComponent extends notBase {
 		return this;
 	}
 
-	getBreadCrumps(){
-		if (this.owner){
+	getBreadCrumps() {
+		if (this.owner) {
 			return [...this.owner.getBreadCrumps(), this.getOptions('id')];
-		}else{
+		} else {
 			return [this.getOptions('id')];
 		}
 	}
 
 	init(input) {
 		this.input = input;
-		this.owner = input.owner?input.owner:null;
+		this.owner = input.owner ? input.owner : null;
 		this.initOptions(input.options ? input.options : {});
 		this.initWorking(input);
 		this.prepareTemplateElement(input.template ? input.template : null);
@@ -59,39 +59,39 @@ class notComponent extends notBase {
 		this.setData(val);
 	}
 
-	initEvents(list){
-		for(let t of list){
+	initEvents(list) {
+		for (let t of list) {
 			this.on(...t);
 		}
 	}
 
 	initOptions(val) {
 		this.setOptions(val);
-		if (!this.getOptions('id')){
+		if (!this.getOptions('id')) {
 			this.setOptions('id', OPTS.COMPONENT_ID_PREFIX + Math.random());
 		}
-		if (!this.getOptions('ntEl')){
+		if (!this.getOptions('ntEl')) {
 			this.initMarkElement();
 		}
 	}
 
-	initMarkElement(){
+	initMarkElement() {
 		let markEl = document.createElement('nt');
 		markEl.setAttribute('id', this.getOptions('id'));
 		markEl.setAttribute('nt-rendered', true);
 		this.setOptions('ntEl', markEl);
 		let placer = this.getPlacer(this.getOptions('renderAnd')),
 			targetQuery = this.getOptions('targetQuery');
-		if (targetQuery){
+		if (targetQuery) {
 			let target = document.querySelector(targetQuery);
-			if (target){
+			if (target) {
 				this.setOptions('targetEl', target);
 			}
 		}
 
-		if (!this.getOptions('targetEl')){
+		if (!this.getOptions('targetEl')) {
 			throw 'No target to place rendered';
-		}else{
+		} else {
 			placer.main(this.getOptions('targetEl'), [markEl]);
 		}
 
@@ -158,7 +158,7 @@ class notComponent extends notBase {
 		/* извещаем об удалении элементов */
 		if (this[META_PARTS] && Array.isArray(this[META_PARTS]) && this[META_PARTS].length) {
 			for (let t of this[META_PARTS]) {
-				if (t.destroy){
+				if (t.destroy) {
 					t.destroy();
 				}
 			}
@@ -166,9 +166,9 @@ class notComponent extends notBase {
 		this.resetParts();
 	}
 
-	destroy(){
+	destroy() {
 		this.clearParts();
-		if (this.getOptions('ntEl') && this.getOptions('ntEl').parentNode){
+		if (this.getOptions('ntEl') && this.getOptions('ntEl').parentNode) {
 			this.getOptions('ntEl').parentNode.removeChild(this.getOptions('ntEl'));
 		}
 		this.dead = true;
@@ -196,16 +196,22 @@ class notComponent extends notBase {
 		this.trigger('afterRender');
 	}
 
-	update(){
+	update() {
+		if (this.getData().isRecord) {
+			this.getData().__setPassive;
+		}
 		this.removeObsoleteParts();
 		if (this.getProtoTemplateElement()) {
 			this.forEachData(this.renderPart.bind(this));
 			this.placeRendered();
 		}
+		if (this.getData().isRecord) {
+			this.getData().__setActive;
+		}
 		this.trigger('afterUpdate');
 	}
 
-	placeRendered(){
+	placeRendered() {
 		if (this.getOptions('targetEl')) {
 			let placer = this.getPlacer(this.getOptions('renderAnd'));
 			placer.before(this.getOptions('targetEl'));
@@ -216,23 +222,23 @@ class notComponent extends notBase {
 		}
 	}
 
-	placePart(data, index){
+	placePart(data, index) {
 		let part = this.getPartByData(data),
-			nodes = part&&part.getStash?part.getStash():[],
+			nodes = part && part.getStash ? part.getStash() : [],
 			targetEl,
 			lastNode,
 			placer;
-		if (index === 0){
+		if (index === 0) {
 			placer = this.getPlacer(this.getOptions('renderAnd'));
 			targetEl = this.getOptions('targetEl');
-		}else{
+		} else {
 			placer = this.getPlacer(OPTS.DEFAULT_PLACER_LOOP);
 			targetEl = this.getWorking('lastPlacedNode');
 		}
 		placer.main(targetEl, nodes);
 		lastNode = targetEl;
-		for(let t of nodes){
-			if (t.nodeType === 1){
+		for (let t of nodes) {
+			if (t.nodeType === 1) {
 				lastNode = t;
 				lastNode.setAttribute('nt-component', this.getOptions('id'));
 				lastNode.setAttribute('nt-part', part.getWorking('partId'));
@@ -283,13 +289,13 @@ class notComponent extends notBase {
 			});
 			//renderer.on('obsolete', this.update.bind(this));
 			this.addPart(renderer);
-		}else{
+		} else {
 			//notCommon.log('updating part render');
 			this.updatePart(this.getPartByData(data));
 		}
 	}
 
-	updatePart(part){
+	updatePart(part) {
 		part.update();
 	}
 
@@ -311,9 +317,9 @@ class notComponent extends notBase {
 
 	findActualParts() {
 		let actualParts = [];
-		this.forEachData((data/*, index*/)=>{
+		this.forEachData((data /*, index*/ ) => {
 			let part = this.getPartByData(data);
-			if (part){
+			if (part) {
 				actualParts.push(part);
 			}
 		});
@@ -323,9 +329,9 @@ class notComponent extends notBase {
 	/*
 		удаляем все кроме актуальных
 	*/
-	removeNotActualParts(actualParts){
-		for(let t = 0; t < this.getParts().length; t++){
-			if (actualParts.indexOf(this.getParts()[t]) === -1){
+	removeNotActualParts(actualParts) {
+		for (let t = 0; t < this.getParts().length; t++) {
+			if (actualParts.indexOf(this.getParts()[t]) === -1) {
 				this.getParts()[t].destroy();
 				this.getParts().splice(t, 1);
 				t--;
@@ -342,11 +348,11 @@ class notComponent extends notBase {
 		return false;
 	}
 
-	show(){
+	show() {
 
 	}
 
-	hide(){
+	hide() {
 
 	}
 }

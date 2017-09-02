@@ -220,6 +220,7 @@ var notTemplateProcessorsLib = {
 			let firstOpt = scope.element.querySelector('option');
 			if (firstOpt) {
 				firstOpt.setAttribute('selected', true);
+				item.trigger('change', item, itemValueFieldName, firstOpt.value);
 			}
 		}
 	},

@@ -173,6 +173,7 @@ var notTemplateProcessorsLib = {
 			option = null,
 			valueFieldName = 'value',
 			labelFieldName = 'name',
+			selected = false,
 			itemValueFieldName = helpers.hasOwnProperty('field') && helpers.field.hasOwnProperty('name') ? helpers.field.name : 'value';
 		scope.element.innerHTML = '';
 		if (scope.params.length === 2) {
@@ -203,14 +204,22 @@ var notTemplateProcessorsLib = {
 					if (item[itemValueFieldName] && Array.isArray(item[itemValueFieldName])) {
 						if (item[itemValueFieldName].indexOf(lib[i][valueFieldName]) > -1) {
 							option.setAttribute('selected', true);
+							selected = true;
 						}
 					}
 				} else {
 					if (item[itemValueFieldName] === lib[i][valueFieldName]) {
 						option.setAttribute('selected', true);
+						selected = true;
 					}
 				}
 				scope.element.appendChild(option);
+			}
+		}
+		if (!selected) {
+			if (!helpers.field.array) {
+				let firstOpt = scope.element.querySelector('option');
+				firstOpt.setAttribute('selected', true);
 			}
 		}
 	},

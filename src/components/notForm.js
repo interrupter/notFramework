@@ -162,7 +162,8 @@ class notForm extends notBase {
 				array: fieldType.array,
 				default: fieldType.default,
 				placeholder: fieldType.placeholder,
-				options: this.getOptions(notPath.join('helpers', 'libs', fieldName))
+				options: this.getOptions(notPath.join('helpers', 'libs', fieldName)),
+				filter: this.getOptions(notPath.join('helpers', 'filters', fieldName))
 			}
 		};
 		let helpers = notCommon.extend({
@@ -171,7 +172,6 @@ class notForm extends notBase {
 			},
 			field: rec.field,
 			data: this.getData()
-
 		}, this.getOptions('helpers'));
 		rec.component = new notComponent({
 			data: this.getData(),

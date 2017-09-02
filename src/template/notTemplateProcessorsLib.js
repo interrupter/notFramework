@@ -193,6 +193,9 @@ var notTemplateProcessorsLib = {
 		if (typeof item !== 'undefined' && item !== null) {
 			var lib = notPath.get(scope.attributeExpression, item, helpers);
 			for (i = 0; i < lib.length; i++) {
+				if (helpers.field.filter && !helpers.field.filter(lib[i])) {
+					continue;
+				}
 				option = document.createElement('option');
 				option.setAttribute('value', lib[i][valueFieldName]);
 				option.textContent = lib[i][labelFieldName];

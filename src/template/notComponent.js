@@ -197,16 +197,10 @@ class notComponent extends notBase {
 	}
 
 	update() {
-		if (this.getData().isRecord) {
-			this.getData().__setPassive;
-		}
 		this.removeObsoleteParts();
 		if (this.getProtoTemplateElement()) {
 			this.forEachData(this.renderPart.bind(this));
 			this.placeRendered();
-		}
-		if (this.getData().isRecord) {
-			this.getData().__setActive;
 		}
 		this.trigger('afterUpdate');
 	}

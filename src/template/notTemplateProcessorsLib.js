@@ -216,9 +216,9 @@ var notTemplateProcessorsLib = {
 				scope.element.appendChild(option);
 			}
 		}
-		if (!selected) {
-			if (!helpers.field.array) {
-				let firstOpt = scope.element.querySelector('option');
+		if (!selected && !helpers.field.array) {
+			let firstOpt = scope.element.querySelector('option');
+			if (firstOpt) {
 				firstOpt.setAttribute('selected', true);
 			}
 		}

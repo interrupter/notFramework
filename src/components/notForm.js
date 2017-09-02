@@ -97,7 +97,7 @@ class notForm extends notBase {
 	getWrapperData() {
 		let actionData = this.getActionData();
 		return {
-			title: actionData.title ? actionData.title : OPT_DEFAULT_FORM_TITLE
+			title: this.getOptions('title', (actionData.title ? actionData.title : OPT_DEFAULT_FORM_TITLE))
 		};
 	}
 

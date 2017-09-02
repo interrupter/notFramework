@@ -112,6 +112,7 @@ class notForm extends notBase {
 				this.addFieldComponent(fieldName);
 			}
 		}
+		this.trigger('afterRender');
 	}
 
 	clearFieldsComponents() {
@@ -159,6 +160,7 @@ class notForm extends notBase {
 				title: fieldType.label || fieldType.placeholder,
 				type: fieldType.type,
 				label: fieldType.label,
+				disabled: fieldType.disabled,
 				array: fieldType.array,
 				default: fieldType.default,
 				placeholder: fieldType.placeholder,

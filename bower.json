@@ -1,7 +1,7 @@
 {
   "name": "not-framework",
   "main": "not-framework.js",
-  "version": "2.6.6",
+  "version": "2.6.7",
   "homepage": "https://github.com/interrupter/notFramework",
   "authors": [
     "interrupter"

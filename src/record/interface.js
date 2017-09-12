@@ -153,8 +153,9 @@ export default class notInterface extends notBase {
 			requestParams = this.collectRequestData(actionData),
 			requestParamsEncoded = this.encodeRequest(requestParams),
 			id = this.getID(record, actionData, actionName),
+			apiServerURL = notCommon.getApp().getOptions('api.server.url', ''),
 			url = this.getURL(record, actionData, actionName);
-		return notCommon.getAPI().queeRequest(actionData.method, url + requestParamsEncoded, id, JSON.stringify(record.getData()))
+		return notCommon.getAPI().queeRequest(actionData.method, apiServerURL + url + requestParamsEncoded, id, JSON.stringify(record.getData()))
 			.then((data) => {
 				return this.afterSuccessRequest(data, actionData);
 			});

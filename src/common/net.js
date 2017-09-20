@@ -93,7 +93,7 @@ var CommonNetwork = {
 	onSuccessRequest: (xhr) => {
 		let con = notFramework.notCommon.getAPI ? notFramework.notCommon.getAPI() : false;
 		if (con && xhr) {
-			con.markEnd(xhr);
+			//con.markEnd(xhr);
 		}
 	},
 	onFailedRequest: (xhr) => {

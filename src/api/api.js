@@ -68,15 +68,19 @@ class notAPI extends notBase {
 	}
 
 	markEnd(xhr) {
-		xhr.mark.end = (new Date()).getTime();
-		xhr.mark.duration = xhr.mark.end - xhr.mark.start;
-		xhr.mark.length = parseInt(xhr.getResponseHeader('Content-Length'));
-		xhr.mark.speed = xhr.mark.length / (xhr.mark.duration / 1000);
-		this.mark.history.push(xhr.mark.speed);
-		this.mark.length += xhr.mark.length;
-		this.mark.duration += xhr.mark.duration;
-		this.mark.speed = this.mark.length / (this.mark.duration / 1000);
-		this.checkSpeed();
+		try {
+			xhr.mark.end = (new Date()).getTime();
+			xhr.mark.duration = xhr.mark.end - xhr.mark.start;
+			xhr.mark.length = parseInt(xhr.getResponseHeader('Content-Length'));
+			xhr.mark.speed = xhr.mark.length / (xhr.mark.duration / 1000);
+			this.mark.history.push(xhr.mark.speed);
+			this.mark.length += xhr.mark.length;
+			this.mark.duration += xhr.mark.duration;
+			this.mark.speed = this.mark.length / (this.mark.duration / 1000);
+			this.checkSpeed();
+		} catch (e) {
+			return;
+		}
 	}
 
 	markFailed(xhr) {

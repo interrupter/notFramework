@@ -76,24 +76,18 @@ var CommonObjects = {
 			if (a[p]) {
 				switch (typeof(a[p])) {
 				case 'object':
-					{
-						if (!this.equal(a[p], b[p])) {
-							return false;
-						}
-						break;
+					if (!this.equal(a[p], b[p])) {
+						return false;
 					}
+					break;
 				case 'function':
-					{
-						if (typeof(b[p]) == 'undefined' ||
-							(p != 'equals' && a[p].toString() != b[p].toString()))
-							return false;
-						break;
-					}
+					if (typeof(b[p]) == 'undefined' ||
+						(p != 'equals' && a[p].toString() != b[p].toString()))
+						return false;
+					break;
 				default:
-					{
-						if (a[p] != b[p]) {
-							return false;
-						}
+					if (a[p] != b[p]) {
+						return false;
 					}
 				}
 			} else {

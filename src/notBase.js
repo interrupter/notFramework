@@ -43,44 +43,44 @@ export default class notBase {
 	setCommon(what, args) {
 		switch (args.length) {
 		case 1:
-			{
-				/* set collection */
-				what = args[0];
-				break;
-			}
+		{
+			/* set collection */
+			what = args[0];
+			break;
+		}
 		case 2:
-			{
-				/* set collection element */
-				notPath.set(args[0] /* path */ , what /* collection */ , undefined /* helpers */ , args[1] /* value */ );
-				break;
-			}
+		{
+			/* set collection element */
+			notPath.set(args[0] /* path */ , what /* collection */ , undefined /* helpers */ , args[1] /* value */ );
+			break;
+		}
 		}
 		return this;
 	}
 	getCommon(what, args) {
 		switch (args.length) {
-			/* if we want get data by path */
+		/* if we want get data by path */
 		case 1:
-			{
-				return notPath.get(args[0], what);
-			}
-			/* if we want get data by path with default value */
+		{
+			return notPath.get(args[0], what);
+		}
+		/* if we want get data by path with default value */
 		case 2:
-			{
-				let res = notPath.get(args[0], what);
-				if (res === undefined) {
-					/* no data, return default value */
-					return args[1];
-				} else {
-					/* data, return it */
-					return res;
-				}
+		{
+			let res = notPath.get(args[0], what);
+			if (res === undefined) {
+				/* no data, return default value */
+				return args[1];
+			} else {
+				/* data, return it */
+				return res;
 			}
-			/* return full collection */
+		}
+		/* return full collection */
 		default:
-			{
-				return what;
-			}
+		{
+			return what;
+		}
 		}
 	}
 
@@ -163,12 +163,16 @@ export default class notBase {
 			let name = eventName[g];
 			if (this[META_EVENTS].hasOwnProperty(name)) {
 				for (let t = 0; t < this[META_EVENTS][name].length; t++) {
-					let event = this[META_EVENTS][name][t];
+					let event = this[META_EVENTS][name][t],
+						oldLen = this[META_EVENTS][name].length;
 					if (event.once) {
 						this.off(name, event.callbacks);
 					}
 					for (var h = 0; h < event.callbacks.length; h++) {
 						event.callbacks[h](...args);
+					}
+					if(oldLen > this[META_EVENTS][name].length){
+						t--;
 					}
 				}
 			}

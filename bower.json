@@ -1,43 +1,43 @@
 {
   "name": "not-framework",
   "main": "not-framework.js",
-  "version": "2.6.11",
+  "version": "2.6.12",
   "homepage": "https://github.com/interrupter/notFramework",
   "authors": [
-    "interrupter"
+	"interrupter"
   ],
   "description": "compilation of front-end libs that purposed to intergrate with not-node node.js module.",
   "keywords": [
-    "template",
-    "front-end",
-    "frontend",
-    "engine",
-    "json",
-    "form",
-    "builder",
-    "view",
-    "table",
-    "api",
-    "manifest",
-    "pager",
-    "record",
-    "mongoose",
-    "controller",
-    "orm"
+	"template",
+	"front-end",
+	"frontend",
+	"engine",
+	"json",
+	"form",
+	"builder",
+	"view",
+	"table",
+	"api",
+	"manifest",
+	"pager",
+	"record",
+	"mongoose",
+	"controller",
+	"orm"
   ],
   "license": "MIT",
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+	"**/.*",
+	"node_modules",
+	"bower_components",
+	"test",
+	"tests"
   ],
-    "dependencies":{
-        "jquery":"*"
-    },
+	"dependencies":{
+		"jquery":"*"
+	},
 		"devDependencies":{
-        "Faker":"*",
+		"Faker":"*",
 				"bootstrap":"*"
-    }
+	}
 }

@@ -4,6 +4,9 @@ var CommonApp = {
 	},
 	getApp: function(){
 		return this.get('app');
+	},
+	extendAppConfig: (conf, conf2)=>{
+		return this.deepMerge(conf, conf2);
 	}
 };
 

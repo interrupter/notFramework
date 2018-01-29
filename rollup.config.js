@@ -16,11 +16,13 @@ import envReplace from 'postcss-env-replace';
 import cssnano from 'cssnano';
 
 export default {
-	entry: 'src/index.js',
-	dest: (process.env.NODE_ENV === 'production' ? 'build/not-framework.min.js' : 'build/not-framework.js'),
-	format: 'iife',
-	moduleName: 'notFramework',
-	sourceMap: (process.env.NODE_ENV === 'production' ? false : 'inline'),
+	input: 'src/index.js',
+	output:{
+		name: 'notFramework',
+		format: 'iife',
+		sourcemap: (process.env.NODE_ENV === 'production' ? false : 'inline'),
+		file: (process.env.NODE_ENV === 'production' ? 'build/not-framework.min.js' : 'build/not-framework.js'),
+	},
 	plugins: [
 		resolve({
 			jsnext: true,

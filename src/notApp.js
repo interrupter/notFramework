@@ -79,14 +79,14 @@ export default class notApp extends notBase {
 
 	preInitRouter() {
 		this.setWorking('router', notRouter);
-		this.getWorking('router').setRoot(this.getOptions('router.root'));
+		this.getWorking('router').setRoot(this.getOptions('manifest.router.root'));
 		notRouter.reRouteExisted();
 	}
 
 	initRouter() {
 		var routieInput = {};
-		for (let t = 0; t < this.getOptions('router.manifest').length; t++) {
-			let routeBlock = this.getOptions('router.manifest')[t],
+		for (let t = 0; t < this.getOptions('manifest.router.manifest').length; t++) {
+			let routeBlock = this.getOptions('manifest.router.manifest')[t],
 				paths = routeBlock.paths,
 				controller = routeBlock.controller;
 			for (let i = 0; i < paths.length; i++) {

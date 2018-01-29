@@ -24,7 +24,7 @@ class notRouter extends notBase {
 	}
 
 	setRoot(root) {
-		this.setWorking('root', root ? '/' + this.clearSlashes(root) + '/' : '/');
+		this.setWorking('root', (root && root !== '/') ? '/' + this.clearSlashes(root) + '/' : '/');
 		return this;
 	}
 
@@ -111,7 +111,7 @@ class notRouter extends notBase {
 	}
 
 	getRoot() {
-		return '';
+		return this.getWorking('root');
 	}
 
 	listen(loopInterval = OPT_DEFAULT_CHECK_INTERVAL) {
@@ -141,17 +141,17 @@ class notRouter extends notBase {
 		path = path ? path : '';
 		switch (this.getWorking('mode')) {
 		case OPT_MODE_HISTORY:
-			{
-				//console.log('push state', this.getFullRoute(path));
-				history.pushState(null, null, this.getFullRoute(path));
-				break;
-			}
+		{
+			//console.log('push state', this.getFullRoute(path));
+			history.pushState(null, null, this.getFullRoute(path));
+			break;
+		}
 		case OPT_MODE_HASH:
-			{
-				window.location.href.match(/#(.*)$/);
-				window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
-				break;
-			}
+		{
+			window.location.href.match(/#(.*)$/);
+			window.location.href = window.location.href.replace(/#(.*)$/, '') + '#' + path;
+			break;
+		}
 		}
 		return this;
 	}

@@ -99,10 +99,10 @@ class notRouter extends notBase {
 		let current = this.getWorking('current'),
 			fragment = this.getFragment(),
 			init = this.isInitialized();
-		if (current !== fragment || !init) {
+		if ((current !== fragment) || !init) {
 			this.setWorking('current', fragment);
 			this.check(fragment);
-			this.setInitialized();
+			this.setInitialized(true);
 		}
 	}
 
@@ -123,12 +123,12 @@ class notRouter extends notBase {
 	}
 
 	check(f) {
-		var fragment = f || this.getFragment();
-		for (var i = 0; i < this.getWorking('routes').length; i++) {
-			let path = this.getWorking('root') + this.getWorking('routes')[i].re;
-			let fullRE = this.clearSlashes(decodeURI(path));
-			var match = fragment.match(fullRE);
-			if (match) {
+		let fragment = f || this.getFragment();
+		for (let i = 0; i < this.getWorking('routes').length; i++) {
+			let path = this.getWorking('root') + this.getWorking('routes')[i].re,
+				fullRE = this.clearSlashes(decodeURI(path)),
+				match = fragment.match(fullRE);
+			if (match && match.length) {
 				match.shift();
 				this.getWorking('routes')[i].handler.apply(this.host || {}, match);
 				return this;

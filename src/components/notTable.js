@@ -9,6 +9,8 @@ const OPT_DEFAULT_PAGE_SIZE = 20,
 	OPT_DEFAULT_PAGE_NUMBER = 0,
 	OPT_DEFAULT_PAGE_RANGE = 6,
 	OPT_DEFAULT_SORT_DIRECTION = 1,
+	OPT_DEFAULT_SEARCH = '',
+	OPT_DEFAULT_RETURN = {},
 	OPT_DEFAULT_COUNT_ACTION = 'count',
 	OPT_DEFAULT_LIST_ACTION = 'list',
 	OPT_DEFAULT_SORT_FIELD = '_id',
@@ -57,8 +59,10 @@ const OPT_DEFAULT_PAGE_SIZE = 20,
 					}
 				}
 			],
-			pageSize: 50,		//how many rows per "page"
-			pageNumber: 0,		//default page number aka first
+			pager:{
+				size: 50,		//how many rows per "page"
+				number: 0,		//default page number aka first
+			},
 			endless: true,		//true - will loadup data from
 			endlessTrigger: 	//endless trigger
 			helpers: {},		//will be available for every processor in sub-templates
@@ -202,15 +206,11 @@ class notTable extends notBase {
 	}
 
 	changeSortingOptions(el, fieldName) {
-		if (fieldName === this.getSorter().sortByField) {
-			this.setSorter({
-				sortByField: fieldName,
-				sortDirection: -1 * this.getSorter().sortDirection,
-			});
+		if (this.getSorter().hasOwnProperty(fieldName)) {
+			this.getSorter()[fieldName]*=-1;
 		} else {
 			this.setSorter({
-				sortByField: fieldName,
-				sortDirection: OPT_DEFAULT_SORT_DIRECTION,
+				[fieldName]: OPT_DEFAULT_SORT_DIRECTION,
 			});
 		}
 		if (el.parentNode) {
@@ -223,7 +223,7 @@ class notTable extends notBase {
 				el.parentNode.children[i].setAttribute('aria-sort', 'none');
 			}
 		}
-		if (this.getSorter().sortDirection > 0) {
+		if (this.getSorterDirection() > 0) {
 			el.classList.remove('sorting_desc');
 			el.classList.add('sorting_asc');
 			el.setAttribute('aria-sort', 'ascending');
@@ -241,18 +241,41 @@ class notTable extends notBase {
 	}
 
 	resetSorter() {
-		this.setSorter({
-			sortByField: OPT_DEFAULT_SORT_FIELD,
-			sortDirection: OPT_DEFAULT_SORT_DIRECTION,
-		});
+		let t = {};
+		t[OPT_DEFAULT_SORT_FIELD] = OPT_DEFAULT_SORT_DIRECTION;
+		this.setSorter(t);
 	}
 
 	getSorter() {
 		return this.getWorking('sorter');
 	}
 
-	getFilterSearch() {
-		return (typeof this.getFilter() !== 'undefined' && this.getFilter() !== null && typeof this.getFilter().filterSearch !== 'undefined' && this.getFilter().filterSearch !== null) ? this.getFilter().filterSearch.toString() : '';
+	getSorterDirection(){
+		try{
+			let names = Object.keys(this.getSorter());
+			return this.getSorter()[names[0]];
+		}catch(e){
+			return OPT_DEFAULT_SORT_DIRECTION;
+		}
+	}
+
+	getSearch() {
+		let search =(typeof this.getSearch() !== 'undefined' && this.getSearch() !== null);
+		return  search?this.getWorking('search'):'';
+	}
+
+	setSearch(line = OPT_DEFAULT_SEARCH){
+		this.setWorking('search', line);
+		return this;
+	}
+
+	getReturn(){
+		return this.getWorking('return');
+	}
+
+	setReturn(ret = OPT_DEFAULT_RETURN){
+		this.setWorking('return', ret);
+		return this;
 	}
 
 	clearFilteredData() {
@@ -306,17 +329,17 @@ class notTable extends notBase {
 	}
 
 	getDefaultPageNumber() {
-		return isNaN(this.getOptions('pageNumber')) ? OPT_DEFAULT_PAGE_NUMBER : this.getOptions('pageNumber');
+		return isNaN(this.getOptions('pager.number')) ? OPT_DEFAULT_PAGE_NUMBER : this.getOptions('pager.number');
 	}
 
 	getDefaultPageSize() {
-		return isNaN(this.getOptions('pageSize')) ? OPT_DEFAULT_PAGE_SIZE : this.getOptions('pageSize');
+		return isNaN(this.getOptions('pager.size')) ? OPT_DEFAULT_PAGE_SIZE : this.getOptions('pager.size');
 	}
 
 	resetPager() {
 		this.setWorking('pager', {
-			pageSize: this.getDefaultPageSize(),
-			pageNumber: this.getDefaultPageNumber(),
+			size: this.getDefaultPageSize(),
+			number: this.getDefaultPageNumber(),
 		});
 	}
 
@@ -357,7 +380,9 @@ class notTable extends notBase {
 		let query = this.getDataInterface()
 			.setFilter(this.getFilter())
 			.setSorter(this.getSorter())
-			.setPager(this.getPager().pageSize, this.getPager().pageNumber);
+			.setReturn(this.getReturn())
+			.setSearch(this.getSearch())
+			.setPager(this.getPager().size, this.getPager().number);
 		return query['$' + this.getLoadDataActionName()]();
 	}
 
@@ -445,9 +470,7 @@ class notTable extends notBase {
 		var searchEl = this.getOptions('targetEl').querySelectorAll('input[name="search"]')[0];
 		if (!searchEl) return;
 		var onEvent = (e) => {
-			this.setFilter({
-				filterSearch: e.currentTarget.value
-			});
+			this.setSearch(e.currentTarget.value);
 			return true;
 		};
 		searchEl.addEventListener('keyup', onEvent);
@@ -642,7 +665,7 @@ class notTable extends notBase {
 
 
 	testDataItem(item) {
-		var strValue = this.getFilterSearch().toLowerCase();
+		var strValue = this.getSearch().toLowerCase();
 		for (var k in item) {
 			var toComp = item[k].toString().toLowerCase();
 			if (toComp.indexOf(strValue) > -1) {

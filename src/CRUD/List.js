@@ -50,8 +50,10 @@ class CRUDList extends notController {
 					options: {
 						procRow: this.parent.getOptions('views.list.procRow', false),
 						fields: this.parent.getOptions('views.list.fields'),
-						pageSize: this.getOptions('views.list.pager.size') || this.app.getOptions('pager.size') || OPT_DEFAULT_PAGE_SIZE,
-						pageNumber: this.getOptions('views.list.pager.number') || this.app.getOptions('pager.number') || OPT_DEFAULT_PAGE_NUMBER,
+						pager:{
+							size: this.getOptions('views.list.pager.size') || this.app.getOptions('pager.size') || OPT_DEFAULT_PAGE_SIZE,
+							number: this.getOptions('views.list.pager.number') || this.app.getOptions('pager.number') || OPT_DEFAULT_PAGE_NUMBER,
+						},
 						endless: this.parent.getOptions('views.list.endless', false),
 						endlessTrigger: this.parent.getOptions('views.list.endlessTrigger', null),
 						helpers: notCommon.extend({

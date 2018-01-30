@@ -4,7 +4,8 @@ import {
 	OPT_DEFAULT_INDEX_FIELD_NAME_PRIORITY,
 	DEFAULT_FILTER,
 	DEFAULT_PAGE_NUMBER,
-	DEFAULT_PAGE_SIZE
+	DEFAULT_PAGE_SIZE,
+	DEFAULT_SEARCH
 } from './options';
 import notRecord from './record.js';
 
@@ -76,11 +77,23 @@ export default class notInterface extends notBase {
 	}
 
 	resetFilter() {
-		return this.setFilter({});
+		return this.setFilter();
 	}
 
 	getFilter() {
 		return this.getWorking('filter');
+	}
+
+	setSearch(searchData = DEFAULT_SEARCH) {
+		return this.setWorking('search', searchData);
+	}
+
+	resetSearch() {
+		return this.setSearch();
+	}
+
+	getSearch() {
+		return this.getWorking('search');
 	}
 
 	setSorter(sorterData) {
@@ -96,15 +109,15 @@ export default class notInterface extends notBase {
 	}
 
 	setPageNumber(pageNumber) {
-		return this.setWorking('pageNumber', pageNumber);
+		return this.setWorking('pager.number', pageNumber);
 	}
 
 	setPageSize(pageSize) {
-		return this.setWorking('pageSize', pageSize);
+		return this.setWorking('pager.size', pageSize);
 	}
 
 	setPager(pageSize = DEFAULT_PAGE_SIZE, pageNumber = DEFAULT_PAGE_NUMBER) {
-		return this.setWorking('pageSize', pageSize).setWorking('pageNumber', pageNumber);
+		return this.setWorking('pager', {size: pageSize, number: pageNumber});
 	}
 
 	resetPager() {
@@ -112,10 +125,7 @@ export default class notInterface extends notBase {
 	}
 
 	getPager() {
-		return {
-			pageSize: this.getWorking('pageSize'),
-			pageNumber: this.getWorking('pageNumber')
-		};
+		return this.getWorking('pager');
 	}
 
 	getModelName() {
@@ -132,7 +142,14 @@ export default class notInterface extends notBase {
 			for (let i = 0; i < actionData.data.length; i++) {
 				let dataProviderName = 'get' + notCommon.capitalizeFirstLetter(actionData.data[i]);
 				if (this[dataProviderName] && typeof this[dataProviderName] === 'function') {
-					requestData = notCommon.extend(requestData, this[dataProviderName]());
+					let data = this[dataProviderName](),
+						res = {};
+					if (['pager', 'sorter', 'filter', 'search', 'return'].indexOf(actionData.data[i])>-1){
+						res[actionData.data[i]] = data;
+					}else{
+						res = data;
+					}
+					requestData = notCommon.extend(requestData, res);
 				}
 			}
 		}

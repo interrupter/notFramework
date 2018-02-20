@@ -329,7 +329,7 @@ class notTable extends notBase {
 	}
 
 	getDefaultPageNumber() {
-		return isNaN(this.getOptions('pager.number')) ? OPT_DEFAULT_PAGE_NUMBER : this.getOptions('pager.number');
+		return isNaN(this.getOptions('pager.page')) ? OPT_DEFAULT_PAGE_NUMBER : this.getOptions('pager.page');
 	}
 
 	getDefaultPageSize() {
@@ -339,7 +339,7 @@ class notTable extends notBase {
 	resetPager() {
 		this.setWorking('pager', {
 			size: this.getDefaultPageSize(),
-			number: this.getDefaultPageNumber(),
+			page: this.getDefaultPageNumber(),
 		});
 	}
 
@@ -382,34 +382,34 @@ class notTable extends notBase {
 			.setSorter(this.getSorter())
 			.setReturn(this.getReturn())
 			.setSearch(this.getSearch())
-			.setPager(this.getPager().size, this.getPager().number);
+			.setPager(this.getPager().size, this.getPager().page);
 		return query['$' + this.getLoadDataActionName()]();
 	}
 
 	goToNext() {
-		let next = isNaN(this.getWorking('pager').pageNumber) ? this.getDefaultPageNumber() : this.getWorking('pager').pageNumber + 1;
-		this.getWorking('pager').pageNumber = Math.min(next, this.data.pagination.pages.to);
+		let next = isNaN(this.getWorking('pager').page) ? this.getDefaultPageNumber() : this.getWorking('pager').page + 1;
+		this.getWorking('pager').page = Math.min(next, this.data.pagination.pages.to);
 		this.updateData();
 	}
 
 	goToPrev() {
-		let prev = isNaN(this.getWorking('pager').pageNumber) ? this.getDefaultPageNumber() : this.getWorking('pager').pageNumber - 1;
-		this.getWorking('pager').pageNumber = Math.max(prev, this.data.pagination.pages.from);
+		let prev = isNaN(this.getWorking('pager').page) ? this.getDefaultPageNumber() : this.getWorking('pager').page - 1;
+		this.getWorking('pager').page = Math.max(prev, this.data.pagination.pages.from);
 		this.updateData();
 	}
 
 	goToFirst() {
-		this.getWorking('pager').pageNumber = this.data.pagination.pages.from;
+		this.getWorking('pager').page = this.data.pagination.pages.from;
 		this.updateData();
 	}
 
 	goToLast() {
-		this.getWorking('pager').pageNumber = this.data.pagination.pages.to;
+		this.getWorking('pager').page = this.data.pagination.pages.to;
 		this.updateData();
 	}
 
 	goToPage(pageNumber) {
-		this.getWorking('pager').pageNumber = pageNumber;
+		this.getWorking('pager').page = pageNumber;
 		this.updateData();
 	}
 
@@ -494,7 +494,7 @@ class notTable extends notBase {
 	}
 
 	loadNext() {
-		this.getWorking('pager').pageNumber++;
+		this.getWorking('pager').page++;
 		this.updateData();
 	}
 
@@ -600,8 +600,8 @@ class notTable extends notBase {
 				tbody.appendChild(this.renderRow(this.getData()[i]));
 			}
 		} else {
-			let thisPageStarts = this.getPager().pageSize * (this.getPager().pageNumber),
-				nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1);
+			let thisPageStarts = this.getPager().size * (this.getPager().page),
+				nextPageEnds = this.getPager().size * (this.getPager().page + 1);
 
 			for (let i = thisPageStarts; i < Math.min(nextPageEnds, this.getWorking('filteredData').length); i++) {
 				tbody.appendChild(this.renderRow(this.getWorking('filteredData')[i]));
@@ -622,7 +622,7 @@ class notTable extends notBase {
 			}
 		} else {
 			let thisPageStarts = 0,
-				nextPageEnds = this.getPager().pageSize * (this.getPager().pageNumber + 1);
+				nextPageEnds = this.getPager().size * (this.getPager().page + 1);
 			for (let i = thisPageStarts; i < Math.min(nextPageEnds, this.getWorking('filteredData').length); i++) {
 				tbody.appendChild(this.renderRow(this.getWorking('filteredData')[i]));
 			}
@@ -642,12 +642,12 @@ class notTable extends notBase {
 
 	updatePagination(itemsCount) {
 		this.data.pagination.pages.list.splice(0, this.data.pagination.pages.list.length);
-		let itemsFrom = (this.getPager().pageNumber - OPT_DEFAULT_PAGE_NUMBER) * this.getPager().pageSize + 1,
-			pagesCount = itemsCount % this.getPager().pageSize ? Math.floor(itemsCount / this.getPager().pageSize) + 1 : Math.round(itemsCount / this.getPager().pageSize),
-			pagesFrom = Math.max(OPT_DEFAULT_PAGE_NUMBER, this.getPager().pageNumber - OPT_DEFAULT_PAGE_RANGE),
-			pagesTo = Math.min(pagesCount - (1 - OPT_DEFAULT_PAGE_NUMBER), this.getPager().pageNumber + OPT_DEFAULT_PAGE_RANGE),
+		let itemsFrom = (this.getPager().page - OPT_DEFAULT_PAGE_NUMBER) * this.getPager().size + 1,
+			pagesCount = itemsCount % this.getPager().size ? Math.floor(itemsCount / this.getPager().size) + 1 : Math.round(itemsCount / this.getPager().size),
+			pagesFrom = Math.max(OPT_DEFAULT_PAGE_NUMBER, this.getPager().page - OPT_DEFAULT_PAGE_RANGE),
+			pagesTo = Math.min(pagesCount - (1 - OPT_DEFAULT_PAGE_NUMBER), this.getPager().page + OPT_DEFAULT_PAGE_RANGE),
 			list = [],
-			itemsTo = Math.min(itemsFrom + this.getPager().pageSize - 1, itemsCount);
+			itemsTo = Math.min(itemsFrom + this.getPager().size - 1, itemsCount);
 		for (let t = pagesFrom; t <= pagesTo; t++) {
 			list.push({
 				index: t
@@ -659,7 +659,7 @@ class notTable extends notBase {
 		this.data.pagination.pages.count = pagesCount;
 		this.data.pagination.pages.from = pagesFrom;
 		this.data.pagination.pages.to = pagesTo;
-		this.data.pagination.pages.current = this.getPager().pageNumber;
+		this.data.pagination.pages.current = this.getPager().page;
 		this.data.pagination.pages.list.splice(0, this.data.pagination.pages.list.length, ...list);
 	}
 

@@ -109,7 +109,7 @@ export default class notInterface extends notBase {
 	}
 
 	setPageNumber(pageNumber) {
-		return this.setWorking('pager.number', pageNumber);
+		return this.setWorking('pager.page', pageNumber);
 	}
 
 	setPageSize(pageSize) {
@@ -118,9 +118,9 @@ export default class notInterface extends notBase {
 
 	setPager(pageSize = DEFAULT_PAGE_SIZE, pageNumber = DEFAULT_PAGE_NUMBER) {
 		if (pageSize.constructor === Number){
-			return this.setWorking('pager', {size: pageSize, number: pageNumber});
+			return this.setWorking('pager', {size: pageSize, page: pageNumber});
 		}else if(pageSize.constructor === Object){
-			return this.setWorking('pager', {size: pageSize.size || DEFAULT_PAGE_SIZE, number: pageSize.number || DEFAULT_PAGE_NUMBER});
+			return this.setWorking('pager', {size: pageSize.size || DEFAULT_PAGE_SIZE, page: pageSize.page || DEFAULT_PAGE_NUMBER});
 		}
 	}
 

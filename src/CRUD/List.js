@@ -52,7 +52,7 @@ class CRUDList extends notController {
 						fields: this.parent.getOptions('views.list.fields'),
 						pager:{
 							size: this.getOptions('views.list.pager.size') || this.app.getOptions('pager.size') || OPT_DEFAULT_PAGE_SIZE,
-							number: this.getOptions('views.list.pager.number') || this.app.getOptions('pager.number') || OPT_DEFAULT_PAGE_NUMBER,
+							page: this.getOptions('views.list.pager.page') || this.app.getOptions('pager.page') || OPT_DEFAULT_PAGE_NUMBER,
 						},
 						endless: this.parent.getOptions('views.list.endless', false),
 						endlessTrigger: this.parent.getOptions('views.list.endlessTrigger', null),

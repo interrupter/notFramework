@@ -128,17 +128,17 @@ describe('notRecord', function () {
 		it('query pager set/get', function () {
 			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
 			rec.setPager(1, 2);
-			expect(rec.getPager()).to.have.keys('size', 'number');
+			expect(rec.getPager()).to.have.keys('size', 'page');
 			expect(rec.getPager().size).to.be.equal(1);
-			expect(rec.getPager().number).to.be.equal(2);
+			expect(rec.getPager().page).to.be.equal(2);
 		});
 
 		it('query pager reset/get', function () {
 			let rec = new notRecord(manifest, notCommon.completeAssign({}, testItem));
 			rec.setPager();
-			expect(rec.getPager()).to.have.keys('size', 'number');
+			expect(rec.getPager()).to.have.keys('size', 'page');
 			expect(rec.getPager().size).to.be.equal(10);
-			expect(rec.getPager().number).to.be.equal(1);
+			expect(rec.getPager().page).to.be.equal(1);
 		});
 	});
 

@@ -6,7 +6,7 @@ import notRenderer from './notRenderer';
 import notPlacers from './placers';
 
 const META_PARTS = Symbol('parts');
-/*
+/**
 	input = {
 		data: notRecord or [notRecord],
 		template: {
@@ -39,6 +39,10 @@ class notComponent extends notBase {
 		return this;
 	}
 
+	/**
+	*	Returns way to component in component tree
+	*	@return {array} list of component ids
+	*/
 	getBreadCrumps() {
 		if (this.owner) {
 			return [...this.owner.getBreadCrumps(), this.getOptions('id')];
@@ -47,6 +51,10 @@ class notComponent extends notBase {
 		}
 	}
 
+	/**
+	*	Initialization of component
+	*	@param {object} input input object, structure described before
+	*/
 	init(input) {
 		this.input = input;
 		this.owner = input.owner ? input.owner : null;
@@ -55,16 +63,28 @@ class notComponent extends notBase {
 		this.prepareTemplateElement(input.template ? input.template : null);
 	}
 
+	/**
+	*	Initialization of component's data
+	*	@param {object} val component data
+	*/
 	initData(val) {
 		this.setData(val);
 	}
 
+	/**
+	*	Initialization of events
+	*	@param {object} list events hash
+	*/
 	initEvents(list) {
 		for (let t of list) {
 			this.on(...t);
 		}
 	}
 
+	/**
+	*	Initialization of options
+	*	@param {object}	val options object
+	*/
 	initOptions(val) {
 		this.setOptions(val);
 		if (!this.getOptions('id')) {
@@ -268,10 +288,10 @@ class notComponent extends notBase {
 		}
 	}
 
-	/*
-		если с данными не связан рендерер - создаем
+	/**
+	*	если с данными не связан рендерер - создаем
+	*	@param
 	*/
-
 	renderPart(data) {
 		if (!this.getPartByData(data)) {
 			//notCommon.log('creating part render');
@@ -289,10 +309,18 @@ class notComponent extends notBase {
 		}
 	}
 
+	/**
+	*	Updates part
+	*	@param {notRender} part
+	*/
+
 	updatePart(part) {
 		part.update();
 	}
 
+	/**
+	*	Finds actual parts, removes all other
+	*/
 	removeObsoleteParts() {
 		//конвеер поиск актуальных - удаление остальных
 		notCommon.pipe(
@@ -304,9 +332,11 @@ class notComponent extends notBase {
 		);
 	}
 
-	/*
-		есть данные и есть рендерер - значит актуально,
-		нет данных и есть рендерер - значит старьё
+	/**
+	*	Finds actual parts
+	*	if there are data and render - actual
+	*	if there are not data but render presented - not actual
+	*	@return {array} actual parts
 	*/
 
 	findActualParts() {
@@ -320,8 +350,9 @@ class notComponent extends notBase {
 		return actualParts;
 	}
 
-	/*
-		удаляем все кроме актуальных
+	/**
+	*	Removing parts that are not actual anymore
+	* @param {array} actualParts list of actual parts
 	*/
 	removeNotActualParts(actualParts) {
 		for (let t = 0; t < this.getParts().length; t++) {
@@ -333,6 +364,12 @@ class notComponent extends notBase {
 		}
 	}
 
+	/**
+	*	Searches for data piece in parts list, if finds - returns part
+	*	if not - false
+	*	@param {object} data data piece which have to linked to some part
+	*	@return {notRender} part
+	*/
 	getPartByData(data) {
 		for (let t in this.getParts()) {
 			if (this.getParts()[t].isData(data)) {
@@ -342,10 +379,16 @@ class notComponent extends notBase {
 		return false;
 	}
 
+	/**
+	*	Showing content in DOM
+	*/
 	show() {
 
 	}
 
+	/**
+	*	Hiding content in DOM
+	*/
 	hide() {
 
 	}

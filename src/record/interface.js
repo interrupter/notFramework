@@ -117,7 +117,11 @@ export default class notInterface extends notBase {
 	}
 
 	setPager(pageSize = DEFAULT_PAGE_SIZE, pageNumber = DEFAULT_PAGE_NUMBER) {
-		return this.setWorking('pager', {size: pageSize, number: pageNumber});
+		if (pageSize.constructor === Number){
+			return this.setWorking('pager', {size: pageSize, number: pageNumber});
+		}else if(pageSize.constructor === Object){
+			return this.setWorking('pager', {size: pageSize.size || DEFAULT_PAGE_SIZE, number: pageSize.number || DEFAULT_PAGE_NUMBER});
+		}
 	}
 
 	resetPager() {
@@ -159,7 +163,7 @@ export default class notInterface extends notBase {
 	encodeRequest(data) {
 		let p = '?';
 		for (let t in data) {
-			p += encodeURIComponent(t) + '=' + encodeURIComponent(data[t]) + '&';
+			p += encodeURIComponent(t) + '=' + encodeURIComponent(JSON.stringify(data[t])) + '&';
 		}
 		return p;
 	}

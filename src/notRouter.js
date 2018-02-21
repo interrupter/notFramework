@@ -123,16 +123,28 @@ class notRouter extends notBase {
 	}
 
 	check(f) {
-		let fragment = f || this.getFragment();
+		let fragment = (f || this.getFragment()),
+			failBack = null;
 		for (let i = 0; i < this.getWorking('routes').length; i++) {
 			let path = this.getWorking('root') + this.getWorking('routes')[i].re,
 				fullRE = this.clearSlashes(decodeURI(path)),
 				match = fragment.match(fullRE);
 			if (match && match.length) {
-				match.shift();
-				this.getWorking('routes')[i].handler.apply(this.host || {}, match);
-				return this;
+				if (fullRE === ''){
+					match.shift();
+					failBack = {
+						route: this.getWorking('routes')[i],
+						match
+					};
+				}else{
+					match.shift();
+					this.getWorking('routes')[i].handler.apply(this.host || {}, match);
+					return this;
+				}
 			}
+		}
+		if (failBack){
+			failBack.route.handler.apply(this.host || {}, failBack.match);			
 		}
 		return this;
 	}

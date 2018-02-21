@@ -11,7 +11,7 @@ var CommonApp = {
 	absorbModule: function(defaultConf, mod){
 		for(let prop in mod){
 			if (prop === 'manifest'){
-				defaultConf = this.extendAppConfig(defaultConf, mod);
+				defaultConf = this.extendAppConfig(defaultConf, mod.manifest);
 			}else{
 				window[prop] = mod[prop];
 			}

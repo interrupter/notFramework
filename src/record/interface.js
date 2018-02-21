@@ -163,7 +163,7 @@ export default class notInterface extends notBase {
 	encodeRequest(data) {
 		let p = '?';
 		for (let t in data) {
-			p += encodeURIComponent(t) + '=' + encodeURIComponent(JSON.stringify(data[t])) + '&';
+			p += encodeURIComponent(t) + '=' + encodeURIComponent(data[t].constructor === Object ? JSON.stringify(data[t]):data[t]) + '&';
 		}
 		return p;
 	}

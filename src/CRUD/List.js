@@ -15,10 +15,10 @@ class CRUDList extends notController {
 		notCommon.log('CRUD List');
 		this.setViews({
 			default: {
-				name: 			this.parent.getOptions('views.list.name') || OPT_DEFAULT_VIEW,
-				renderFromURL:	this.parent.getOptions('views.list.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
-				common: 		this.parent.getOptions('views.list.common') || OPT_DEFAULT_COMMON,
-				targetQuery: 	this.parent.getOptions('views.list.containerSelector') || this.parent.getOptions('containerSelector'),
+				name: 			this.parent.getOptions('views.list.name', OPT_DEFAULT_VIEW),
+				renderFromURL:	this.parent.getOptions('views.list.renderFromURL',OPT_DEFAULT_RENDER_FROM_URL),
+				common: 		this.parent.getOptions('views.list.common',OPT_DEFAULT_COMMON),
+				targetQuery: 	this.parent.getOptions('views.list.containerSelector',this.parent.getOptions('containerSelector')),
 				helpers: 		this.parent.getOptions('views.list.helpers') || {}
 			}
 		});
@@ -50,7 +50,7 @@ class CRUDList extends notController {
 					targetSelector = this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery');
 				this.tableView = new notTable({
 					options: {
-						tempalatePrefix: this.parent.getOptions('views.list.templatePrefix', null),
+						tempalatePrefix: this.parent.getOptions('views.list.prefix', null),
 						procRow: this.parent.getOptions('views.list.procRow', false),
 						fields: this.parent.getOptions('views.list.fields'),
 						pager:{

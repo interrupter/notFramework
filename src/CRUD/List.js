@@ -1,6 +1,7 @@
 import notTable from '../components/notTable.js';
 import notController from '../notController.js';
 import notCommon from '../common';
+import {OPT_DEFAULT_RENDER_FROM_URL,OPT_DEFAULT_COMMON} from './const.js';
 
 const OPT_DEFAULT_PAGE_SIZE = 50,
 	OPT_DEFAULT_PAGE_NUMBER = 0,
@@ -14,10 +15,11 @@ class CRUDList extends notController {
 		notCommon.log('CRUD List');
 		this.setViews({
 			default: {
-				name: this.parent.getOptions('views.list.name') || OPT_DEFAULT_VIEW,
-				common: this.parent.getOptions('views.list.common') || true,
-				targetQuery: parent.getOptions('views.list.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: this.parent.getOptions('views.list.helpers') || {}
+				name: 			this.parent.getOptions('views.list.name') || OPT_DEFAULT_VIEW,
+				renderFromURL:	this.parent.getOptions('views.list.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
+				common: 		this.parent.getOptions('views.list.common') || OPT_DEFAULT_COMMON,
+				targetQuery: 	this.parent.getOptions('views.list.containerSelector') || this.parent.getOptions('containerSelector'),
+				helpers: 		this.parent.getOptions('views.list.helpers') || {}
 			}
 		});
 		this.preloadLib(this.parent.getOptions('views.list.preload'))
@@ -48,6 +50,7 @@ class CRUDList extends notController {
 					targetSelector = this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery');
 				this.tableView = new notTable({
 					options: {
+						tempalatePrefix: this.parent.getOptions('views.list.templatePrefix', null),
 						procRow: this.parent.getOptions('views.list.procRow', false),
 						fields: this.parent.getOptions('views.list.fields'),
 						pager:{

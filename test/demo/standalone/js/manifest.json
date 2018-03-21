@@ -1,0 +1,123 @@
+{
+    "user": {
+        "model": "user",
+        "url": "/api/:modelName",
+        "showMessages": false,
+        "formFieldsTypes": {
+            "address": {
+                "type": "text",
+                "placeholder": "Адрес"
+            },
+            "username": {
+                "type": "text",
+                "placeholder": "Имя пользователя"
+            },
+            "email": {
+                "type": "email",
+                "placeholder": "Email"
+            },
+            "phone": {
+                "type": "text",
+                "placeholder": "Телефон"
+            }
+        },
+        "actions": {
+            "new": {
+                "method": "POST",
+                "isArray": false,
+                "data": ["record"],
+                "auth": true,
+                "role": ["guest"],
+                "form": {
+                    "title": "Создание новой записи пользователя",
+                    "scenario": {
+                        "guest": {
+                            "fields": [
+                                "username",
+                                "email",
+                                "address",
+                                "phone"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "firm": {
+        "model": "firm",
+        "url": "/api/:modelName",
+        "showMessages": false,
+        "formFieldsTypes": {
+            "address": {
+                "type": "text",
+                "placeholder": "Адрес"
+            },
+            "name": {
+                "type": "text",
+                "placeholder": "Имя фирмы"
+            },
+            "phone": {
+                "type": "text",
+                "placeholder": "Телефон"
+            },
+            "shops": {
+                "type": "addresses",
+                "placeholder": "Адреса"
+            },
+            "submit": {
+                "type": "submit"
+            }
+        },
+        "actions": {
+            "new": {
+                "method": "POST",
+                "isArray": false,
+                "data": ["record"],
+                "auth": true,
+                "role": ["guest"],
+                "form": {
+                    "title": "Создание новой записи пользователя",
+                    "scenario": {
+                        "guest": {
+                            "fields": [
+                                "name",
+                                "address",
+                                "phone", {
+                                    "type": "block",
+                                    "name": "contacts",
+                                    "title": "Контакты",
+                                    "modelField": "contacts",
+                                    "fields": ["phone", "email"]
+                                }, {
+                                    "type": "block",
+                                    "name": "director",
+                                    "title": "Директор",
+                                    "form": "new",
+                                    "modelField": "director",
+                                    "modelName": "user"
+                                }, {
+                                    "type": "block",
+                                    "name": "vice",
+                                    "title": "Заместитель",
+                                    "modelName": "user",
+                                    "form": "new",
+                                    "modelField": "vice"
+                                },
+                                "shops",
+                                "submit"
+                            ]
+                        }
+                    }
+                }
+            },
+            "status": {
+                "method": "POST",
+                "isArray": false,
+                "data": ["record"],
+                "auth": true,
+                "role": ["guest"]
+            }
+        }
+    }
+}

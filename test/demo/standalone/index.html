@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <title>Off Canvas Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="notTemplate.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Project name</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a>
+                    </li>
+                    <li><a href="#about">About</a>
+                    </li>
+                    <li><a href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.nav-collapse -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.navbar -->
+
+    <div data-not-template-name="singleTemplate">
+        <h1 data-not-provider-capitalize-live=":title" data-not-addClass-new-if="::new()"></h1>
+        <p data-not-provider=":body" data-not-bind-click="fake"></p>
+        <input data-not-live="title" data-not-value-live=":title"/>
+        <button type="button" data-not-bind-click="reset">Reset</button>
+    </div>
+
+    <div data-not-template-name="selectTemplate">
+        <div class="col-6 col-sm-6 col-lg-4">
+            <span data-not-provider=":title"></span>
+            <select data-not-attr-name=":name" data-not-live="value"  data-not-value-live=":value" data-not-options-title-_id="::options"></select>
+            <button type="button" data-not-bind-click="reset">Reset</button>
+        </div>
+    </div>
+
+    <div data-not-template-name="manyTemplate">
+        <div class="col-6 col-sm-6 col-lg-4" data-not-addClass-new-if="::new()">
+            <h2 data-not-provider=":title"></h2>
+            <p data-not-provider=":body"></p>
+            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+    </div>
+
+    <div data-not-template-name="complexTemplate">
+        <h1 data-not-provider-capitalize=":title" data-not-addClass-new-if=":new()"></h1>
+        <div data-not-subtemplate-complex-template-part=":complexData"></div>
+    </div>
+
+    <div data-not-template-name="complexTemplatePart">
+        <div>
+        <div data-not-subtemplate-complex-template-part2=":title"></div>
+        <div><div data-not-subtemplate-many-template=":items"></div></div>
+      </div>
+    </div>
+
+    <div data-not-template-name="complexTemplatePart2">
+      <h1 data-not-provider-capitalize=":title" data-not-bind-click="fake" data-not-addClass-new-if=":new()"></h1>
+      <input data-not-live="title" data-not-value=":title"/>
+    </div>
+
+    <div class="container">
+
+        <div class="row row-offcanvas row-offcanvas-right">
+
+            <div class="col-xs-12 col-sm-9">
+                <p class="pull-right visible-xs">
+                    <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+                </p>
+                <div class="jumbotron" id="singleElement"></div>
+                <div class="row" id="selectElement"></div>
+                <div class="row" id="manyElements"></div>
+                <div class="row" id="complexElement"></div>
+                <div class="row" id="complexElement2"></div>
+                <div class="row" id="formPlace"></div>
+                <!--/row-->
+            </div>
+            <!--/span-->
+
+            <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+                <div class="list-group">
+                    <a href="#selectElement" class="list-group-item active">Select</a>
+                    <a href="#manyElements" class="list-group-item">Many Elements</a>
+                    <a href="#" class="list-group-item">Link</a>
+                    <a href="#" class="list-group-item">Link</a>
+                    <a href="#" class="list-group-item">Link</a>
+                    <a href="#" class="list-group-item">Link</a>
+                    <a href="#" class="list-group-item">Link</a>
+                    <a href="#" class="list-group-item">Link</a>
+                    <a href="#" class="list-group-item">Link</a>
+                    <a href="#" class="list-group-item">Link</a>
+                </div>
+            </div>
+            <!--/span-->
+        </div>
+        <!--/row-->
+
+        <hr>
+
+        <footer>
+
+        </footer>
+
+    </div>
+    <!--/.container-->
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="./bower_components/routie/dist/routie.min.js"></script>
+    <script src="../../js/notCommon.js"></script>
+    <script src="../../js/notRecord.js"></script>
+    <script src="../../js/notTemplate.js"></script>
+    <script src="../../js/notView.js"></script>
+    <script src="../../js/notTable.js"></script>
+    <script src="../../js/notForm.js"></script>
+    <script src="../../js/notController.js"></script>
+    <script src="../../js/notApp.js"></script>
+    <script src="./js/ncInit.js"></script>
+    <script src="./js/notTemplate_demo.js"></script>
+</body>
+
+</html>

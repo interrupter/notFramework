@@ -1,6 +1,7 @@
 import notController from '../notController.js';
 import notDetails from '../components/notDetails.js';
 import notCommon from '../common';
+import {OPT_DEFAULT_RENDER_FROM_URL,OPT_DEFAULT_COMMON} from './const.js';
 
 const OPT_DEFAULT_LOAD_ACTION = 'get',
 	OPT_DEFAULT_VIEW = 'details';
@@ -14,7 +15,8 @@ class CRUDDetails extends notController {
 		this.setViews({
 			default: {
 				name: this.parent.getOptions('views.details.name') || OPT_DEFAULT_VIEW,
-				common: this.parent.getOptions('views.details.common') || true,
+				renderFromURL:	this.parent.getOptions('views.list.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
+				common: 		this.parent.getOptions('views.list.common') || OPT_DEFAULT_COMMON,
 				targetQuery: this.parent.getOptions('views.details.containerSelector') || this.parent.getOptions('containerSelector'),
 				helpers: this.parent.getOptions('views.details.name') || {},
 			}

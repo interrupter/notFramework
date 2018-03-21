@@ -8,6 +8,7 @@ import notRecord from '../record';
 const OPT_DEFAULT_PAGE_SIZE = 20,
 	OPT_DEFAULT_PAGE_NUMBER = 0,
 	OPT_DEFAULT_PAGE_RANGE = 6,
+	OPT_DEFAULT_TEMPLATE_PREFIX = 'table_',
 	OPT_DEFAULT_SORT_DIRECTION = 1,
 	OPT_DEFAULT_SEARCH = '',
 	OPT_DEFAULT_RETURN = {},
@@ -115,7 +116,7 @@ class notTable extends notBase {
 			let component = new notComponent({
 				data: this.data,
 				template: {
-					name: 'table_wrapper'
+					name: this.getOptions('templatePrefix', OPT_DEFAULT_TEMPLATE_PREFIX) + 'wrapper'
 				},
 				options: {
 					renderAnd: this.getOptions('renderAnd'),
@@ -151,7 +152,7 @@ class notTable extends notBase {
 			let component = new notComponent({
 				data: this.data.pagination,
 				template: {
-					name: 'table_pagination'
+					name: this.getOptions('templatePrefix', OPT_DEFAULT_TEMPLATE_PREFIX)+'pagination'
 				},
 				options: {
 					renderAnd: this.getOptions('replace'),

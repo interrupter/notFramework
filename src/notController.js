@@ -3,16 +3,56 @@ import notBase from './notBase';
 import notComponent from './template/notComponent';
 import notPath from './notPath';
 
-const OPT_DEFAULT_CONTAINER_SELECTOR = '.page-content',
-	OPT_DEFAULT_VIEWS_POSTFIX = '.html',
-	OPT_DEFAULT_VIEW_NAME = 'default',
-	OPT_DEFAULT_RENDER_FROM_URL = true,
-	OPT_DEFAULT_PLURAL_NAME = 'Models',
-	OPT_DEFAULT_SINGLE_NAME = 'Model',
-	OPT_DEFAULT_MODULE_NAME = 'main',
-	OPT_DEFAULT_RENDER_AND = 'place';
+/**
+* @const {string}	OPT_DEFAULT_CONTAINER_SELECTOR	selector of container HTML
+*													element
+*/
+const OPT_DEFAULT_CONTAINER_SELECTOR = '.page-content';
 
+/**
+* @const {string}	OPT_DEFAULT_VIEWS_POSTFIX	default extension of template files
+*/
+const OPT_DEFAULT_VIEWS_POSTFIX = '.html';
+
+/**
+* @const {string}	OPT_DEFAULT_VIEW_NAME	default view name
+*/
+const OPT_DEFAULT_VIEW_NAME = 'default';
+
+/**
+* @const {boolean}	OPT_DEFAULT_RENDER_FROM_URL	enables rendering from remote
+*												file templates
+*/
+const OPT_DEFAULT_RENDER_FROM_URL = true;
+
+/**
+* @const {string}	OPT_DEFAULT_PLURAL_NAME	default plural name of entities
+*/
+const OPT_DEFAULT_PLURAL_NAME = 'Models';
+
+/**
+* @const {string}	OPT_DEFAULT_SINGLE_NAME	default single name of entities
+*/
+const OPT_DEFAULT_SINGLE_NAME = 'Model';
+
+/**
+* @const {string}	OPT_DEFAULT_MODULE_NAME	default module name
+*/
+const OPT_DEFAULT_MODULE_NAME = 'main';
+
+/**
+* @const {string}	OPT_DEFAULT_RENDER_AND	default render method
+*/
+const OPT_DEFAULT_RENDER_AND = 'place';
+
+
+/*
+*	Basic class for user controller
+*/
 class notController extends notBase {
+	/**
+	*	@param {notApp} app
+	*/
 	constructor(app) {
 		super();
 		notCommon.log('start controller');
@@ -38,7 +78,7 @@ class notController extends notBase {
 		});
 		this.on('ready', this.initRender.bind(this));
 		/*
-		    сразу делаем доступными модели notRecord из nc`ControllerName` будут доступны как this.nr`ModelName`
+			сразу делаем доступными модели notRecord из nc`ControllerName` будут доступны как this.nr`ModelName`
 		*/
 		let interfaces = this.app.getInterfaces();
 		this.make = {};
@@ -50,10 +90,19 @@ class notController extends notBase {
 		return this;
 	}
 
+	/**
+	* render process initialization
+	*/
 	initRender() {
 		this.render(this.getWorking('viewName'), this.getData(), this.getWorking('helpers'));
 	}
 
+	/**
+	*	@param {string} viewName name of view
+	*	@param {object} data data to be rendered
+	*	@param {object} helpers renderer helpers
+	*	@return {Promise}
+	*/
 	render(viewName = 'default' /* view name */ , data = {} /* data for notTemplate*/ , helpers = {} /* could be not represented */ ) {
 		return new Promise((resolve, reject) => {
 			var view = this.getView(viewName);
@@ -112,29 +161,59 @@ class notController extends notBase {
 		});
 	}
 
+	/**
+	*	Returns current notApp
+	*	@return {notApp}
+	*/
 	getApp() {
 		return this.app;
 	}
 
+	/**
+	*	Sets default controller model
+	*	@param {notRecord}	model	notRecord interface object
+	*	@return {notController}
+	*/
 	setModel(model) {
 		this.setWorking('model', model);
 		return this;
 	}
 
+
+	/**
+	*	Returns current model
+	*	@return {notRecord}
+	*/
 	getModel() {
 		return this.setWorking('model');
 	}
 
+	/**
+	*	Marks this controller as ready
+	*	Triggers "ready"/"busy" events
+	*	@param {Boolean}	val	true/false
+	*/
 	setReady(val = true) {
 		this.setWorking('ready', val);
 		val ? this.trigger('ready') : this.trigger('busy');
 	}
 
+	/**
+	*	Sets view record
+	*	@param {string} name	name of view
+	*	@param {string} view	name of view file
+	*	@return {notController} this
+	*/
 	setView(name, view) {
 		this.setWorking(notPath.join('views', name), view);
 		return this;
 	}
 
+	/**
+	*	Sets few views
+	*	@param {object} views
+	*	@return {notController} this
+	*/
 	setViews(views) {
 		for (let t in views) {
 			this.setWorking(notPath.join('views', t), views[t]);
@@ -142,23 +221,47 @@ class notController extends notBase {
 		return this;
 	}
 
+	/**
+	*	Gets view options by view name
+	*	@param {string}	name name of the view
+	*	@return {object}
+	*/
 	getView(name = 'default') {
 		return this.getWorking(notPath.join('views', name));
 	}
 
+	/**
+	*	Sets module name
+	*	@param {sting} val name of the module
+	*	@return {notController} this
+	*/
 	setModuleName(val) {
 		this.setOptions('moduleName', val);
 		return this;
 	}
 
+	/**
+	*	Returns module name
+	*	@return	{string} module name
+	*/
 	getModuleName() {
 		return this.getOptions('moduleName');
 	}
 
+	/**
+	*	Returns this module path prefix
+	*	@return {string}	path to module dir
+	*/
 	getModulePrefix() {
 		return [this.app.getOptions('paths.modules'), this.getModuleName()].join('/');
 	}
 
+	/**
+	*	Preload records from server, using listAll method,
+	*	returns Promise
+	*	@param {object}	list	map of preloaded records
+	*	@return {Promise}
+	*/
 	preloadLib(list = {}) {
 		return new Promise((resolve, reject) => {
 			if (typeof list !== 'object') {
@@ -192,6 +295,11 @@ class notController extends notBase {
 		});
 	}
 
+	/**
+	*	Adds files to upload quee
+	*	@param {string}	name	name of field
+	*	@param {array}	list	list of files
+	*/
 	queeUpload(name, list) {
 		//hash (fieldName=>filesList)
 		if (!this.getWorking('uploadQuee')) {
@@ -200,6 +308,11 @@ class notController extends notBase {
 		this.getWorking('uploadQuee')[name] = list;
 	}
 
+	/**
+	*	Starts uploading of files to server
+	*	@param {notRecord} item item to be passed after resolving Promise
+	*	@return {Promise}
+	*/
 	execUploads(item) {
 		let list = this.getWorking('uploadQuee');
 		return new Promise((resolve, reject) => {
@@ -249,6 +362,9 @@ class notController extends notBase {
 		});
 	}
 
+	/**
+	* Triggers afterRender event
+	*/
 	onAfterRender() {
 		this.trigger('afterRender');
 	}

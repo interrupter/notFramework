@@ -2,6 +2,7 @@ import notController from '../notController.js';
 import notCommon from '../common';
 import notRecord from '../record';
 import notForm from '../components/notForm.js';
+import {OPT_DEFAULT_RENDER_FROM_URL,OPT_DEFAULT_COMMON} from './const.js';
 
 const OPT_DEFAULT_VIEW = 'edit',
 	OPT_DEFAULT_ACTION = 'create',
@@ -20,7 +21,8 @@ class CRUDCreate extends notController {
 		this.setViews({
 			default: {
 				name: this.parent.getOptions('views.create.name') || OPT_DEFAULT_VIEW,
-				common: this.parent.getOptions('views.create.common') || true,
+				renderFromURL:	this.parent.getOptions('views.list.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
+				common: 		this.parent.getOptions('views.list.common') || OPT_DEFAULT_COMMON,
 				targetQuery: this.parent.getOptions('views.create.containerSelector') || this.parent.getOptions('containerSelector'),
 				helpers: this.parent.getOptions('views.create.name') || {},
 			}

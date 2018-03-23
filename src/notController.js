@@ -100,6 +100,7 @@ class notController extends notBase {
 	/**
 	*	Sets up actual link to template file
 	*	@param {object}	view object with view options
+	*	@param {string}	viewName view name
 	*/
 	setViewTemplateUrl(view, viewName='default'){
 		if (typeof view.templateURL === 'undefined' || view.templateURL == null || view.templateURL.length == 0) {
@@ -111,6 +112,17 @@ class notController extends notBase {
 		}
 	}
 
+	/**
+	*	Sets up actual template name
+	*	@param {object}	view object with view options
+	*/
+	setViewTemplateName(view){
+		if (view.hasOwnProperty('templateName')) {
+			let prefix = (typeof view.prefix !== 'undefined' && view.prefix !== null && view.prefix)?view.prefix:this.getOptions('prefix'),
+				postfix = (typeof view.postfix !== 'undefined' && view.postfix !== null && view.postfix)?view.postfix:this.getOptions('postfix');
+			view.templateName = prefix + view.templateName + postfix;
+		}
+	}
 	/**
 	*	@param {string} viewName name of view
 	*	@param {object} data data to be rendered
@@ -139,18 +151,17 @@ class notController extends notBase {
 					view.helpers = helpers;
 				}
 				//если нужно загружать шаблоны
-				if(typeof view.renderFromURL !== 'undefined' && view.renderFromURL !== null && view.renderFromURL){
-					this.setViewTemplateUrl(view,viewName);
+				if(typeof view.renderFromURL !== 'undefined' && view.renderFromURL !== null){
+					if(this.getOptions('renderFromURL')){
+						this.setViewTemplateUrl(view, viewName);
+					}else{
+						this.setViewTempateName(view, viewName);
+					}
 				}else if(this.getOptions('renderFromURL')){
-					this.setViewTemplateUrl(view,viewName);
+					this.setViewTemplateUrl(view, viewName);
 				} else {
 					//а если есть название шаблона, то
-					if (view.hasOwnProperty('templateName')) {
-						//...
-						let prefix = (typeof view.prefix !== 'undefined' && view.prefix !== null && view.prefix)?view.prefix:this.getOptions('prefix'),
-							postfix = (typeof view.postfix !== 'undefined' && view.postfix !== null && view.postfix)?view.postfix:this.getOptions('postfix');
-						view.templateName = prefix + view.templateName + postfix;
-					}
+					this.setViewTempateName(view, viewName);
 				}
 				this.setWorking('component', new notComponent({
 					data,

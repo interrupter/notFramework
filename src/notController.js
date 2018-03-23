@@ -155,13 +155,13 @@ class notController extends notBase {
 					if(view.renderFromURL){
 						this.setViewTemplateUrl(view, viewName);
 					}else{
-						this.setViewTempateName(view, viewName);
+						this.setViewTemplateName(view, viewName);
 					}
 				}else if(this.getOptions('renderFromURL')){
 					this.setViewTemplateUrl(view, viewName);
 				} else {
 					//а если есть название шаблона, то
-					this.setViewTempateName(view, viewName);
+					this.setViewTemplateName(view, viewName);
 				}
 				this.setWorking('component', new notComponent({
 					data,

@@ -74,6 +74,8 @@ const OPT_DEFAULT_PAGE_SIZE = 20,
 				factory: 		//target notRecord factory with notRecordInterface, source of online data
 				listAction:		//which action will be called to retrieve data from server, default 'list'
 				countAction:	//which action will be called to retrieve raws count from server, default 'count'
+				combined: 		//cobined request list and count
+				combinedAction:	//name of combined action
 				onSuccess:		//will be called after successfull request
 				onError:		//will be called after failed request
 			},
@@ -438,8 +440,8 @@ class notTable extends notBase {
 			if (this.getOptions('interface.combined', OPT_DEFAULT_COMBINED)){
 				this.loadData()
 					.then((data) => {
-						this.updatePagination(data.count);
-						this.getData().push(...data.items);
+						this.getData().push(...(data.items));
+						this.updatePagination(data.count);						
 					})
 					.then(this.refreshBody.bind(this))
 					.catch(notCommon.error.bind(this))

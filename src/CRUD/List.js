@@ -52,7 +52,7 @@ class CRUDList extends notController {
 					targetSelector = this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery');
 				this.tableView = new notTable({
 					options: {
-						templatePrefix: this.parent.getOptions('views.list.prefix', null),						
+						templatePrefix: this.parent.getOptions('views.list.prefix', null),
 						procRow: this.parent.getOptions('views.list.procRow', false),
 						fields: this.parent.getOptions('views.list.fields'),
 						pager:{
@@ -68,6 +68,8 @@ class CRUDList extends notController {
 						'interface': {
 							listAction: this.parent.getOptions('views.list.interface.listAction'),
 							countAction: this.parent.getOptions('views.list.interface.countAction'),
+							combined: this.parent.getOptions('views.list.interface.combined'),
+							combinedAction: this.parent.getOptions('views.list.interface.combinedAction'),
 							factory: this.parent.getOptions('views.list.interface.factory', modelFactory)
 						}
 					},

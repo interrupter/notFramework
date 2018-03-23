@@ -117,10 +117,11 @@ class notController extends notBase {
 	*	@param {object}	view object with view options
 	*/
 	setViewTemplateName(view){
-		if (view.hasOwnProperty('templateName')) {
-			let prefix = (typeof view.prefix !== 'undefined' && view.prefix !== null && view.prefix)?view.prefix:this.getOptions('prefix'),
+		if (view.hasOwnProperty('templateName') || view.hasOwnProperty('name')) {
+			let name = view.name || view.templateName,
+				prefix = (typeof view.prefix !== 'undefined' && view.prefix !== null && view.prefix)?view.prefix:this.getOptions('prefix'),
 				postfix = (typeof view.postfix !== 'undefined' && view.postfix !== null && view.postfix)?view.postfix:this.getOptions('postfix');
-			view.templateName = prefix + view.templateName + postfix;
+			view.templateName = prefix + name + postfix;
 		}
 	}
 	/**

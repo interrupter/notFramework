@@ -440,8 +440,8 @@ class notTable extends notBase {
 			if (this.getOptions('interface.combined', OPT_DEFAULT_COMBINED)){
 				this.loadData()
 					.then((data) => {
-						this.getData().push(...(data.items));
-						this.updatePagination(data.count);						
+						this.getData().push(...(data.list));
+						this.updatePagination(data.count);
 					})
 					.then(this.refreshBody.bind(this))
 					.catch(notCommon.error.bind(this))

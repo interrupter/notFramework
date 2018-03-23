@@ -15,6 +15,8 @@ class CRUDList extends notController {
 		notCommon.log('CRUD List');
 		this.setViews({
 			default: {
+				prefix: 		this.parent.getOptions('views.list.prefix', ''),
+				postfix: 		this.parent.getOptions('views.list.postfix', ''),
 				name: 			this.parent.getOptions('views.list.name', OPT_DEFAULT_VIEW),
 				renderFromURL:	this.parent.getOptions('views.list.renderFromURL',OPT_DEFAULT_RENDER_FROM_URL),
 				common: 		this.parent.getOptions('views.list.common',OPT_DEFAULT_COMMON),
@@ -51,6 +53,7 @@ class CRUDList extends notController {
 				this.tableView = new notTable({
 					options: {
 						prefix: this.parent.getOptions('views.list.prefix', null),
+						postfix: this.parent.getOptions('views.list.postfix', null),
 						procRow: this.parent.getOptions('views.list.procRow', false),
 						fields: this.parent.getOptions('views.list.fields'),
 						pager:{

@@ -682,7 +682,8 @@ class notTable extends notBase {
 			itemsTo = Math.min(itemsFrom + this.getPager().size - 1, itemsCount);
 		for (let t = pagesFrom; t <= pagesTo; t++) {
 			list.push({
-				index: t
+				index: t,
+				active: t===this.getPager().page
 			});
 		}
 		this.data.pagination.items.count = itemsCount;

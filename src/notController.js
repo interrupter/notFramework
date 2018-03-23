@@ -98,6 +98,20 @@ class notController extends notBase {
 	}
 
 	/**
+	*	Sets up actual link to template file
+	*	@param {object}	view object with view options
+	*/
+	setViewTemplateUrl(view, viewName='default'){
+		if (typeof view.templateURL === 'undefined' || view.templateURL == null || view.templateURL.length == 0) {
+			let prefix = (view.common ? this.app.getOptions('paths.common') : this.getModulePrefix()),
+				name = ((typeof view.name !== 'undefined' && view.name !== null && view.name.length > 0) ? view.name : viewName),
+				postfix = (typeof view.postfix !== 'undefined' && view.postfix !== null && view.postfix)?view.postfix:this.getOptions('postfix');
+			//генерируем адрес по шаблону
+			view.templateURL = [prefix, name].join('/') + postfix;
+		}
+	}
+
+	/**
 	*	@param {string} viewName name of view
 	*	@param {object} data data to be rendered
 	*	@param {object} helpers renderer helpers
@@ -125,15 +139,10 @@ class notController extends notBase {
 					view.helpers = helpers;
 				}
 				//если нужно загружать шаблоны
-				if ((typeof view.renderFromURL !== 'undefined' && view.renderFromURL !== null && view.renderFromURL) || this.getOptions('renderFromURL')) {
-					//и адрес не указан
-					if (typeof view.templateURL === 'undefined' || view.templateURL == null || view.templateURL.length == 0) {
-						let prefix = (view.common ? this.app.getOptions('paths.common') : this.getModulePrefix()),
-							name = ((typeof view.name !== 'undefined' && view.name !== null && view.name.length > 0) ? view.name : viewName),
-							postfix = this.getOptions('postfix');
-						//генерируем адрес по шаблону
-						view.templateURL = [prefix, name].join('/') + postfix;
-					}
+				if(typeof view.renderFromURL !== 'undefined' && view.renderFromURL !== null && view.renderFromURL){
+					this.setViewTemplateUrl(view,viewName);
+				}else if(this.getOptions('renderFromURL')){
+					this.setViewTemplateUrl(view,viewName);
 				} else {
 					//а если есть название шаблона, то
 					if (view.hasOwnProperty('templateName')) {

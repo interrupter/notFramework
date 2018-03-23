@@ -261,7 +261,7 @@ class notTable extends notBase {
 	}
 
 	getSearch() {
-		let search =(typeof this.getSearch() !== 'undefined' && this.getSearch() !== null);
+		let search =(typeof this.getWorking('search') !== 'undefined' && this.getWorking('search') !== null);
 		return  search?this.getWorking('search'):'';
 	}
 

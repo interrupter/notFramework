@@ -50,7 +50,7 @@ class CRUDList extends notController {
 					targetSelector = this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery');
 				this.tableView = new notTable({
 					options: {
-						tempalatePrefix: this.parent.getOptions('views.list.prefix', null),
+						prefix: this.parent.getOptions('views.list.prefix', null),
 						procRow: this.parent.getOptions('views.list.procRow', false),
 						fields: this.parent.getOptions('views.list.fields'),
 						pager:{

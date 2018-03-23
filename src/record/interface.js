@@ -5,7 +5,8 @@ import {
 	DEFAULT_FILTER,
 	DEFAULT_PAGE_NUMBER,
 	DEFAULT_PAGE_SIZE,
-	DEFAULT_SEARCH
+	DEFAULT_SEARCH,
+	DEFAULT_RETURN
 } from './options';
 import notRecord from './record.js';
 
@@ -106,6 +107,18 @@ export default class notInterface extends notBase {
 
 	getSorter() {
 		return this.getWorking('sorter');
+	}
+
+	setReturn(returnData = DEFAULT_RETURN) {
+		return this.setWorking('return', returnData);
+	}
+
+	resetReturn() {
+		return this.setReturn({});
+	}
+
+	getReturn() {
+		return this.getWorking('return');
 	}
 
 	setPageNumber(pageNumber) {

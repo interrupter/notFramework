@@ -12,6 +12,8 @@ const OPT_DEFAULT_PAGE_SIZE = 20,
 	OPT_DEFAULT_SORT_DIRECTION = 1,
 	OPT_DEFAULT_SEARCH = '',
 	OPT_DEFAULT_RETURN = {},
+	OPT_DEFAULT_COMBINED = false,
+	OPT_DEFAULT_COMBINED_ACTION = 'listAndCount',
 	OPT_DEFAULT_COUNT_ACTION = 'count',
 	OPT_DEFAULT_LIST_ACTION = 'list',
 	OPT_DEFAULT_SORT_FIELD = '_id',
@@ -372,6 +374,10 @@ class notTable extends notBase {
 		return (this.getOptions('interface.listAction') ? this.getOptions('interface.listAction') : OPT_DEFAULT_LIST_ACTION);
 	}
 
+	getCombinedActionName() {
+		return (this.getOptions('interface.combinedAction') ? this.getOptions('interface.combinedAction') : OPT_DEFAULT_COMBINED_ACTION);
+	}
+
 	getCountActionName() {
 		return this.getOptions('interface.countAction') ? this.getOptions('interface.countAction') : OPT_DEFAULT_COUNT_ACTION;
 	}
@@ -379,12 +385,18 @@ class notTable extends notBase {
 	loadData() {
 		//load from server
 		let query = this.getDataInterface()
-			.setFilter(this.getFilter())
-			.setSorter(this.getSorter())
-			.setReturn(this.getReturn())
-			.setSearch(this.getSearch())
-			.setPager(this.getPager().size, this.getPager().page);
-		return query['$' + this.getLoadDataActionName()]();
+				.setFilter(this.getFilter())
+				.setSorter(this.getSorter())
+				.setReturn(this.getReturn())
+				.setSearch(this.getSearch())
+				.setPager(this.getPager().size, this.getPager().page),
+			actionName;
+		if(this.getOptions('interface.combined', OPT_DEFAULT_COMBINED)){
+			actionName = this.getCombinedActionName();
+		}else{
+			actionName = this.getLoadDataActionName();
+		}
+		return query['$'+actionName]();
 	}
 
 	goToNext() {
@@ -423,12 +435,23 @@ class notTable extends notBase {
 				this.getData().splice(0, this.getData().length);
 			}
 			this.setUpdating();
-			this.loadData()
-				.then(data => this.getData().push(...data))
-				.then(this.getRowsCount.bind(this))
-				.then(this.refreshBody.bind(this))
-				.catch(notCommon.error.bind(this))
-				.then(this.setUpdated.bind(this));
+			if (this.getOptions('interface.combined', OPT_DEFAULT_COMBINED)){
+				this.loadData()
+					.then((data) => {
+						this.updatePagination(data.count);
+						this.getData().push(...data.items);
+					})
+					.then(this.refreshBody.bind(this))
+					.catch(notCommon.error.bind(this))
+					.then(this.setUpdated.bind(this));
+			}else{
+				this.loadData()
+					.then(data => this.getData().push(...data))
+					.then(this.getRowsCount.bind(this))
+					.then(this.refreshBody.bind(this))
+					.catch(notCommon.error.bind(this))
+					.then(this.setUpdated.bind(this));
+			}
 		} else {
 			//local magic
 			this.setUpdating();

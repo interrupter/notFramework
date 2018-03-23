@@ -152,7 +152,7 @@ class notController extends notBase {
 				}
 				//если нужно загружать шаблоны
 				if(typeof view.renderFromURL !== 'undefined' && view.renderFromURL !== null){
-					if(this.getOptions('renderFromURL')){
+					if(view.renderFromURL){
 						this.setViewTemplateUrl(view, viewName);
 					}else{
 						this.setViewTempateName(view, viewName);

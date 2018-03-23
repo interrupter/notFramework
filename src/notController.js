@@ -125,7 +125,7 @@ class notController extends notBase {
 					view.helpers = helpers;
 				}
 				//если нужно загружать шаблоны
-				if (this.getOptions('renderFromURL')) {
+				if ((typeof view.renderFromURL !== 'undefined' && view.renderFromURL !== null && view.renderFromURL) || this.getOptions('renderFromURL')) {
 					//и адрес не указан
 					if (typeof view.templateURL === 'undefined' || view.templateURL == null || view.templateURL.length == 0) {
 						let prefix = (view.common ? this.app.getOptions('paths.common') : this.getModulePrefix()),
@@ -138,7 +138,9 @@ class notController extends notBase {
 					//а если есть название шаблона, то
 					if (view.hasOwnProperty('templateName')) {
 						//...
-						view.templateName = this.getOptions('prefix') + view.templateName + this.getOptions('postfix');
+						let prefix = (typeof view.prefix !== 'undefined' && view.prefix !== null && view.prefix)?view.prefix:this.getOptions('prefix'),
+							postfix = (typeof view.postfix !== 'undefined' && view.postfix !== null && view.postfix)?view.postfix:this.getOptions('postfix');
+						view.templateName = prefix + view.templateName + postfix;
 					}
 				}
 				this.setWorking('component', new notComponent({

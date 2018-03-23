@@ -441,9 +441,12 @@ class notTable extends notBase {
 				this.loadData()
 					.then((data) => {
 						this.getData().push(...(data.list));
-						this.updatePagination(data.count);
+						this.setWorking('lastCount',data.count);
 					})
 					.then(this.refreshBody.bind(this))
+					.then(()=>{
+						this.updatePagination(this.getWorking('lastCount'));
+					})
 					.catch(notCommon.error.bind(this))
 					.then(this.setUpdated.bind(this));
 			}else{

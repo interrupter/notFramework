@@ -184,6 +184,7 @@ class notTable extends notBase {
 		this.updateData();
 		this.renderBody();
 		this.bindSearch();
+		this.renderPagination();
 		this.bindCustomBindings();
 	}
 

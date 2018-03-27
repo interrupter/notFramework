@@ -272,6 +272,8 @@ class notTable extends notBase {
 
 	setSearch(line = OPT_DEFAULT_SEARCH){
 		this.setWorking('search', line);
+		this.invalidateData();
+		this.updateData();
 		return this;
 	}
 

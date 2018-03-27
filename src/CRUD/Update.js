@@ -15,11 +15,11 @@ class CRUDUpdate extends notController {
 		notCommon.log('CRUD Update');
 		this.setViews({
 			default: {
-				name: this.parent.getOptions('views.update.name') || OPT_DEFAULT_VIEW,
-				crenderFromURL:	this.parent.getOptions('views.list.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
-				common: 		this.parent.getOptions('views.list.common') || OPT_DEFAULT_COMMON,
-				targetQuery: this.parent.getOptions('views.update.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: this.parent.getOptions('views.update.name') || {},
+				name: 				this.parent.getOptions('views.update.name') || OPT_DEFAULT_VIEW,
+				crenderFromURL:		this.parent.getOptions('views.update.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
+				common: 			this.parent.getOptions('views.update.common') || OPT_DEFAULT_COMMON,
+				targetQuery: 		this.parent.getOptions('views.update.containerSelector') || this.parent.getOptions('containerSelector'),
+				helpers: 			this.parent.getOptions('views.update.name') || {},
 			}
 		});
 

@@ -20,11 +20,11 @@ class CRUDCreate extends notController {
 		notCommon.log('CRUD Create');
 		this.setViews({
 			default: {
-				name: this.parent.getOptions('views.create.name') || OPT_DEFAULT_VIEW,
-				renderFromURL:	this.parent.getOptions('views.list.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
-				common: 		this.parent.getOptions('views.list.common') || OPT_DEFAULT_COMMON,
-				targetQuery: this.parent.getOptions('views.create.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: this.parent.getOptions('views.create.name') || {},
+				name: 			this.parent.getOptions('views.create.name') || OPT_DEFAULT_VIEW,
+				renderFromURL:	this.parent.getOptions('views.create.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
+				common: 		this.parent.getOptions('views.create.common') || OPT_DEFAULT_COMMON,
+				targetQuery: 	this.parent.getOptions('views.create.containerSelector') || this.parent.getOptions('containerSelector'),
+				helpers: 		this.parent.getOptions('views.create.name') || {},
 			}
 		});
 		this.preloadLib(this.parent.getOptions('views.create.preload'))

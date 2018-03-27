@@ -14,11 +14,11 @@ class CRUDDetails extends notController {
 		notCommon.log('CRUD Details');
 		this.setViews({
 			default: {
-				name: this.parent.getOptions('views.details.name') || OPT_DEFAULT_VIEW,
-				renderFromURL:	this.parent.getOptions('views.list.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
-				common: 		this.parent.getOptions('views.list.common') || OPT_DEFAULT_COMMON,
-				targetQuery: this.parent.getOptions('views.details.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: this.parent.getOptions('views.details.name') || {},
+				name: 			this.parent.getOptions('views.details.name') || OPT_DEFAULT_VIEW,
+				renderFromURL:	this.parent.getOptions('views.details.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
+				common: 		this.parent.getOptions('views.details.common') || OPT_DEFAULT_COMMON,
+				targetQuery: 	this.parent.getOptions('views.details.containerSelector') || this.parent.getOptions('containerSelector'),
+				helpers: 		this.parent.getOptions('views.details.name') || {},
 			}
 		});
 
@@ -67,11 +67,11 @@ class CRUDDetails extends notController {
 				new notDetails({
 					data: item,
 					options: {
-						targetQuery: this.parent.getOptions('views.details.targetQuery'),
-						targetEl: document.querySelector(this.parent.getOptions('views.details.targetQuery') || this.parent.getOptions('targetQuery')),
-						action: this.parent.getOptions('views.details.action') || OPT_DEFAULT_LOAD_ACTION,
-						prefix: this.parent.getOptions('views.details.prefix') || this.parent.getOptions('prefix'),
-						role: this.parent.getOptions('views.details.role') || this.parent.getOptions('role'),
+						targetQuery: 	this.parent.getOptions('views.details.targetQuery'),
+						targetEl: 		document.querySelector(this.parent.getOptions('views.details.targetQuery') || this.parent.getOptions('targetQuery')),
+						action: 		this.parent.getOptions('views.details.action') || OPT_DEFAULT_LOAD_ACTION,
+						prefix: 		this.parent.getOptions('views.details.prefix') || this.parent.getOptions('prefix'),
+						role: 			this.parent.getOptions('views.details.role') || this.parent.getOptions('role'),
 						helpers: notCommon.extend({
 							linkBackToList: this.parent.linkBackToList(),
 							libs: this.getOptions('lib'),

@@ -14,11 +14,11 @@ class CRUDDetails extends notController {
 		notCommon.log('CRUD Details');
 		this.setViews({
 			default: {
-				name: 			this.parent.getOptions('views.details.name') || OPT_DEFAULT_VIEW,
-				renderFromURL:	this.parent.getOptions('views.details.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
-				common: 		this.parent.getOptions('views.details.common') || OPT_DEFAULT_COMMON,
-				targetQuery: 	this.parent.getOptions('views.details.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: 		this.parent.getOptions('views.details.name') || {},
+				name: 			this.parent.getOptions('views.details.name',OPT_DEFAULT_VIEW),
+				renderFromURL:	this.parent.getOptions('views.details.renderFromURL',OPT_DEFAULT_RENDER_FROM_URL),
+				common: 		this.parent.getOptions('views.details.common',OPT_DEFAULT_COMMON),
+				targetQuery: 	this.parent.getOptions('views.details.containerSelector',this.parent.getOptions('containerSelector')),
+				helpers: 		this.parent.getOptions('views.details.name',{}),
 			}
 		});
 
@@ -37,7 +37,7 @@ class CRUDDetails extends notController {
 	loadItem() {
 		return this.make[this.parent.getModuleName()]({
 			'_id': this.getOptions('params.0')
-		})['$' + (this.parent.getOptions('views.details.action') || OPT_DEFAULT_LOAD_ACTION)]();
+		})['$' + (this.parent.getOptions('views.details.action',OPT_DEFAULT_LOAD_ACTION))]();
 	}
 
 

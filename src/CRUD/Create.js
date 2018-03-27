@@ -20,11 +20,11 @@ class CRUDCreate extends notController {
 		notCommon.log('CRUD Create');
 		this.setViews({
 			default: {
-				name: 			this.parent.getOptions('views.create.name') || OPT_DEFAULT_VIEW,
-				renderFromURL:	this.parent.getOptions('views.create.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
-				common: 		this.parent.getOptions('views.create.common') || OPT_DEFAULT_COMMON,
-				targetQuery: 	this.parent.getOptions('views.create.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: 		this.parent.getOptions('views.create.name') || {},
+				name: 			this.parent.getOptions('views.create.name',OPT_DEFAULT_VIEW),
+				renderFromURL:	this.parent.getOptions('views.create.renderFromURL',OPT_DEFAULT_RENDER_FROM_URL),
+				common: 		this.parent.getOptions('views.create.common',OPT_DEFAULT_COMMON),
+				targetQuery: 	this.parent.getOptions('views.create.containerSelector',this.parent.getOptions('containerSelector')),
+				helpers: 		this.parent.getOptions('views.create.name',{}),
 			}
 		});
 		this.preloadLib(this.parent.getOptions('views.create.preload'))
@@ -71,11 +71,11 @@ class CRUDCreate extends notController {
 				this.form = new notForm({
 					data: this.getData(),
 					options: {
-						action: this.parent.getOptions('views.create.action') || OPT_DEFAULT_ACTION,
-						targetQuery: this.parent.getOptions('views.create.targetQuery') || this.parent.getOptions('targetQuery'),
-						targetEl: document.querySelector(this.parent.getOptions('views.create.targetQuery') || this.parent.getOptions('targetQuery')),
-						prefix: this.parent.getOptions('views.create.prefix') || this.parent.getOptions('prefix'),
-						role: this.parent.getOptions('views.create.role') || this.parent.getOptions('role'),
+						action: 		this.parent.getOptions('views.create.action',OPT_DEFAULT_ACTION),
+						targetQuery: 	this.parent.getOptions('views.create.targetQuery',this.parent.getOptions('targetQuery')),
+						targetEl: 		document.querySelector(this.parent.getOptions('views.create.targetQuery',this.parent.getOptions('targetQuery'))),
+						prefix: 		this.parent.getOptions('views.create.prefix',this.parent.getOptions('prefix')),
+						role: 			this.parent.getOptions('views.create.role',this.parent.getOptions('role')),
 						helpers: notCommon.extend({
 							linkBackToList: this.parent.linkBackToList(),
 							file: (params) => {
@@ -94,7 +94,7 @@ class CRUDCreate extends notController {
 								this.goToTable();
 							},
 							libs: this.getOptions('libs'),
-						}, this.parent.getOptions('views.create.helpers') || {})
+						}, this.parent.getOptions('views.create.helpers',{}))
 					},
 					events: [
 						['afterRender', resolve],

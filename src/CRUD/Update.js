@@ -15,11 +15,11 @@ class CRUDUpdate extends notController {
 		notCommon.log('CRUD Update');
 		this.setViews({
 			default: {
-				name: 				this.parent.getOptions('views.update.name') || OPT_DEFAULT_VIEW,
-				crenderFromURL:		this.parent.getOptions('views.update.renderFromURL') || OPT_DEFAULT_RENDER_FROM_URL,
-				common: 			this.parent.getOptions('views.update.common') || OPT_DEFAULT_COMMON,
-				targetQuery: 		this.parent.getOptions('views.update.containerSelector') || this.parent.getOptions('containerSelector'),
-				helpers: 			this.parent.getOptions('views.update.name') || {},
+				name: 				this.parent.getOptions('views.update.name',OPT_DEFAULT_VIEW),
+				crenderFromURL:		this.parent.getOptions('views.update.renderFromURL',OPT_DEFAULT_RENDER_FROM_URL),
+				common: 			this.parent.getOptions('views.update.common',OPT_DEFAULT_COMMON),
+				targetQuery: 		this.parent.getOptions('views.update.containerSelector',this.parent.getOptions('containerSelector')),
+				helpers: 			this.parent.getOptions('views.update.name',{}),
 			}
 		});
 
@@ -38,7 +38,7 @@ class CRUDUpdate extends notController {
 	loadItem() {
 		return this.make[this.parent.getModuleName()]({
 			'_id': this.getOptions('params.0')
-		})['$' + (this.parent.getOptions('views.update.loadAction') || OPT_DEFAULT_LOAD_ACTION)]();
+		})['$' + (this.parent.getOptions('views.update.loadAction',OPT_DEFAULT_LOAD_ACTION))]();
 	}
 
 	renderWrapper() {
@@ -51,10 +51,10 @@ class CRUDUpdate extends notController {
 				this.form = new notForm({
 					data: this.getData(),
 					options: {
-						action: this.parent.getOptions('views.update.action') || OPT_DEFAULT_ACTION,
-						targetQuery: this.parent.getOptions('views.update.targetQuery') || this.parent.getOptions('targetQuery'),
-						prefix: this.parent.getOptions('views.update.prefix') || this.parent.getOptions('prefix'),
-						role: this.parent.getOptions('views.update.role') || this.parent.getOptions('role'),
+						action: 		this.parent.getOptions('views.update.action',OPT_DEFAULT_ACTION),
+						targetQuery: 	this.parent.getOptions('views.update.targetQuery',this.parent.getOptions('targetQuery')),
+						prefix: 		this.parent.getOptions('views.update.prefix',this.parent.getOptions('prefix')),
+						role: 			this.parent.getOptions('views.update.role',this.parent.getOptions('role')),
 						data: this.getData(),
 						helpers: notCommon.extend({
 							file: (params) => {
@@ -71,7 +71,7 @@ class CRUDUpdate extends notController {
 							},
 							libs: this.getOptions('libs'),
 							afterSubmit: this.parent.backToList.bind(this.parent),
-						}, this.parent.getOptions('views.update.helpers') || {})
+						}, this.parent.getOptions('views.update.helpers',{}))
 					},
 					events: [
 						[
@@ -87,7 +87,7 @@ class CRUDUpdate extends notController {
 	}
 
 	update(item) {
-		item['$' + (this.parent.getOptions('views.update.action') || OPT_DEFAULT_ACTION)]()
+		item['$' + (this.parent.getOptions('views.update.action',OPT_DEFAULT_ACTION))]()
 			.then((result) => {
 				notCommon.log('form saved', result);
 				this.parent.app.getWorking('router').navigate(this.getModuleName());

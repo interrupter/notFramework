@@ -47,30 +47,30 @@ class CRUDList extends notController {
 	updateDatatable() {
 		return new Promise((resolve, reject) => {
 			try {
-				let helpers = this.parent.getOptions('views.list.helpers') || {},
-					modelFactory = this.make[this.parent.getModuleName()],
-					targetSelector = this.parent.getOptions('views.list.targetQuery') || this.parent.getOptions('targetQuery');
+				let helpers = 			this.parent.getOptions('views.list.helpers',{}),
+					modelFactory = 		this.make[this.parent.getModuleName()],
+					targetSelector = 	this.parent.getOptions('views.list.targetQuery',this.parent.getOptions('targetQuery'));
 				this.tableView = new notTable({
 					options: {
 						templatePrefix: this.parent.getOptions('views.list.prefix', null),
-						procRow: this.parent.getOptions('views.list.procRow', false),
-						fields: this.parent.getOptions('views.list.fields'),
+						procRow: 		this.parent.getOptions('views.list.procRow', false),
+						fields: 		this.parent.getOptions('views.list.fields'),
 						pager:{
-							size: this.getOptions('views.list.pager.size') || this.app.getOptions('pager.size') || OPT_DEFAULT_PAGE_SIZE,
-							page: this.getOptions('views.list.pager.page') || this.app.getOptions('pager.page') || OPT_DEFAULT_PAGE_NUMBER,
+							size: 		this.getOptions('views.list.pager.size',this.app.getOptions('pager.size',OPT_DEFAULT_PAGE_SIZE)),
+							page: 		this.getOptions('views.list.pager.page',this.app.getOptions('pager.page',OPT_DEFAULT_PAGE_NUMBER)),
 						},
-						endless: this.parent.getOptions('views.list.endless', false),
+						endless: 		this.parent.getOptions('views.list.endless', false),
 						endlessTrigger: this.parent.getOptions('views.list.endlessTrigger', null),
 						helpers: notCommon.extend({
-							title: this.parent.getOptions('names.plural')
+							title: 		this.parent.getOptions('names.plural')
 						}, helpers),
 						targetEl: document.querySelector(targetSelector),
 						'interface': {
-							listAction: this.parent.getOptions('views.list.interface.listAction'),
-							countAction: this.parent.getOptions('views.list.interface.countAction'),
-							combined: this.parent.getOptions('views.list.interface.combined'),
+							listAction: 	this.parent.getOptions('views.list.interface.listAction'),
+							countAction: 	this.parent.getOptions('views.list.interface.countAction'),
+							combined: 		this.parent.getOptions('views.list.interface.combined'),
 							combinedAction: this.parent.getOptions('views.list.interface.combinedAction'),
-							factory: this.parent.getOptions('views.list.interface.factory', modelFactory)
+							factory: 		this.parent.getOptions('views.list.interface.factory', modelFactory)
 						}
 					},
 					events: [

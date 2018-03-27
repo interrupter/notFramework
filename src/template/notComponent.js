@@ -133,7 +133,12 @@ class notComponent extends notBase {
 				.then(this.setProtoTemplateElement.bind(this))
 				.catch(notCommon.report);
 		} else if (val.hasOwnProperty('name') && val.name) {
-			this.setProtoTemplateElement(notTemplateCache.get(val.name));
+			let el = notTemplateCache.get(val.name);
+			if (el){
+				this.setProtoTemplateElement(el);
+			}else{
+				notCommon.error('Wrong template container element: ', val.name);	
+			}
 		}
 	}
 

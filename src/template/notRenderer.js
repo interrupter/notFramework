@@ -231,7 +231,7 @@ class notRenderer extends notBase {
 		//notCommon.log('sub templates', subs);
 		for (let nt = 0; nt < subs.length; nt++) {
 			if (!this.ifSubElementRendered(subs[nt])) {
-				this.renderSub(subs[nt]);
+				this.renderSub(subs[nt], nt);
 			}
 		}
 	}
@@ -248,7 +248,7 @@ class notRenderer extends notBase {
 		});
 	}
 
-	renderSub(ntEl) {
+	renderSub(ntEl, index=0) {
 		if (!ntEl) {
 			return;
 		}
@@ -259,7 +259,7 @@ class notRenderer extends notBase {
 				id: ntEl.attributes.id ? ntEl.attributes.id.value : OPTS.COMPONENT_ID_PREFIX + Math.random()
 			},
 			options = {
-				data: details.dataPath !== null ? this.getAttributeExpressionResult(details.dataPath, this.getData()) : null,
+				data: details.dataPath !== null ? this.getAttributeExpressionResult(details.dataPath, this.getData(), index) : null,
 				template: {
 					name: details.name,
 					src: details.src

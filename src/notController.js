@@ -46,6 +46,11 @@ const OPT_DEFAULT_MODULE_NAME = 'main';
 const OPT_DEFAULT_RENDER_AND = 'place';
 
 
+/**
+* @const {boolean}	OPT_DEFAULT_AUTO_NAME	if shoould be used auto name generator
+*/
+const OPT_DEFAULT_AUTO_NAME = true;
+
 /*
 *	Basic class for user controller
 */
@@ -259,6 +264,7 @@ class notController extends notBase {
 	*/
 	setURLPrefix(val) {
 		this.setOptions('urlPrefix', val);
+		this.updateAutoName();
 		return this;
 	}
 
@@ -277,9 +283,9 @@ class notController extends notBase {
 	*/
 	setModuleName(val) {
 		this.setOptions('moduleName', val);
+		this.updateAutoName();
 		return this;
 	}
-
 	/**
 	*	Returns module name
 	*	@return	{string} module name
@@ -304,6 +310,28 @@ class notController extends notBase {
 		let urlPrefix = this.getURLPrefix(),
 			moduleName = this.getModuleName();
 		return urlPrefix?[urlPrefix, moduleName].join('/'):moduleName;
+	}
+
+	/**
+	*	Updates working name
+	*	@param {sting} val name of the module
+	*	@return {notController} this
+	*/
+	updateAutoName(){
+		if(this.getOptions('autoName', OPT_DEFAULT_AUTO_NAME)){
+			this.setWorking('name', this.getModelURL());
+		}
+	}
+
+	/**
+	*	Sets object name
+	*	@param {sting} val name of the object
+	*	@return {notController} this
+	*/
+	setName(val){
+		this.setWorking('name', val);
+		this.setOptions('autoName', false);
+		return this;
 	}
 
 	/**

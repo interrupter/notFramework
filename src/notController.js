@@ -297,6 +297,16 @@ class notController extends notBase {
 	}
 
 	/**
+	*	Returns this model URL with URL prefix
+	*	@return {string}	url path
+	*/
+	getModelURL(){
+		let urlPrefix = this.getURLPrefix(),
+			moduleName = this.getModuleName();
+		return urlPrefix?[urlPrefix, moduleName].join('/'):moduleName;
+	}
+
+	/**
 	*	Preload records from server, using listAll method,
 	*	returns Promise
 	*	@param {object}	list	map of preloaded records

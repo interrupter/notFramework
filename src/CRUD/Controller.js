@@ -90,9 +90,7 @@ class CRUDController extends notController {
 	}
 
 	linkBackToList() {
-		let urlPrefix = this.getURLPrefix(),
-			moduleName = this.getModuleName();
-		return urlPrefix?[urlPrefix,moduleName].join('/'):moduleName;
+		return this.getModelURL();
 	}
 }
 

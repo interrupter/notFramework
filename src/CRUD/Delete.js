@@ -25,7 +25,9 @@ class CRUDDelete extends notController{
 	delete() {
 		let action ='$'+(this.parent.getOptions('views.delete.action',OPT_DEFAULT_ACTION));
 		this.make[this.parent.getModuleName()]({'_id': this.getOptions('params.0')})[action]()
-			.then(this.parent.backToList.bind(this.parent))
+			.then(()=>{
+				this.parent.afterAction('delete');
+			})
 			.catch(notCommon.report);
 	}
 

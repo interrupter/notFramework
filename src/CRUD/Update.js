@@ -90,8 +90,7 @@ class CRUDUpdate extends notController {
 		item['$' + (this.parent.getOptions('views.update.action',OPT_DEFAULT_ACTION))]()
 			.then((result) => {
 				notCommon.log('form saved', result);
-				this.parent.app.getWorking('router').navigate(this.getModuleName());
-				this.parent.runList();
+				this.parent.afterAction('update');
 			})
 			.catch((result) => {
 				notCommon.error('form not saved', result);

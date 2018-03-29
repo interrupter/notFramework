@@ -77,11 +77,22 @@ class CRUDController extends notController {
 	}
 
 	backToList() {
-		this.app.getWorking('router').navigate(this.getModuleName());
+		this.app.getWorking('router').navigate(this.linkBackToList());
+	}
+
+	afterAction(action = 'list'){
+		let navBack = this.app.getOptions('crud.navigateBackAfter', []);
+		if(navBack && Array.isArray(navBack) && navBack.indexOf(action)>-1){
+			window.history.back();
+		}else{
+			this.backToList();
+		}
 	}
 
 	linkBackToList() {
-		return this.getModuleName();
+		let urlPrefix = this.getURLPrefix(),
+			moduleName = this.getModuleName();
+		return urlPrefix?[urlPrefix,moduleName].join('/'):moduleName;
 	}
 }
 

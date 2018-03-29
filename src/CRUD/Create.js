@@ -113,7 +113,7 @@ class CRUDCreate extends notController {
 		item['$' + this.parent.getOptions('views.create.action')]()
 			.then((result) => {
 				notCommon.log('form saved', result);
-				this.parent.app.getWorking('router').navigate(this.parent.getModuleName());
+				this.parent.afterAction('create');
 			})
 			.catch((result) => {
 				notCommon.error('form not saved', result);

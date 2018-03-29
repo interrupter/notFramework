@@ -253,6 +253,24 @@ class notController extends notBase {
 	}
 
 	/**
+	*	Sets module URL prefix
+	*	@param {sting} val URL prefix
+	*	@return {notController} this
+	*/
+	setURLPrefix(val) {
+		this.setOptions('urlPrefix', val);
+		return this;
+	}
+
+	/**
+	*	Returns module url prefix
+	*	@return	{string} prefix
+	*/
+	getURLPrefix() {
+		return this.getOptions('urlPrefix');
+	}
+
+	/**
 	*	Sets module name
 	*	@param {sting} val name of the module
 	*	@return {notController} this

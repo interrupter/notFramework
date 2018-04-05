@@ -8,7 +8,12 @@ var notTemplateProcessorsLib = {
 			scope.attributeResult = scope.attributeResult.toUpperCase();
 		}
 		if (scope.params[0] === 'max' && parseInt(scope.params[1])>0) {
-			scope.attributeResult = scope.attributeResult.substring(0, parseInt(scope.params[1])-1);
+			if (scope.attributeResult.length>parseInt(scope.params[1])){
+				scope.attributeResult = scope.attributeResult.substring(0, parseInt(scope.params[1])-1);
+				if(scope.params[2] === 'true'){
+					scope.attributeResult+='...';
+				}
+			}			
 		}
 		scope.element.textContent = scope.attributeResult;
 	},

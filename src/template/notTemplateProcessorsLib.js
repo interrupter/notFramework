@@ -7,6 +7,9 @@ var notTemplateProcessorsLib = {
 		if (scope.params.indexOf('capitalize') > -1) {
 			scope.attributeResult = scope.attributeResult.toUpperCase();
 		}
+		if (scope.params[0] === 'max' && parseInt(scope.params[1])>0) {
+			scope.attributeResult = scope.attributeResult.substring(0, parseInt(scope.params[1])-1);
+		}
 		scope.element.textContent = scope.attributeResult;
 	},
 	bind: function (scope, item, helpers) {

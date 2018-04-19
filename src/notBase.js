@@ -236,4 +236,8 @@ export default class notBase {
 			notCommon.report(this.getWorking('name'), ...arguments);
 		}
 	}
+
+	getApp(){
+		return notCommon.getApp();
+	}
 }

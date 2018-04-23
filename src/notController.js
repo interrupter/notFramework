@@ -4,6 +4,12 @@ import notComponent from './template/notComponent';
 import notPath from './notPath';
 
 /**
+* @const {string}	OPT_DEFAULT_ACTION_NAME			default action name
+*/
+const OPT_DEFAULT_ACTION_NAME = 'default';
+
+
+/**
 * @const {string}	OPT_DEFAULT_CONTAINER_SELECTOR	selector of container HTML
 *													element
 */
@@ -445,6 +451,40 @@ class notController extends notBase {
 	*/
 	onAfterRender() {
 		this.trigger('afterRender');
+	}
+
+	/**
+	*	Transform route name in action name
+	*	@param {String} 	name tranform action name
+	*	@return {String}
+	*/
+	getActionName(name = OPT_DEFAULT_ACTION_NAME){
+		return 'run' + notCommon.capitalizeFirstLetter(name);
+	}
+
+	/**
+	*	Get default controller action name
+	*	@return {String} default action from options
+	*/
+	getDefaultActionName(){
+		return this.getActionName(this.getOptions('defaultAction', OPT_DEFAULT_ACTION_NAME));
+	}
+
+	/**
+	*	Route params into specific run[Route_name] function
+	*	@param {array} 	params 	controller input params
+	*	@return {undefined}
+	*/
+	route(params){
+		let [routerName, ...subParams] = params,
+			actionName = this.getActionName(routerName ? routerName : OPT_DEFAULT_ACTION_NAME);
+		if(typeof this[actionName] === 'function'){
+			this[actionName](subParams);
+		}else if(this[this.getDefaultActionName()]){
+			this[this.getDefaultActionName()](subParams);
+		}else{
+			this.error('No action in router', params);
+		}
 	}
 
 }

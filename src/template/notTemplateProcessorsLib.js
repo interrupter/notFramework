@@ -13,10 +13,10 @@ var notTemplateProcessorsLib = {
 				if(scope.params[2] === 'true'){
 					scope.attributeResult+='...';
 				}
-			}			
+			}
 		}
 		scope.element.textContent = scope.attributeResult;
-	},
+	},	
 	bind: function (scope, item, helpers) {
 		if (scope.element.binds) {
 			if (scope.element.binds.hasOwnProperty(scope.params[0])) {

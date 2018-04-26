@@ -487,6 +487,60 @@ class notController extends notBase {
 		}
 	}
 
+	/**
+	*	Return application options
+	*	@return {object}
+	*/
+	getAppOptions(){
+		try{
+			return this.getApp().getOptions();
+		}catch(e){
+			this.error(e);
+		}
+	}
+
+	/**
+	*	Returns module options
+	*	@param	{string} 	moduleName		name of the module which options requested
+	*	@return {object}
+	*/
+
+	getModuleOptions(moduleName){
+		try{
+			return this.getApp().getOptions(['modules', moduleName || this.getModuleName()].join('.'));
+		}catch(e){
+			this.error(e);
+		}
+	}
+
+	/**
+	*	Returns module services
+	*	@param	{string} 	moduleName		name of the module which services requested
+	*	@return {object}
+	*/
+
+	getServices(moduleName){
+		try{
+			return this.getApp().getOptions(['services', moduleName||this.getModuleName()].join('.'));
+		}catch(e){
+			this.error(e);
+		}
+	}
+
+	/**
+	*	Returns module components
+	*	@param	{string} 	moduleName		name of the module which components requested
+	*	@return {object}
+	*/
+
+	getComponents(moduleName){
+		try{
+			return this.getApp().getOptions(['components', moduleName||this.getModuleName()].join('.'));
+		}catch(e){
+			this.error(e);
+		}
+	}
+
 }
 
 export default notController;

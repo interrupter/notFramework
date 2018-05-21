@@ -237,11 +237,9 @@ var CommonObjects = {
 	register: function(key, val) {
 		this.registry[key] = val;
 	},
-
 	get: function(key) {
 		return this.registry.hasOwnProperty(key) ? this.registry[key] : null;
 	},
-
 	moveItem(array, old_index, new_index) {
 		if (new_index >= array.length) {
 			var k = new_index - array.length;

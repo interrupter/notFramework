@@ -16,7 +16,7 @@ var notTemplateProcessorsLib = {
 			}
 		}
 		scope.element.textContent = scope.attributeResult;
-	},	
+	},
 	bind: function (scope, item, helpers) {
 		if (scope.element.binds) {
 			if (scope.element.binds.hasOwnProperty(scope.params[0])) {
@@ -302,6 +302,15 @@ var notTemplateProcessorsLib = {
 			helpers
 		}) : res);
 		scope.element.style[scope.params[0]] = scope.attributeResult;
-	}
+	},
+	list: function(scope, item, helpers) {
+		let result = '';
+		if(scope.params.length && helpers.hasOwnProperty(scope.params[0])){
+			result = helpers[scope.params[0]]({scope, item, helpers});
+		}else{
+			result = scope.attributeResult.join(', ');
+		}
+		scope.element.innerHTML = result;
+	},
 };
 export default notTemplateProcessorsLib;

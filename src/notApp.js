@@ -150,7 +150,9 @@ export default class notApp extends notBase {
 		let manifests = this.getOptions('interfaceManifest');
 		if (manifests) {
 			for (let name in manifests) {
-				let recordManifest = manifests[name];
+				let recordManifest = manifests[name],
+					recordMethods = this.getOptions(['models', name].join('.'), {});
+				recordManifest.methods = recordMethods;
 				this.getWorking('interfaces')[name] = (recordData) => new notRecord(recordManifest, recordData);
 				window['nr' + notCommon.capitalizeFirstLetter(name)] = this.getWorking('interfaces')[name];
 			}

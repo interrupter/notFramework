@@ -88,6 +88,7 @@ class notRecord extends notBase {
 		this.setData(this.initProperties(item));
 		this.interfaceUp();
 		this.mapToInterface();
+		this.mapToMethods();
 		this[META_PROXY] = new Proxy(item, createRecordHandlers(this));
 		//notCommon.log('proxy record created from ', item);
 		this.on('change', this[META_CHANGE].bind(this));
@@ -103,6 +104,17 @@ class notRecord extends notBase {
 					let res = rec[META_INTERFACE][t](...arguments);
 					return res == rec[META_INTERFACE] ? rec : res;
 				};
+			}
+		}
+	}
+
+	mapToMethods(){
+		let manifest = this[META_INTERFACE].manifest;
+		if(manifest.methods){
+			for(let t in manifest.methods){
+				if(manifest.methods.hasOwnProperty(t)){
+					this[t] = manifest.methods[t];
+				}
 			}
 		}
 	}

@@ -109,11 +109,18 @@ class notRecord extends notBase {
 	}
 
 	mapToMethods(){
-		let manifest = this[META_INTERFACE].manifest;
+		let manifest = this[META_INTERFACE].manifest,
+			app = notCommon.getApp(),
+			methods = {};
 		if(manifest.methods){
-			for(let t in manifest.methods){
-				if(manifest.methods.hasOwnProperty(t)){
-					this[t] = manifest.methods[t];
+			methods = manifest.methods;
+		}else if(app){
+			methods = app.getOptions(['models', this[META_INTERFACE].manifest.model].join('.'), {});
+		}
+		if(methods){
+			for(let t in methods){
+				if(methods.hasOwnProperty(t)){
+					this[t] = methods[t];
 				}
 			}
 		}

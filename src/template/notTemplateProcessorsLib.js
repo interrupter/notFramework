@@ -77,6 +77,7 @@ var notTemplateProcessorsLib = {
 				} else {
 					//console.log(notPath.get(scope.attributeExpression, item, helpers), ' -> ',scope.element.value);
 					notPath.set(scope.attributeExpression, item, helpers, scope.element.value);
+					scope.element.focus();
 				}
 			};
 		scope.element.setAttribute('value', notPath.get(scope.attributeExpression, item, helpers));

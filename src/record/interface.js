@@ -1,5 +1,6 @@
 import notCommon from '../common';
 import notBase from '../notBase';
+import notPath from '../notPath';
 import {
 	OPT_DEFAULT_INDEX_FIELD_NAME_PRIORITY,
 	DEFAULT_FILTER,
@@ -8,6 +9,7 @@ import {
 	DEFAULT_SEARCH,
 	DEFAULT_RETURN
 } from './options';
+
 import notRecord from './record.js';
 
 export default class notInterface extends notBase {
@@ -198,12 +200,28 @@ export default class notInterface extends notBase {
 	}
 
 	afterSuccessRequest(data, actionData) {
+		//array of items of the same type, this one, as assumed
 		if (this && actionData && actionData.hasOwnProperty('isArray') && actionData.isArray) {
 			for (let t = 0; t < data.length; t++) {
 				data[t] = new notRecord(this.manifest, data[t]);
 			}
 		} else {
-			data = new notRecord(this.manifest, data);
+			//object, should be
+			if(actionData.extend && notCommon.getApp()){
+				let ints = notCommon.getApp().getInterfaces();
+				for(let dataPath in actionData.extend){
+					if(actionData.extend.hasOwnProperty(dataPath)){
+						let modelName = actionData.extend[dataPath];
+						if(ints.hasOwnProperty(modelName)){
+							let target = notPath.get(dataPath, data);
+							target = ints[modelName](target);
+							notPath.set(dataPath, data, {}, target);
+						}
+					}
+				}
+			}else{
+				data = new notRecord(this.manifest, data);
+			}
 		}
 		return data;
 	}

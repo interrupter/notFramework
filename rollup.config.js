@@ -6,14 +6,6 @@ import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
-import postcss from 'rollup-plugin-postcss';
-
-// PostCSS plugins
-import simplevars from 'postcss-simple-vars';
-import nested from 'postcss-nested';
-import cssnext from 'postcss-cssnext';
-import envReplace from 'postcss-env-replace';
-import cssnano from 'cssnano';
 
 export default {
 	input: 'src/index.js',

@@ -78,10 +78,10 @@ var notTemplateProcessorsLib = {
 					//console.log(notPath.get(scope.attributeExpression, item, helpers), ' -> ',scope.element.value);
 					notPath.set(scope.attributeExpression, item, helpers, scope.element.value);
 					scope.element.focus();
-					scope.element.select();
 				}
 			};
 		scope.element.setAttribute('value', notPath.get(scope.attributeExpression, item, helpers));
+		scope.element.focus();
 		if (scope.element.processedValue !== true) {
 			if (scope.element.type === 'textarea') {
 				scope.element.innerHTML = notPath.get(scope.attributeExpression, item, helpers);

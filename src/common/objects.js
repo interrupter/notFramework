@@ -249,6 +249,17 @@ var CommonObjects = {
 		}
 		array.splice(new_index, 0, array.splice(old_index, 1)[0]);
 	},
+	stripProxy(obj){
+		if(obj.isProxy){
+			obj = Object.assign({}, obj);
+			for(let t in obj){
+				if(obj.hasOwnProperty(t)){
+					obj[t] = this.stripProxy(obj[t]);
+				}
+			}
+		}
+		return obj;
+	},
 };
 
 export default CommonObjects;

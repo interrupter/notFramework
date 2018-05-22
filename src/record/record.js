@@ -201,14 +201,19 @@ class notRecord extends notBase {
 		}
 	}
 
+
+
 	/*
 	-> 'pathToKey'
 	<- value1
-
 	*/
-	getAttr(what) {
-		//notCommon.log('getAttr', what);
-		return notPath.get(what, this[META_PROXY], {});
+	getAttr(what, plain = false) {
+		let prx = notPath.get(what, this[META_PROXY], {});
+		if(plain){
+			return notCommon.stripProxy(prx);
+		}else{
+			return prx;
+		}
 	}
 
 	/*

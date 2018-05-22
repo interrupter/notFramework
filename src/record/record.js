@@ -67,7 +67,7 @@ var createRecordHandlers = function (owner) {
 class notRecord extends notBase {
 	constructor(manifest, item) {
 		super();
-		if (typeof item === 'undefined' || item === null) {
+		if (typeof item === 'undefined' || item === null || typeof item !== 'object') {
 			return item;
 		}
 		if (item && item.isProxy) {

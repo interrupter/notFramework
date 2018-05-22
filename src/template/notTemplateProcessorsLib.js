@@ -314,5 +314,8 @@ var notTemplateProcessorsLib = {
 		}
 		scope.element.innerHTML = result;
 	},
+	html: function (scope, item, helpers) {
+		scope.element.innerHTML = notPath.parseSubs(scope.attributeExpression, item, helpers);		
+	},
 };
 export default notTemplateProcessorsLib;

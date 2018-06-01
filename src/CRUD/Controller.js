@@ -76,15 +76,15 @@ class CRUDController extends notController {
 	}
 
 	onAfterRender() {
-		this.trigger('afterRender');
+		this.trigger('afterRender', ...arguments);
 	}
 
 	onBeforeDelete() {
-		this.trigger('beforeDelete');
+		this.trigger('beforeDelete', ...arguments);
 	}
 
 	onBeforeUpdate() {
-		this.trigger('beforeUpdate');
+		this.trigger('beforeUpdate', ...arguments);
 	}
 
 	backToList() {

@@ -44,6 +44,7 @@ class CRUDController extends notController {
 
 	runCreate(params = []) {
 		this.view = new CRUDCreate(this, params)
+			.on('beforeUpdate', this.onBeforeUpdate.bind(this))
 			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
@@ -62,12 +63,14 @@ class CRUDController extends notController {
 
 	runDelete(params = []) {
 		this.view = new CRUDDelete(this, params)
+			.on('beforeDelete', this.onBeforeDelete.bind(this))
 			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
 
 	runUpdate(params = []) {
 		this.view = new CRUDUpdate(this, params)
+			.on('beforeUpdate', this.onBeforeUpdate.bind(this))
 			.on('afterRender', this.onAfterRender.bind(this));
 		return this;
 	}
@@ -76,13 +79,21 @@ class CRUDController extends notController {
 		this.trigger('afterRender');
 	}
 
+	onBeforeDelete() {
+		this.trigger('beforeDelete');
+	}
+
+	onBeforeUpdate() {
+		this.trigger('beforeUpdate');
+	}
+
 	backToList() {
 		this.app.getWorking('router').navigate(this.linkBackToList());
 	}
 
 	afterAction(action = 'list'){
 		let navBack = this.app.getOptions('crud.navigateBackAfter', []);
-		if(navBack && Array.isArray(navBack) && navBack.indexOf(action)>-1){
+		if(navBack && Array.isArray(navBack) && navBack.indexOf(action) > -1){
 			window.history.back();
 		}else{
 			this.backToList();

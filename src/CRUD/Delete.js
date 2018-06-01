@@ -12,6 +12,7 @@ class CRUDDelete extends notController{
 		this.preloadLib(this.parent.getOptions('views.delete.preload'))
 			.then(()=>{
 				if (confirm('Удалить запись?')) {
+					this.trigger('beforeDelete', this, params);
 					this.delete();
 				}else{
 					this.parent.backToList();

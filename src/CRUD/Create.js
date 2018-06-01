@@ -85,8 +85,9 @@ class CRUDCreate extends notController {
 									this.queeUpload(params.helpers.field.name, files);
 								}
 							},
-							submit: () => {
+							submit: (params) => {
 								notCommon.log('submit form ', this.newItem);
+								this.trigger('beforeSubmit', this, params);
 								this.execUploads(this.getData())
 									.then(this.create.bind(this));
 							},

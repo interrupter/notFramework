@@ -66,6 +66,7 @@ class CRUDUpdate extends notController {
 							},
 							submit: (params) => {
 								notCommon.log('submit form ', params.item);
+								this.trigger('beforeSubmit', this, params);
 								this.execUploads(params.item)
 									.then(this.update.bind(this));
 							},

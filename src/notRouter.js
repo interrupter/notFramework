@@ -139,12 +139,14 @@ class notRouter extends notBase {
 				}else{
 					match.shift();
 					this.getWorking('routes')[i].handler.apply(this.host || {}, match);
+					this.trigger('afterRoute',this.getWorking('routes')[i]);
 					return this;
 				}
 			}
 		}
 		if (failBack){
-			failBack.route.handler.apply(this.host || {}, failBack.match);			
+			failBack.route.handler.apply(this.host || {}, failBack.match);
+			this.trigger('afterRoute', failBack.route);
 		}
 		return this;
 	}

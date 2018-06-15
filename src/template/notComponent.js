@@ -6,6 +6,7 @@ import notRenderer from './notRenderer';
 import notPlacers from './placers';
 
 const META_PARTS = Symbol('parts');
+const META_INIT = Symbol('init');
 /**
 	input = {
 		data: notRecord or [notRecord],
@@ -35,7 +36,7 @@ class notComponent extends notBase {
 		super(input);
 		this.resetParts();
 		this.on('ready', this.render.bind(this));
-		this.init(input);
+		this[META_INIT](input);
 		return this;
 	}
 
@@ -55,7 +56,7 @@ class notComponent extends notBase {
 	*	Initialization of component
 	*	@param {object} input input object, structure described before
 	*/
-	init(input) {
+	[META_INIT](input) {
 		this.input = input;
 		this.owner = input.owner ? input.owner : null;
 		this.initOptions(input.options ? input.options : {});
@@ -137,7 +138,7 @@ class notComponent extends notBase {
 			if (el){
 				this.setProtoTemplateElement(el);
 			}else{
-				notCommon.error('Wrong template container element: ', val.name);	
+				notCommon.error('Wrong template container element: ', val.name);
 			}
 		}
 	}

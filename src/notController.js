@@ -222,6 +222,22 @@ class notController extends notBase {
 	}
 
 	/**
+	*	Returns current model primary ID field name
+	*	@return {notRecord}
+	*/
+	getModelIDFieldName() {
+		return this.getWorking('modelIDFieldName', '_id');
+	}
+
+	/**
+	*	Sets current model primary ID field name
+	*	@return {notRecord}
+	*/
+	setModelIDFieldName(val = '_id') {
+		return this.setWorking('modelIDFieldName', val);
+	}
+
+	/**
 	*	Marks this controller as ready
 	*	Triggers "ready"/"busy" events
 	*	@param {Boolean}	val	true/false

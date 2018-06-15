@@ -37,7 +37,7 @@ class CRUDUpdate extends notController {
 
 	loadItem() {
 		return this.make[this.parent.getModuleName()]({
-			[this.getModelIDFieldName()]: this.getOptions('params.0')
+			[this.parent.getModelIDFieldName()]: this.getOptions('params.0')
 		})['$' + (this.parent.getOptions('views.update.loadAction',OPT_DEFAULT_LOAD_ACTION))]();
 	}
 

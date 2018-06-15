@@ -36,7 +36,7 @@ class CRUDDetails extends notController {
 
 	loadItem() {
 		return this.make[this.parent.getModuleName()]({
-			'_id': this.getOptions('params.0')
+			[this.getModelIDFieldName()]: this.getOptions('params.0')
 		})['$' + (this.parent.getOptions('views.details.action',OPT_DEFAULT_LOAD_ACTION))]();
 	}
 

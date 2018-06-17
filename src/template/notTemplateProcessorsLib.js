@@ -315,7 +315,18 @@ var notTemplateProcessorsLib = {
 		scope.element.innerHTML = result;
 	},
 	html: function (scope, item, helpers) {
-		scope.element.innerHTML = notPath.parseSubs(scope.attributeExpression, item, helpers);		
+		let chng = false;
+		if(helpers.field.initOnly === true){
+			if (!scope.element.getAttribute('initOnly')){
+				chng = true;
+				scope.element.setAttribute('initOnly', true);
+			}
+		}else{
+			chng = true;
+		}
+		if(chng){
+			scope.element.innerHTML = notPath.parseSubs(scope.attributeExpression, item, helpers);
+		}
 	},
 };
 export default notTemplateProcessorsLib;

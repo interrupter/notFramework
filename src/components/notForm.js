@@ -162,6 +162,7 @@ class notForm extends notBase {
 				label: fieldType.label,
 				disabled: fieldType.disabled,
 				array: fieldType.array,
+				initOnly: fieldType.initOnly,
 				default: fieldType.default,
 				placeholder: fieldType.placeholder,
 				options: this.getOptions(notPath.join('helpers', 'libs', fieldName)),

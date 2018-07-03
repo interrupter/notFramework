@@ -111,11 +111,10 @@ class notComponent extends notBase {
 		}
 
 		if (!this.getOptions('targetEl')) {
-			throw 'No target to place rendered';
+			throw 'No target to place rendered '+this.getOptions('id')+'@'+this.getOptions('targetQuery');
 		} else {
 			placer.main(this.getOptions('targetEl'), [markEl]);
 		}
-
 	}
 
 	initWorking(val) {

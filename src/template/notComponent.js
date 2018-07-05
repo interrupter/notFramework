@@ -109,9 +109,8 @@ class notComponent extends notBase {
 				this.setOptions('targetEl', target);
 			}
 		}
-
-		if (!this.getOptions('targetEl')) {
-			throw 'No target to place rendered '+this.getOptions('id')+'@'+this.getOptions('targetQuery');
+		if (!this.getOptions('targetEl')) {			
+			throw 'No target to place rendered ' + this.getOptions('id') + '@' + this.getOptions('targetQuery');
 		} else {
 			placer.main(this.getOptions('targetEl'), [markEl]);
 		}

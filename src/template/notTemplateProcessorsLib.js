@@ -316,7 +316,7 @@ var notTemplateProcessorsLib = {
 	},
 	html: function (scope, item, helpers) {
 		let chng = false;
-		if(helpers.field.initOnly === true){
+		if(helpers.field && helpers.field.initOnly === true){
 			if (!scope.element.getAttribute('initOnly')){
 				chng = true;
 				scope.element.setAttribute('initOnly', true);

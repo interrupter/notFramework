@@ -328,5 +328,23 @@ var notTemplateProcessorsLib = {
 			scope.element.innerHTML = notPath.parseSubs(scope.attributeExpression, item, helpers);
 		}
 	},
+	show: function(scope, item, helpers){
+		let res = notPath.get(scope.attributeExpression, item, helpers) || notPath.parseSubs(scope.attributeExpression, item, helpers);
+		scope.attributeResult = ((typeof res === 'function') ? res({
+			scope,
+			item,
+			helpers
+		}) : res);
+		scope.element.hidden = !scope.attributeResult;
+	},
+	hide: function(scope, item, helpers){
+		let res = notPath.get(scope.attributeExpression, item, helpers) || notPath.parseSubs(scope.attributeExpression, item, helpers);
+		scope.attributeResult = ((typeof res === 'function') ? res({
+			scope,
+			item,
+			helpers
+		}) : res);
+		scope.element.hidden = scope.attributeResult;
+	},
 };
 export default notTemplateProcessorsLib;

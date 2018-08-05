@@ -238,10 +238,11 @@ class notRenderer extends notBase {
 
 	addSub(ntEl) {
 		ntEl.setAttribute('nt-rendered', true);
+		let name = ntEl.attributes.name ? ntEl.attributes.name.value : '';
 		this.getWorking('subs').push({
 			targetEl: ntEl,
 			path: ntEl.attributes.data ? ntEl.attributes.data.value : '',
-			name: ntEl.attributes.name ? ntEl.attributes.name.value : '',
+			name: name,
 			src: ntEl.attributes.src ? ntEl.attributes.name.src : '',
 			id: ntEl.attributes.id ? ntEl.attributes.id.value : OPTS.COMPONENT_ID_PREFIX + Math.random(),
 			renderedList: [],
@@ -252,9 +253,10 @@ class notRenderer extends notBase {
 		if (!ntEl) {
 			return;
 		}
+		let name =  ntEl.attributes.name ? ntEl.attributes.name.value : '';
 		let details = {
 				dataPath: ntEl.attributes.data ? ntEl.attributes.data.value : null,
-				name: ntEl.attributes.name ? ntEl.attributes.name.value : '',
+				name: name,
 				src: ntEl.attributes.src ? ntEl.attributes.src.value : '',
 				id: ntEl.attributes.id ? ntEl.attributes.id.value : OPTS.COMPONENT_ID_PREFIX + Math.random()
 			},

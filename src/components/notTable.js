@@ -473,7 +473,7 @@ class notTable extends notBase {
 	processData() {
 		var thatFilter = this.getFilter();
 		//this.getData('rows').__setPassive;
-		this.debug(this.getData());
+		this.log(this.getData());
 		if (typeof thatFilter !== 'undefined' && thatFilter !== null && typeof thatFilter.filterSearch !== 'undefined' && thatFilter.filterSearch !== null && thatFilter.filterSearch.length > 0) {
 			//
 			this.setWorking('filteredData', this.getData().filter(this.testDataItem.bind(this)));

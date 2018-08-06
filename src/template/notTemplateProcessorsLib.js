@@ -184,6 +184,7 @@ var notTemplateProcessorsLib = {
 			valueFieldName = 'value',
 			labelFieldName = 'name',
 			selected = false,
+			array = false,
 			itemValueFieldName = helpers.hasOwnProperty('field') && helpers.field.hasOwnProperty('name') ? helpers.field.name : 'value';
 		scope.element.innerHTML = '';
 		if (scope.params.length === 2) {
@@ -194,6 +195,12 @@ var notTemplateProcessorsLib = {
 			labelFieldName = scope.params[0];
 			valueFieldName = scope.params[1];
 			itemValueFieldName = scope.params[2];
+		}
+		if (scope.params.length === 4) {
+			labelFieldName = scope.params[0];
+			valueFieldName = scope.params[1];
+			itemValueFieldName = scope.params[2];
+			array = scope.params[3]==='array';
 		}
 		if (typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('default') && helpers.default) {
 			option = document.createElement('option');
@@ -211,7 +218,7 @@ var notTemplateProcessorsLib = {
 					option = document.createElement('option');
 					option.setAttribute('value', lib[i][valueFieldName]);
 					option.textContent = lib[i][labelFieldName];
-					if (helpers.field.array) {
+					if (helpers.field.array || array) {
 						if (item[itemValueFieldName] && Array.isArray(item[itemValueFieldName])) {
 							if (item[itemValueFieldName].indexOf(lib[i][valueFieldName]) > -1) {
 								option.setAttribute('selected', true);

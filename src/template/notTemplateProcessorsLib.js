@@ -338,7 +338,7 @@ var notTemplateProcessorsLib = {
 			item,
 			helpers
 		}) : res);
-		if (typeof scope.attributeResult === 'undefined' || scope.attributeResult===null){
+		if (scope.attributeResult === scope.attributeExpression || typeof scope.attributeResult === 'undefined' || scope.attributeResult===null){
 			scope.attributeResult = false;
 		}
 		scope.element.hidden = !scope.attributeResult;
@@ -350,7 +350,7 @@ var notTemplateProcessorsLib = {
 			item,
 			helpers
 		}) : res);
-		if (typeof scope.attributeResult === 'undefined' || scope.attributeResult===null){
+		if (scope.attributeResult === scope.attributeExpression || typeof scope.attributeResult === 'undefined' || scope.attributeResult===null){
 			scope.attributeResult = false;
 		}
 		scope.element.hidden = scope.attributeResult;

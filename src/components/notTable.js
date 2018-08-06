@@ -472,12 +472,12 @@ class notTable extends notBase {
 
 	processData() {
 		var thatFilter = this.getFilter();
-		this.getData('rows').setPassive();
+		this.getData().setPassive();
 		if (typeof thatFilter !== 'undefined' && thatFilter !== null && typeof thatFilter.filterSearch !== 'undefined' && thatFilter.filterSearch !== null && thatFilter.filterSearch.length > 0) {
 			//
-			this.setWorking('filteredData', this.getData('rows').filter(this.testDataItem.bind(this)));
+			this.setWorking('filteredData', this.getData().filter(this.testDataItem.bind(this)));
 		} else {
-			this.setWorking('filteredData', this.getData('rows'));
+			this.setWorking('filteredData', this.getData());
 		}
 		////sorter
 		var thatSorter = this.getSorter();
@@ -496,7 +496,7 @@ class notTable extends notBase {
 				}
 			});
 		}
-		this.getData('rows').setActive();
+		this.getData().setActive();
 	}
 
 	bindSearch() {

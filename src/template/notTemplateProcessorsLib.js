@@ -203,38 +203,41 @@ var notTemplateProcessorsLib = {
 		}
 		if (typeof item !== 'undefined' && item !== null) {
 			var lib = notPath.get(scope.attributeExpression, item, helpers);
-			for (i = 0; i < lib.length; i++) {
-				if (helpers.field.filter && !helpers.field.filter(lib[i])) {
-					continue;
-				}
-				option = document.createElement('option');
-				option.setAttribute('value', lib[i][valueFieldName]);
-				option.textContent = lib[i][labelFieldName];
-				if (helpers.field.array) {
-					if (item[itemValueFieldName] && Array.isArray(item[itemValueFieldName])) {
-						if (item[itemValueFieldName].indexOf(lib[i][valueFieldName]) > -1) {
+			if (typeof lib !== 'undefined' && lib !== null){
+				for (i = 0; i < lib.length; i++) {
+					if (helpers.field.filter && !helpers.field.filter(lib[i])) {
+						continue;
+					}
+					option = document.createElement('option');
+					option.setAttribute('value', lib[i][valueFieldName]);
+					option.textContent = lib[i][labelFieldName];
+					if (helpers.field.array) {
+						if (item[itemValueFieldName] && Array.isArray(item[itemValueFieldName])) {
+							if (item[itemValueFieldName].indexOf(lib[i][valueFieldName]) > -1) {
+								option.setAttribute('selected', true);
+								selected = true;
+							}
+						}
+					} else {
+						if (item[itemValueFieldName] === lib[i][valueFieldName]) {
 							option.setAttribute('selected', true);
 							selected = true;
 						}
 					}
-				} else {
-					if (item[itemValueFieldName] === lib[i][valueFieldName]) {
-						option.setAttribute('selected', true);
-						selected = true;
+					scope.element.appendChild(option);
+				}
+				if (!selected && !helpers.field.array) {
+					let firstOpt = scope.element.querySelector('option');
+					if (firstOpt) {
+						firstOpt.setAttribute('selected', true);
+						item[itemValueFieldName] = firstOpt.value;
+					} else {
+						delete item[itemValueFieldName];
 					}
 				}
-				scope.element.appendChild(option);
 			}
 		}
-		if (!selected && !helpers.field.array) {
-			let firstOpt = scope.element.querySelector('option');
-			if (firstOpt) {
-				firstOpt.setAttribute('selected', true);
-				item[itemValueFieldName] = firstOpt.value;
-			} else {
-				delete item[itemValueFieldName];
-			}
-		}
+
 	},
 	href: function (scope, item, helpers) {
 		if (!scope.element.notRouterInitialized) {

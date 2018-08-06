@@ -472,6 +472,8 @@ class notTable extends notBase {
 
 	processData() {
 		var thatFilter = this.getFilter();
+		//this.getData('rows').__setPassive;
+		this.debug(this.getData());
 		if (typeof thatFilter !== 'undefined' && thatFilter !== null && typeof thatFilter.filterSearch !== 'undefined' && thatFilter.filterSearch !== null && thatFilter.filterSearch.length > 0) {
 			//
 			this.setWorking('filteredData', this.getData().filter(this.testDataItem.bind(this)));
@@ -494,7 +496,8 @@ class notTable extends notBase {
 					return ((t1 < t2) ? 1 : -1) * thatSorter.sortDirection;
 				}
 			});
-		}		
+		}
+		//this.getData('rows').__setActive;
 	}
 
 	bindSearch() {
@@ -626,6 +629,7 @@ class notTable extends notBase {
 		}
 		this.checkFiltered();
 		if (this.isLive()) {
+
 			for (let i = 0; i < this.getData().length; i++) {
 				tbody.appendChild(this.renderRow(this.getData()[i]));
 			}

@@ -338,6 +338,9 @@ var notTemplateProcessorsLib = {
 			item,
 			helpers
 		}) : res);
+		if (typeof scope.attributeResult === 'undefined' || scope.attributeResult===null){
+			scope.attributeResult = false;
+		}
 		scope.element.hidden = !scope.attributeResult;
 	},
 	hide: function(scope, item, helpers){
@@ -347,6 +350,9 @@ var notTemplateProcessorsLib = {
 			item,
 			helpers
 		}) : res);
+		if (typeof scope.attributeResult === 'undefined' || scope.attributeResult===null){
+			scope.attributeResult = false;
+		}
 		scope.element.hidden = scope.attributeResult;
 	},
 };

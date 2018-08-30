@@ -70,7 +70,15 @@ var notTemplateProcessorsLib = {
 						{
 							let selected = [].slice.call(scope.element.selectedOptions).map(a => a.value);
 							//console.log('select-multiple', selected);
-							notPath.set(scope.attributeExpression, item, helpers, selected);
+							let old = notPath.set(scope.attributeExpression, item, helpers);
+							if(Array.isArray(old)){
+								old.__setPassive;
+								old.splice(0);
+								old.push(...selected);
+								old.__setActiveWithoutEvent;
+							}else{
+								notPath.set(scope.attributeExpression, item, helpers, selected);
+							}							
 						}
 						break;
 					}

@@ -117,8 +117,8 @@
 <nt name="form_checkbox">
 	<div class="checkbox">
 		<label>
-      <input type="checkbox" n-value=":{::field.name}" n-checked=":{::field.name}"> <span n-content="{::field.label}"></span>
-    </label>
+	  <input type="checkbox" n-value=":{::field.name}" n-checked=":{::field.name}"> <span n-content="{::field.label}"></span>
+	</label>
 	</div>
 </nt>
 
@@ -143,9 +143,9 @@
 <nt name="form_radio">
 	<div class="radio">
 		<label>
-    	<input type="radio" n-name="::field.name" n-value=":value" n-checked="::isChecked">
-    	<span n-content="{:title}"></span>
-  	</label>
+		<input type="radio" n-name="::field.name" n-value=":value" n-checked="::isChecked">
+		<span n-content="{:title}"></span>
+	  </label>
 	</div>
 </nt>
 
@@ -179,10 +179,10 @@
 
 <nt name="table_pagination">
 	<nav role="pagination">
-  	<ul class="pagination">
-    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-    <nt data=":list" name="table_paginationItem"></nt>
-    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+	  <ul class="pagination">
+	<li class="page-item"><a class="page-link" href="#">Previous</a></li>
+	<nt data=":list" name="table_paginationItem"></nt>
+	<li class="page-item"><a class="page-link" href="#">Next</a></li>
   </ul>
 </nav>
 </nt>
@@ -191,4 +191,34 @@
 	<li class="page-item" n-class-active=":isPageActive">
 		<a class="page-link" href="#"  n-bind-click="::goToPage" n-content="{:index}"></a>
 	</li>
+</nt>
+
+<nt name="ncomp">
+	<div>
+		<span n-content="{:title}: "></span> <input n-value=":value">
+	</div>
+</nt>
+
+<nt name="ncomp_1">
+	<div>
+		<nt name="ncomp" data=":items"></nt>
+	</div>
+</nt>
+
+<nt name="ncomp_2">
+	<div>
+		<nt name="ncomp_1" data=":items"></nt>
+	</div>
+</nt>
+
+<nt name="ncomp_3">
+	<div>
+		<nt name="ncomp_2" data=":items"></nt>
+	</div>
+</nt>
+
+<nt name="ncomp_4">
+	<div>
+		<nt name="ncomp_3" data=":items"></nt>
+	</div>
 </nt>

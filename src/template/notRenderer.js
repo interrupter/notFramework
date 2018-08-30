@@ -93,25 +93,27 @@ class notRenderer extends notBase {
 
 	onChange(proxy, key, value) {
 		this.update(key);
-		this.trigger('obsolete', proxy, key, value);
+		//this.trigger('obsolete', proxy, key, value);
 	}
 
 	update(key) {
 		this.execProcessors(this.getData());
 		for (let t in this[META_COMPONENTS]) {
-			let item = this[META_COMPONENTS][t],
-				ifPart = true;
-			if (key) {
-				if (item.getOptions('dataPath') === null) {
-					continue;
+			if ((typeof t !== 'undefined')&&(this[META_COMPONENTS].hasOwnProperty(t))){
+				let item = this[META_COMPONENTS][t],
+					ifPart = true;
+				if (key) {
+					if (item.getOptions('dataPath') === null) {
+						continue;
+					}
+					let componentPath = notPath.normilizePath(item.getOptions('dataPath')),
+						changedPath = notPath.normilizePath(key);
+					ifPart = notPath.ifFullSubPath(changedPath, componentPath);
 				}
-				let componentPath = notPath.normilizePath(item.getOptions('dataPath')),
-					changedPath = notPath.normilizePath(key);
-				ifPart = notPath.ifFullSubPath(changedPath, componentPath);
-			}
 
-			if (ifPart) {
-				item.update();
+				if (ifPart) {
+					item.update();
+				}
 			}
 		}
 	}
@@ -148,6 +150,7 @@ class notRenderer extends notBase {
 					procData.element = els[j];
 					procData.processorExpression = atts[i].nodeName;
 					procData.attributeExpression = atts[i].value;
+					procData.renderer  = this;
 					procs.push(procData);
 				}
 			}

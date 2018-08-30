@@ -4,6 +4,7 @@ import notBase from '../notBase';
 import {
 	META_RETURN_TO_ROOT,
 	META_PROXY,
+	META_ACTIVE,
 	META_SAL
 } from './options';
 
@@ -13,6 +14,22 @@ var createPropertyHandlers = function (owner) {
 			//notCommon.log(`proxy get "${key}"`, this, target, context);
 			if (key === 'isProxy') {
 				return true;
+			}
+			if (['__setActive', '__setPassive', '__isActive','__setActiveWithoutEvent'].indexOf(key) > -1) {
+				switch (key) {
+				case '__setActive':
+					this[META_ACTIVE] = true;
+					this[META_PROXY].trigger('change');
+					return;
+				case '__setActiveWithoutEvent':
+					this[META_ACTIVE] = true;
+					return;
+				case '__setPassive':
+					this[META_ACTIVE] = false;
+					return;
+				case '__isActive':
+					return Reflect.get(this, META_ACTIVE, context);
+				}
 			}
 			let resTarget = target;
 			if (typeof key === 'symbol') {
@@ -36,7 +53,9 @@ var createPropertyHandlers = function (owner) {
 					valueToReflect = new notRecordProperty(this.getOptions('getRoot'), notPath.join(this.getOptions('path'), key), value);
 				}
 				let t = Reflect.set(target, key, valueToReflect);
-				this.trigger('change', target, key, valueToReflect);
+				if (this[META_ACTIVE] && key !== META_ACTIVE) {
+					this.trigger('change', target, key, valueToReflect);
+				}				
 				return t;
 			}
 		}.bind(owner),

@@ -20,11 +20,14 @@ var createRecordHandlers = function (owner) {
 			if (key === 'isProxy' || key === 'isRecord') {
 				return true;
 			}
-			if (['__setActive', '__setPassive', '__isActive'].indexOf(key) > -1) {
+			if (['__setActive', '__setPassive', '__isActive', '__setActiveWithoutEvent'].indexOf(key) > -1) {
 				switch (key) {
 				case '__setActive':
 					this[META_ACTIVE] = true;
 					this[META_PROXY].trigger('change');
+					return;
+				case '__setActiveWithoutEvent':
+					this[META_ACTIVE] = true;
 					return;
 				case '__setPassive':
 					this[META_ACTIVE] = false;

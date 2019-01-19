@@ -12,9 +12,13 @@ var CommonLogs = {
 			window[LOG].log(...arguments);
 		}
 	},
-	report: function() {
-		if(!notFramework.notCommon.get('production')){
-			window[LOG].error(...arguments);
+	report: function(e) {
+		if(notFramework.notCommon.getApp() && notFramework.notCommon.getApp().getOptions('services.errorReporter')){
+			notFramework.notCommon.getApp().getOptions('services.errorReporter').report(e);
+		}else{
+			if(!notFramework.notCommon.get('production')){
+				window[LOG].error(...arguments);
+			}
 		}
 	},
 	trace: function() {

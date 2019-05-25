@@ -91,7 +91,7 @@ class notRenderer extends notBase {
 		this.stashRendered();
 	}
 
-	onChange(proxy, key, value) {
+	onChange(proxy, key/*, value*/) {
 		this.update(key);
 		//this.trigger('obsolete', proxy, key, value);
 	}

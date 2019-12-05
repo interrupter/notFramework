@@ -361,11 +361,11 @@ class notTable extends notBase {
 
 	setUpdating() {
 		this.setWorking('updating', true);
-		this.setData('updating', true);
+		this.data.updating = true;
 	}
 
 	setUpdated() {
-		this.setData('updating', false);
+		this.data.updating = false;
 		this.setWorking('updating', false);
 	}
 

@@ -1,8 +1,8 @@
 const MANAGER = Symbol('MANAGER');
 
 var CommonShorts = {
-	getAPI: function() {
-		return this.getManager().getAPI();
+	getAPI: function(type) {
+		return this.getManager().getAPI(type);
 	},
 	setManager: function(v) {
 		this[MANAGER] = v;

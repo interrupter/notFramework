@@ -25,7 +25,9 @@ export default class notApp extends notBase {
 		this.preInitRouter();
 		this.initManager();
 		this.initAPI();
-		this.initTemplates();
+		if(options.templates !== false){
+			this.initTemplates();
+		}
 		return this;
 	}
 

@@ -43,6 +43,11 @@ export default class notInterface extends notBase {
 		return line;
 	}
 
+	getWSRequestName(record, actionData, actionName) {
+		var line = ((actionData.hasOwnProperty('postFix')) ? this.parseLine(actionData.postFix, record, actionName) : '');
+		return line;
+	}
+
 	getID(record, actionData) {
 		let resultId,
 			list = OPT_DEFAULT_INDEX_FIELD_NAME_PRIORITY,
@@ -193,10 +198,14 @@ export default class notInterface extends notBase {
 			id = this.getID(record, actionData, actionName),
 			apiServerURL = notCommon.getApp() ? notCommon.getApp().getOptions('api.server.url', '') : '',
 			url = this.getURL(record, actionData, actionName);
-		return notCommon.getAPI().queeRequest(actionData.method, apiServerURL + url + requestParamsEncoded, id, JSON.stringify(record.getData()))
-			.then((data) => {
-				return this.afterSuccessRequest(data, actionData);
-			});
+		if(actionData.ws === true){
+			return notCommon.getApp().getOptions('ws').sendRequest(this.getWSRequestName(record, actionData, actionName), Object.assign({}, requestParams, record.getData()));
+		}else{
+			return notCommon.getAPI().queeRequest(actionData.method, apiServerURL + url + requestParamsEncoded, id, JSON.stringify(record.getData()))
+				.then((data) => {
+					return this.afterSuccessRequest(data, actionData);
+				});
+		}
 	}
 
 	afterSuccessRequest(data, actionData) {

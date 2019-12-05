@@ -184,7 +184,7 @@ class notTable extends notBase {
 		this.updateData();
 		this.renderBody();
 		this.bindSearch();
-		//this.renderPagination();
+		this.renderPagination();
 		this.bindCustomBindings();
 	}
 
@@ -451,7 +451,7 @@ class notTable extends notBase {
 					.then(this.refreshBody.bind(this))
 					.then(()=>{
 						this.updatePagination(this.getWorking('lastCount'));
-						//this.renderPagination();
+						this.renderPagination();
 					})
 					.catch(notCommon.error.bind(this))
 					.then(this.setUpdated.bind(this));
@@ -670,7 +670,7 @@ class notTable extends notBase {
 		return query['$' + this.getCountActionName()]()
 			.then((data) => {
 				this.updatePagination(data.count);
-				//this.renderPagination();
+				this.renderPagination();
 			})
 			.catch((e) => {
 				notCommon.error(e);

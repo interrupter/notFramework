@@ -199,7 +199,8 @@ export default class notInterface extends notBase {
 			apiServerURL = notCommon.getApp() ? notCommon.getApp().getOptions('api.server.url', '') : '',
 			url = this.getURL(record, actionData, actionName);
 		if(actionData.ws === true){
-			return notCommon.getApp().wsClient.sendRequest(this.getWSRequestName(record, actionData, actionName), Object.assign({}, requestParams, record.getData()));
+			return notCommon.getApp().wsClient.sendRequest(this.getWSRequestName(record, actionData, actionName), Object.assign({}, requestParams, record.getData()))
+				.then(response=>response.payload);
 		}else{
 			return notCommon.getAPI().queeRequest(actionData.method, apiServerURL + url + requestParamsEncoded, id, JSON.stringify(record.getData()))
 				.then((data) => {

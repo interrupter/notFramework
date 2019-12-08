@@ -216,7 +216,9 @@ class notTable extends notBase {
 			fieldName = fieldName.substring(1, fieldName.length);
 		}
 		if (this.getSorter().hasOwnProperty(fieldName)) {
-			this.getSorter()[fieldName]*=-1;
+			let sorter = this.getSorter();
+			sorter[fieldName]*=-1;
+			this.setSorter(sorter);
 		} else {
 			this.setSorter({
 				[fieldName]: OPT_DEFAULT_SORT_DIRECTION,

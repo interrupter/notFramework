@@ -213,7 +213,7 @@ class notTable extends notBase {
 
 	changeSortingOptions(el, fieldName) {
 		if(fieldName.indexOf(':')===0){
-			fieldName = fieldName.substring(1, fieldName.length-1);
+			fieldName = fieldName.substring(1, fieldName.length);
 		}
 		if (this.getSorter().hasOwnProperty(fieldName)) {
 			this.getSorter()[fieldName]*=-1;

@@ -2,22 +2,22 @@ import notPath from '../notPath.js';
 import notRouter from '../notRouter';
 
 var notTemplateProcessorsLib = {
-	content: function (scope, item, helpers) {
+	content: function(scope, item, helpers) {
 		scope.attributeResult = notPath.parseSubs(scope.attributeExpression, item, helpers);
 		if (scope.params.indexOf('capitalize') > -1) {
 			scope.attributeResult = scope.attributeResult.toUpperCase();
 		}
-		if (scope.params[0] === 'max' && parseInt(scope.params[1])>0) {
-			if (scope.attributeResult.length>parseInt(scope.params[1])){
-				scope.attributeResult = scope.attributeResult.substring(0, parseInt(scope.params[1])-1);
-				if(scope.params[2] === 'true'){
-					scope.attributeResult+='...';
+		if (scope.params[0] === 'max' && parseInt(scope.params[1]) > 0) {
+			if (scope.attributeResult.length > parseInt(scope.params[1])) {
+				scope.attributeResult = scope.attributeResult.substring(0, parseInt(scope.params[1]) - 1);
+				if (scope.params[2] === 'true') {
+					scope.attributeResult += '...';
 				}
 			}
 		}
 		scope.element.textContent = scope.attributeResult;
 	},
-	bind: function (scope, item, helpers) {
+	bind: function(scope, item, helpers) {
 		if (scope.element.binds) {
 			if (scope.element.binds.hasOwnProperty(scope.params[0])) {
 				if (scope.element.binds[scope.params[0]].indexOf(scope.attributeExpression) > -1) {
@@ -50,37 +50,43 @@ var notTemplateProcessorsLib = {
 			scope.element.binds[scope.params[0]].push(scope.attributeExpression);
 		}
 	},
-	value: function (scope, item, helpers) {
+	//
+	value: function(scope, item, helpers) {
 		let liveEvents = ['change', 'keyup'],
 			onEvent = () => {
 				if (['checkbox', 'radio', 'select-multiple'].indexOf(scope.element.type) > -1) {
 					switch (scope.element.type) {
-					case 'checkbox':
-						{
-							notPath.set(scope.attributeExpression, item, helpers, scope.element.checked);
-						}
-						break;
-					case 'radio':
-						{
-							//console.log(helpers.field.name, helpers.data, helpers, scope.element.checked?scope.element.value:null);
-							notPath.set(helpers.field.name, helpers.data, helpers, scope.element.checked ? scope.element.value : null);
-						}
-						break;
-					case 'select-multiple':
-						{
-							let selected = [].slice.call(scope.element.selectedOptions).map(a => a.value);
-							//console.log('select-multiple', selected);
-							let old = notPath.get(scope.attributeExpression, item, helpers);
-							if(Array.isArray(old)){
-								old.__setPassive;
-								old.splice(0);
-								old.push(...selected);
-								old.__setActiveWithoutEvent;
-							}else{
-								notPath.set(scope.attributeExpression, item, helpers, selected);
+						case 'checkbox':
+							{
+								notPath.set(scope.attributeExpression, item, helpers, scope.element.checked);
 							}
-						}
-						break;
+							break;
+						case 'radio':
+							{
+								//console.log(helpers.field.name, helpers.data, helpers, scope.element.checked?scope.element.value:null);
+								if (Object.prototype.hasOwnProperty(helpers, 'field') &&
+									Object.prototype.hasOwnProperty(helpers.field, 'name')) {
+									notPath.set(helpers.field.name, helpers.data, helpers, scope.element.checked ? scope.element.value : null);
+								} else {
+									notPath.set(scope.attributeExpression, item, helpers, scope.element.checked ? scope.element.value : null);
+								}
+							}
+							break;
+						case 'select-multiple':
+							{
+								let selected = [].slice.call(scope.element.selectedOptions).map(a => a.value);
+								//console.log('select-multiple', selected);
+								let old = notPath.get(scope.attributeExpression, item, helpers);
+								if (Array.isArray(old)) {
+									old.__setPassive;
+									old.splice(0);
+									old.push(...selected);
+									old.__setActiveWithoutEvent;
+								} else {
+									notPath.set(scope.attributeExpression, item, helpers, selected);
+								}
+							}
+							break;
 					}
 				} else {
 					//console.log(notPath.get(scope.attributeExpression, item, helpers), ' -> ',scope.element.value);
@@ -88,8 +94,11 @@ var notTemplateProcessorsLib = {
 					scope.element.focus();
 				}
 			};
-		scope.element.setAttribute('value', notPath.get(scope.attributeExpression, item, helpers));
-		scope.element.focus();
+
+		if ((scope.params.length === 1) || (scope.params.length > 1 && scope.params[1] !== 'readonly')) {
+			scope.element.setAttribute('value', notPath.get(scope.attributeExpression, item, helpers));
+			scope.element.focus();
+		}
 		if (scope.element.processedValue !== true) {
 			if (scope.element.type === 'textarea') {
 				scope.element.innerHTML = notPath.get(scope.attributeExpression, item, helpers);
@@ -100,7 +109,7 @@ var notTemplateProcessorsLib = {
 			scope.element.processedValue = true;
 		}
 	},
-	attr: function (scope, item, helpers) {
+	attr: function(scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers) || notPath.parseSubs(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof res === 'function') ? res({
 			scope,
@@ -109,22 +118,26 @@ var notTemplateProcessorsLib = {
 		}) : res);
 		scope.element.setAttribute(scope.params[0], scope.attributeResult);
 	},
-	name: function (scope, item, helpers) {
+	name: function(scope, item, helpers) {
 		scope.element.setAttribute('name', notPath.get(scope.attributeExpression, item, helpers));
 	},
-	change: function ( /*scope, item, helpers*/ ) {
+	change: function( /*scope, item, helpers*/ ) {
 
 	},
-	checked: function (scope, item, helpers) {
+	checked: function(scope, item, helpers) {
 		let result = notPath.get(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof result === 'function') ? result({
 			scope,
 			item,
 			helpers
 		}) : result);
-		scope.attributeResult ? scope.element.setAttribute('checked', true) : scope.element.removeAttribute('checked');
+		if (typeof result !== 'boolean') {
+			(scope.attributeResult === scope.element.value) ? scope.element.setAttribute('checked', true): scope.element.removeAttribute('checked');
+		} else {
+			scope.attributeResult ? scope.element.setAttribute('checked', true) : scope.element.removeAttribute('checked');
+		}
 	},
-	disabled: function (scope, item, helpers) {
+	disabled: function(scope, item, helpers) {
 		let result = notPath.get(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof result === 'function') ? result({
 			scope,
@@ -138,7 +151,7 @@ var notTemplateProcessorsLib = {
 		}
 		scope.attributeResult ? scope.element.setAttribute('disabled', true) : scope.element.removeAttribute('disabled');
 	},
-	readonly: function (scope, item, helpers) {
+	readonly: function(scope, item, helpers) {
 		let result = notPath.get(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof result === 'function') ? result({
 			scope,
@@ -152,7 +165,7 @@ var notTemplateProcessorsLib = {
 		}
 		scope.attributeResult ? scope.element.setAttribute('readonly', true) : scope.element.removeAttribute('readonly');
 	},
-	class: function (scope, item, helpers) {
+	class: function(scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof res === 'function') ? res({
 			scope,
@@ -186,7 +199,8 @@ var notTemplateProcessorsLib = {
 			}
 		}
 	},
-	options: function (scope, item, helpers) {
+
+	options: function(scope, item, helpers) {
 		let i = 0,
 			option = null,
 			valueFieldName = 'value',
@@ -208,7 +222,7 @@ var notTemplateProcessorsLib = {
 			labelFieldName = scope.params[0];
 			valueFieldName = scope.params[1];
 			itemValueFieldName = scope.params[2];
-			array = scope.params[3]==='array';
+			array = scope.params[3] === 'array';
 		}
 		if (typeof helpers !== 'undefined' && helpers !== null && helpers.hasOwnProperty('default') && helpers.default) {
 			option = document.createElement('option');
@@ -218,7 +232,7 @@ var notTemplateProcessorsLib = {
 		}
 		if (typeof item !== 'undefined' && item !== null) {
 			var lib = notPath.get(scope.attributeExpression, item, helpers);
-			if (typeof lib !== 'undefined' && lib !== null){
+			if (typeof lib !== 'undefined' && lib !== null) {
 				for (i = 0; i < lib.length; i++) {
 					if (helpers.field.filter && !helpers.field.filter(lib[i])) {
 						continue;
@@ -254,7 +268,7 @@ var notTemplateProcessorsLib = {
 		}
 
 	},
-	href: function (scope, item, helpers) {
+	href: function(scope, item, helpers) {
 		if (!scope.element.notRouterInitialized) {
 			scope.attributeResult = notPath.parseSubs(scope.attributeExpression, item, helpers);
 			scope.element.setAttribute('href', notRouter.getFullRoute(scope.attributeResult));
@@ -269,7 +283,7 @@ var notTemplateProcessorsLib = {
 	/*
 	n-keybind-[enter|letter|digit]-[ctrl|shift|alt|meta]*="actionPath"
 	*/
-	keybind: function (scope, item, helpers) {
+	keybind: function(scope, item, helpers) {
 		if (scope.element.keybinds) {
 			if (scope.element.keybinds.hasOwnProperty(scope.params.join('-'))) {
 				if (scope.element.keybinds[scope.params.join('-')].indexOf(scope.attributeExpression) > -1) {
@@ -303,7 +317,7 @@ var notTemplateProcessorsLib = {
 			scope.element.keybinds[scope.params.join('-')].push(scope.attributeExpression);
 		}
 	},
-	src: function (scope, item, helpers) {
+	src: function(scope, item, helpers) {
 		if (scope.element.tagName === 'IMG') {
 			let t = notPath.parseSubs(scope.attributeExpression, item, helpers);
 			if (t) {
@@ -314,7 +328,7 @@ var notTemplateProcessorsLib = {
 			}
 		}
 	},
-	style: function (scope, item, helpers) {
+	style: function(scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers) || notPath.parseSubs(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof res === 'function') ? res({
 			scope,
@@ -325,47 +339,51 @@ var notTemplateProcessorsLib = {
 	},
 	list: function(scope, item, helpers) {
 		let result = '';
-		if(scope.params.length && helpers.hasOwnProperty(scope.params[0])){
-			result = helpers[scope.params[0]]({scope, item, helpers});
-		}else{
+		if (scope.params.length && helpers.hasOwnProperty(scope.params[0])) {
+			result = helpers[scope.params[0]]({
+				scope,
+				item,
+				helpers
+			});
+		} else {
 			result = scope.attributeResult.join(', ');
 		}
 		scope.element.innerHTML = result;
 	},
-	html: function (scope, item, helpers) {
+	html: function(scope, item, helpers) {
 		let chng = false;
-		if(helpers.field && helpers.field.initOnly === true){
-			if (!scope.element.getAttribute('initOnly')){
+		if (helpers.field && helpers.field.initOnly === true) {
+			if (!scope.element.getAttribute('initOnly')) {
 				chng = true;
 				scope.element.setAttribute('initOnly', true);
 			}
-		}else{
+		} else {
 			chng = true;
 		}
-		if(chng){
+		if (chng) {
 			scope.element.innerHTML = notPath.parseSubs(scope.attributeExpression, item, helpers);
 		}
 	},
-	show: function(scope, item, helpers){
+	show: function(scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers) || notPath.parseSubs(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof res === 'function') ? res({
 			scope,
 			item,
 			helpers
 		}) : res);
-		if (scope.attributeResult === scope.attributeExpression || typeof scope.attributeResult === 'undefined' || scope.attributeResult===null){
+		if (scope.attributeResult === scope.attributeExpression || typeof scope.attributeResult === 'undefined' || scope.attributeResult === null) {
 			scope.attributeResult = false;
 		}
 		scope.element.hidden = !scope.attributeResult;
 	},
-	hide: function(scope, item, helpers){
+	hide: function(scope, item, helpers) {
 		let res = notPath.get(scope.attributeExpression, item, helpers) || notPath.parseSubs(scope.attributeExpression, item, helpers);
 		scope.attributeResult = ((typeof res === 'function') ? res({
 			scope,
 			item,
 			helpers
 		}) : res);
-		if (scope.attributeResult === scope.attributeExpression || typeof scope.attributeResult === 'undefined' || scope.attributeResult===null){
+		if (scope.attributeResult === scope.attributeExpression || typeof scope.attributeResult === 'undefined' || scope.attributeResult === null) {
 			scope.attributeResult = false;
 		}
 		scope.element.hidden = scope.attributeResult;

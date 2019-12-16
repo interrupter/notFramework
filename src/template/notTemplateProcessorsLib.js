@@ -95,7 +95,7 @@ var notTemplateProcessorsLib = {
 				}
 			};
 
-		if ((scope.params.length === 1) || (scope.params.length > 1 && scope.params[1] !== 'readonly')) {
+		if ((scope.params.length === 0) || (scope.params.length > 0 && scope.params[0] !== 'readonly')) {
 			scope.element.setAttribute('value', notPath.get(scope.attributeExpression, item, helpers));
 			scope.element.focus();
 		}

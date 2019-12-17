@@ -16,7 +16,7 @@ var CommonLogs = {
 		if(notFramework.notCommon.getApp() && notFramework.notCommon.getApp().getOptions('services.errorReporter')){
 			let reporter = notFramework.notCommon.getApp().getOptions('services.errorReporter');
 			if (reporter){
-				notFramework.notCommon.reporter.report(e);
+				reporter.report(e);
 			}
 		}else{
 			if(!notFramework.notCommon.get('production')){

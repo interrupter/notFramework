@@ -52,7 +52,7 @@ var notTemplateProcessorsLib = {
 	},
 	//
 	value: function(scope, item, helpers) {
-		let liveEvents = ['change', 'keyup'],
+		let liveEvents = ['change', 'keyup', 'paste'],
 			onEvent = () => {
 				if (['checkbox', 'radio', 'select-multiple'].indexOf(scope.element.type) > -1) {
 					switch (scope.element.type) {

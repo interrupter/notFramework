@@ -547,7 +547,7 @@ class notTable extends notBase {
 				field = fields[i],
 				preprocessed = null,
 				val = notPath.get(field.path, item, this.getOptions('helpers'));
-			if (field.hasOwnProperty('editable') && !field.hasOwnProperty('component')) {
+			if (field.hasOwnProperty('editable') && (field.editable === true) && !field.hasOwnProperty('component')) {
 				newTd.setAttribute('contentEditable', true);
 				newTd.dataset.path = field.path;
 				newTd.dataset.itemId = item[this.getOptions('itemIdField')];

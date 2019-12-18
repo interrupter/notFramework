@@ -259,6 +259,8 @@ class notRenderer extends notBase {
 		let name =  ntEl.attributes.name ? ntEl.attributes.name.value : '';
 		let details = {
 				dataPath: ntEl.attributes.data ? ntEl.attributes.data.value : null,
+				helpersPath: ntEl.attributes.helpers ? ntEl.attributes.helpers.value : null,
+				place: ntEl.attributes.place ? ntEl.attributes.place.value : 'placeAfter',
 				name: name,
 				src: ntEl.attributes.src ? ntEl.attributes.src.value : '',
 				id: ntEl.attributes.id ? ntEl.attributes.id.value : OPTS.COMPONENT_ID_PREFIX + Math.random()
@@ -270,10 +272,10 @@ class notRenderer extends notBase {
 					src: details.src
 				},
 				options: {
-					helpers: this.getOptions('helpers', {}),
+					helpers: this.getOptions('helpers', details.helpersPath !== null ? this.getAttributeExpressionResult(details.helpersPath, this.getData(), index) : {}),
 					targetEl: ntEl,
 					name: details.name,
-					renderAnd: 'placeAfter',
+					renderAnd: details.place,
 					id: details.id,
 					ntEl: ntEl,
 					dataPath: details.dataPath

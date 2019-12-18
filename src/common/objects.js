@@ -251,7 +251,11 @@ var CommonObjects = {
 	},
 	stripProxy(obj){
 		if(obj.isProxy){
-			obj = Object.assign({}, obj);
+			if(Array.isArray(obj)){
+				obj = Array.from(obj);
+			}else{
+				obj = Object.assign({}, obj);
+			}
 			for(let t in obj){
 				if(obj.hasOwnProperty(t)){
 					obj[t] = this.stripProxy(obj[t]);

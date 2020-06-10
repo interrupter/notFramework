@@ -1,6 +1,6 @@
 {
 	"name": "not-framework",
-	"version": "2.13.29",
+	"version": "2.13.30",
 	"description": "node complimentary part for client side notFramework. + dadata.ru api",
 	"scripts": {
 		"test": "./node_modules/.bin/mocha --reporter spec",
@@ -25,10 +25,10 @@
 	"bugs": {
 		"url": "https://github.com/interrupter/not-node/issues"
 	},
-	"dependencies": {
-		"http-server": "^0.10.0"
-	},
+	"main": "src/index.js",
+	"dependencies": {},
 	"devDependencies": {
+		"http-server": "^0.10.0",
 		"babel-core": "*",
 		"babel-env": "*",
 		"babel-polyfill": "*",

@@ -160,15 +160,15 @@ var CommonObjects = {
 	},
 	extendWith: function(options){
 		for (let prop in options) {
-			if (options.hasOwnProperty(prop)) {
+			if (Object.prototype.hasOwnProperty.call(options, prop)) {
 				this[prop] = options[prop];
 			}
 		}
 	},
 	containsObj: function(big, small) {
 		for (var t in small) {
-			if (small.hasOwnProperty(t)) {
-				if ((!big.hasOwnProperty(t)) || (big[t] !== small[t])) {
+			if (Object.prototype.hasOwnProperty.call(small,t)) {
+				if ((!Object.prototype.hasOwnProperty.call(big, t)) || (big[t] !== small[t])) {
 					return false;
 				}
 			}
@@ -229,7 +229,7 @@ var CommonObjects = {
 		return true;
 	},
 	defineIfNotExists: function(obj, key, defaultValue) {
-		if (!obj.hasOwnProperty(key)) {
+		if (!Object.prototype.hasOwnProperty.call(obj, key)) {
 			obj[key] = defaultValue;
 		}
 	},
@@ -238,7 +238,7 @@ var CommonObjects = {
 		this.registry[key] = val;
 	},
 	get: function(key) {
-		return this.registry.hasOwnProperty(key) ? this.registry[key] : null;
+		return Object.prototype.hasOwnProperty.call(this.registry, key) ? this.registry[key] : null;
 	},
 	moveItem(array, old_index, new_index) {
 		if (new_index >= array.length) {
@@ -250,15 +250,17 @@ var CommonObjects = {
 		array.splice(new_index, 0, array.splice(old_index, 1)[0]);
 	},
 	stripProxy(obj){
-		if(obj.isProxy){
-			if(Array.isArray(obj)){
-				obj = Array.from(obj);
-			}else{
-				obj = Object.assign({}, obj);
-			}
-			for(let t in obj){
-				if(obj.hasOwnProperty(t)){
-					obj[t] = this.stripProxy(obj[t]);
+		if(typeof obj !== 'undefined' && obj !== null){
+			if(obj.isProxy){
+				if(Array.isArray(obj)){
+					obj = Array.from(obj);
+				}else{
+					obj = Object.assign({}, obj);
+				}
+				for(let t in obj){
+					if(Object.prototype.hasOwnProperty.call(obj, t)){
+						obj[t] = this.stripProxy(obj[t]);
+					}
 				}
 			}
 		}
